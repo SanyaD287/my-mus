@@ -356,36 +356,45 @@
             gap: 20px;
         }
 
-        /* Кнопки перемикання */
+        /* НЕОНОВІ КНОПКИ КЕРУВАННЯ */
         .ctrl-btn {
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(20, 20, 20, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.12);
             border-radius: 50%;
-            width: 38px;
-            height: 38px;
+            width: 42px;
+            height: 42px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
+            font-size: 15px;
             color: #fff;
             cursor: pointer;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            transition: all 0.2s ease;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), inset 0 0 8px rgba(255, 255, 255, 0.05);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .ctrl-btn:hover {
-            background: rgba(255, 255, 255, 0.15);
+            background: rgba(30, 30, 30, 0.8);
             border-color: var(--accent-color, #ff1e2d);
+            box-shadow: 0 0 15px var(--accent-color, #ff1e2d), inset 0 0 12px var(--accent-color, #ff1e2d);
             transform: scale(1.1);
         }
+        .ctrl-btn:active {
+            transform: scale(0.95);
+        }
         .play-pause-btn {
-            width: 44px;
-            height: 44px;
+            width: 50px;
+            height: 50px;
             background: var(--accent-color, #ff1e2d);
             border: none;
             border-radius: 50%;
-            font-size: 16px;
-            box-shadow: 0 0 15px var(--accent-color, #ff1e2d);
+            font-size: 18px;
+            box-shadow: 0 0 20px var(--accent-color, #ff1e2d), inset 0 0 10px rgba(255, 255, 255, 0.4);
+        }
+        .play-pause-btn:hover {
+            filter: brightness(1.15);
+            box-shadow: 0 0 30px var(--accent-color, #ff1e2d), inset 0 0 15px rgba(255, 255, 255, 0.6);
         }
 
         /* Таймлайн */
@@ -416,6 +425,7 @@
             background: var(--accent-color, #ff1e2d);
             border-radius: 3px;
             width: 0%;
+            box-shadow: 0 0 10px var(--accent-color, #ff1e2d);
         }
 
         .extra-controls {
@@ -425,7 +435,7 @@
         /* --- МОБІЛЬНИЙ СТИЛЬ (SPOTIFY FULL-SCREEN PLAYER НА ВЕСЬ ЕКРАН ЗВЕРХУ) --- */
         @media (max-width: 768px) {
             body {
-                overflow-y: auto; /* Дозволяємо прокрутку всієї сторінки */
+                overflow-y: auto;
             }
             .app-layout {
                 display: flex;
@@ -440,7 +450,7 @@
                 flex-direction: row;
                 align-items: center;
                 justify-content: space-between;
-                padding: 10px 16px;
+                padding: 8px 16px;
                 border-right: none;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.08);
                 background: rgba(10, 10, 10, 0.9);
@@ -470,7 +480,7 @@
                 font-size: 10px;
             }
 
-            /* Плеєр на весь екран (як трек на повний екран у Spotify на телефоні) */
+            /* Плеєр зверху (мобільний full-screen) */
             .spotify-player-bar {
                 position: relative;
                 width: 100%;
@@ -484,22 +494,22 @@
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
-                gap: 20px;
-                padding: 30px 20px;
+                gap: 16px;
+                padding: 20px 20px 24px 20px;
                 box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
             }
 
-            /* Величезний вініл посередині мобільного плеєра */
+            /* Вініл */
             .spotify-player-bar .vinyl-container {
-                width: 160px;
-                height: 160px;
+                width: 140px;
+                height: 140px;
                 border-width: 4px;
                 border-color: #222;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 20px var(--accent-color, #ff1e2d);
+                box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 25px var(--accent-color, #ff1e2d);
             }
             .spotify-player-bar .vinyl-inner {
-                width: 45px;
-                height: 45px;
+                width: 40px;
+                height: 40px;
                 border-width: 4px;
             }
 
@@ -508,35 +518,37 @@
                 flex-direction: column;
                 align-items: center;
                 text-align: center;
-                gap: 16px;
+                gap: 12px;
             }
             .current-text-wrap {
                 align-items: center;
                 width: 100%;
             }
             .current-title {
-                font-size: 20px;
+                font-size: 18px;
                 font-weight: 700;
             }
             .current-artist {
-                font-size: 13px;
+                font-size: 12px;
             }
 
             .player-center-controls {
                 width: 100%;
-                gap: 12px;
+                gap: 14px;
             }
             .player-buttons {
-                gap: 36px;
+                gap: 32px;
             }
             .ctrl-btn {
-                width: 46px;
-                height: 46px;
+                width: 48px;
+                height: 48px;
                 font-size: 16px;
+                border-color: var(--accent-color, #ff1e2d);
+                box-shadow: 0 0 12px var(--accent-color, #ff1e2d), inset 0 0 8px var(--accent-color, #ff1e2d);
             }
             .play-pause-btn {
-                width: 60px;
-                height: 60px;
+                width: 58px;
+                height: 58px;
                 font-size: 20px;
             }
             .progress-bar-wrapper {
@@ -546,7 +558,7 @@
                 display: none;
             }
 
-            /* Основний контент (список пісень та додавання) нижче плеєра */
+            /* Контент нижче плеєра */
             .main-content {
                 padding: 20px 16px;
                 overflow-y: visible;
@@ -584,7 +596,7 @@
         </div>
     </div>
 
-    <!-- Плеєр (на мобільних він тепер зверху у стилі Spotify на весь екран) -->
+    <!-- Плеєр (на мобільних зверху у стилі Spotify) -->
     <div class="spotify-player-bar">
         <div class="current-info">
             <div class="vinyl-container" id="vinyl-disc">
