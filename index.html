@@ -9,7 +9,7 @@
             box-sizing: border-box;
         }
         body {
-            background-color: #000000;
+            background-color: #0b0b0b;
             color: #ffffff;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
@@ -36,7 +36,7 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
-            border-right: 1px solid #121212;
+            border-right: 1px solid #1a1a1a;
             grid-row: 1 / 2;
         }
         .logo {
@@ -49,7 +49,7 @@
             letter-spacing: -0.5px;
         }
         .logo span {
-            color: #1db954;
+            color: #e50914;
         }
         .nav-link {
             color: #b3b3b3;
@@ -68,7 +68,7 @@
 
         /* Основна область контенту */
         .main-content {
-            background: linear-gradient(180deg, #202020 0%, #121212 100%);
+            background: linear-gradient(180deg, #1f0808 0%, #0f0f0f 100%);
             padding: 24px 32px;
             overflow-y: auto;
             grid-column: 2 / 3;
@@ -93,24 +93,26 @@
             display: flex;
             gap: 12px;
             align-items: center;
+            border: 1px solid #281010;
         }
         input {
             padding: 10px 14px;
             border-radius: 4px;
-            border: none;
+            border: 1px solid #333;
             background: #242424;
             color: #fff;
             font-size: 14px;
             outline: none;
             flex: 1;
+            transition: border-color 0.2s;
         }
         input:focus {
+            border-color: #e50914;
             background: #2a2a2a;
-            box-shadow: 0 0 0 2px #fff;
         }
         button#add-btn {
-            background: #1db954;
-            color: #000;
+            background: #e50914;
+            color: #fff;
             border: none;
             padding: 10px 20px;
             border-radius: 500px;
@@ -120,7 +122,7 @@
             transition: transform 0.1s, background-color 0.2s;
         }
         button#add-btn:hover {
-            background: #1ed760;
+            background: #b20710;
             transform: scale(1.04);
         }
 
@@ -154,13 +156,14 @@
             cursor: pointer;
         }
         li:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(229, 9, 20, 0.08);
         }
         li.active {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(229, 9, 20, 0.18);
+            border-left: 3px solid #e50914;
         }
         li.active .song-name {
-            color: #1db954;
+            color: #e50914;
             font-weight: 700;
         }
         .song-index {
@@ -187,15 +190,15 @@
             opacity: 1;
         }
         .del-btn:hover {
-            color: #fff;
+            color: #e50914;
         }
 
         /* Нижній плеєр (для ПК) */
         .spotify-player-bar {
             grid-column: 1 / 3;
             grid-row: 2 / 3;
-            background-color: #181818;
-            border-top: 1px solid #282828;
+            background-color: #121212;
+            border-top: 1px solid #222;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -243,24 +246,25 @@
             transition: color 0.2s;
         }
         .ctrl-btn:hover {
-            color: #fff;
+            color: #e50914;
         }
         .play-pause-btn {
-            width: 32px;
-            height: 32px;
-            background: #fff;
-            color: #000;
+            width: 34px;
+            height: 34px;
+            background: #e50914;
+            color: #fff;
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
             font-size: 12px;
+            box-shadow: 0 2px 10px rgba(229, 9, 20, 0.4);
             transition: transform 0.1s, background-color 0.2s;
         }
         .play-pause-btn:hover {
             transform: scale(1.06);
-            background: #f0f0f0;
-            color: #000;
+            background: #b20710;
+            color: #fff;
         }
 
         /* Таймлайн */
@@ -280,13 +284,13 @@
         .progress-container {
             flex: 1;
             height: 4px;
-            background: #4d4d4d;
+            background: #333;
             border-radius: 2px;
             cursor: pointer;
             position: relative;
         }
         .progress-container:hover .progress-bar {
-            background: #1db954;
+            background: #e50914;
         }
         .progress-bar {
             height: 100%;
@@ -323,8 +327,8 @@
                 height: 70px;
                 flex-direction: row;
                 padding: 0 12px;
-                border-top: 1px solid #282828;
-                background-color: #181818;
+                border-top: 1px solid #222;
+                background-color: #121212;
             }
             .current-info {
                 width: 55%;
@@ -341,8 +345,8 @@
                 width: 40px;
                 height: 40px;
                 font-size: 14px;
-                background: #1db954;
-                color: #000;
+                background: #e50914;
+                color: #fff;
             }
             .ctrl-btn {
                 font-size: 20px;
@@ -362,7 +366,7 @@
 <div class="desktop-layout">
     <!-- Бічна панель (тільки ПК) -->
     <div class="sidebar">
-        <div class="logo"><span>🟢</span> Spotisanya</div>
+        <div class="logo"><span>🔴</span> Spotisanya</div>
         <div class="nav-link active">🏠 Головна</div>
         <div class="nav-link">🎵 Мій плейлист</div>
     </div>
