@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мій Плейлист</title>
+    <title>Cloud Red Player</title>
     <style>
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
         body {
             background-color: #0b0b0b;
             color: #ffffff;
@@ -30,6 +32,7 @@
             margin-bottom: 20px;
             font-size: 20px;
             text-align: center;
+            letter-spacing: 0.5px;
         }
         audio {
             width: 100%;
@@ -51,8 +54,11 @@
             color: #fff;
             font-size: 14px;
             outline: none;
+            transition: border-color 0.2s;
         }
-        input:focus { border-color: #e50914; }
+        input:focus {
+            border-color: #e50914;
+        }
         button#add-btn {
             width: 100%;
             padding: 12px;
@@ -63,8 +69,11 @@
             font-weight: bold;
             font-size: 14px;
             cursor: pointer;
+            transition: background 0.2s;
         }
-        button#add-btn:hover { background: #b20710; }
+        button#add-btn:hover {
+            background: #b20710;
+        }
         .playlist-title {
             font-size: 14px;
             color: #b3b3b3;
@@ -87,6 +96,10 @@
             margin-bottom: 6px;
             background: #222;
             border-radius: 8px;
+            transition: background 0.2s;
+        }
+        li:hover {
+            background: #282828;
         }
         .song-name {
             cursor: pointer;
@@ -97,7 +110,9 @@
             text-overflow: ellipsis;
             margin-right: 10px;
         }
-        .song-name:hover { color: #e50914; }
+        .song-name:hover {
+            color: #e50914;
+        }
         .del-btn {
             background: transparent;
             color: #888;
@@ -106,6 +121,7 @@
             cursor: pointer;
             border-radius: 4px;
             font-size: 12px;
+            transition: color 0.2s, background 0.2s;
         }
         .del-btn:hover {
             color: #fff;
@@ -116,7 +132,7 @@
 <body>
 
 <div class="player-container">
-    <h3>Мій Плейлист</h3>
+    <h3>Мій Хмарний Плейлист</h3>
     
     <audio id="player" controls></audio>
     
