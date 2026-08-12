@@ -3,15 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spotisanya - Cyber Glass Edition</title>
+    <title>Spotisanya - Stable Edition</title>
     <style>
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
         body {
             background-color: #050505;
             color: #ffffff;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             margin: 0;
             padding: 0;
             height: 100vh;
@@ -20,25 +18,6 @@
             overflow: hidden;
         }
 
-        /* --- АНІМОВАНИЙ ГРАДІЄНТНИЙ ФОН --- */
-        .animated-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: linear-gradient(120deg, #1d0709, #0a0a0a, #150406, #050505);
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
-            z-index: -1;
-        }
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* --- ДЕКСТОПНИЙ МАКЕТ --- */
         .app-layout {
             display: grid;
             grid-template-columns: 240px 1fr;
@@ -48,9 +27,7 @@
         }
 
         .sidebar {
-            background: rgba(10, 10, 10, 0.75);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            background: #0a0a0a;
             padding: 24px 16px;
             display: flex;
             flex-direction: column;
@@ -65,92 +42,8 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            letter-spacing: -0.5px;
         }
-        .logo span {
-            color: var(--accent-color, #ff1e2d);
-            text-shadow: 0 0 12px var(--accent-color, #ff1e2d);
-        }
-        .nav-link {
-            color: #aaa;
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-        }
-        .nav-link.active {
-            color: #fff;
-        }
-
-        /* --- ХМАРНИЙ СТАТУС --- */
-        .cloud-status {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            border-radius: 10px;
-            padding: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-        .cloud-status-title {
-            font-size: 10px;
-            text-transform: uppercase;
-            color: #777;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-        .cloud-status-info {
-            font-size: 13px;
-            font-weight: 600;
-            color: #ddd;
-            display: flex;
-            justify-content: space-between;
-        }
-        .cloud-status-info span {
-            color: var(--accent-color, #ff1e2d);
-        }
-
-        .theme-switcher {
-            margin-top: auto;
-            background: rgba(20, 20, 20, 0.6);
-            backdrop-filter: blur(10px);
-            padding: 12px;
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-        .theme-title {
-            font-size: 11px;
-            color: #777;
-            text-transform: uppercase;
-            font-weight: 700;
-        }
-        .theme-buttons {
-            display: flex;
-            gap: 6px;
-        }
-        .theme-btn {
-            flex: 1;
-            padding: 6px;
-            border: none;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: transform 0.1s, filter 0.2s;
-        }
-        .theme-btn:hover {
-            transform: scale(1.05);
-            filter: brightness(1.2);
-        }
-        .theme-red { background: #ff1e2d; color: #fff; }
-        .theme-purple { background: #9b51e0; color: #fff; }
-        .theme-blue { background: #2f80ed; color: #fff; }
+        .logo span { color: #ff1e2d; }
 
         .main-content {
             padding: 24px 32px;
@@ -163,54 +56,41 @@
         }
 
         .section-title {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
-            letter-spacing: -0.5px;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
 
         .add-card {
-            background: rgba(18, 18, 18, 0.65);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
+            background: #121212;
             padding: 16px;
             border-radius: 12px;
             display: flex;
             gap: 12px;
             align-items: center;
             border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
         input[type="text"] {
             padding: 12px 14px;
             border-radius: 8px;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            background: rgba(30, 30, 30, 0.7);
+            background: #1e1e1e;
             color: #fff;
             font-size: 14px;
             outline: none;
             flex: 1;
-            transition: border-color 0.2s, box-shadow 0.2s;
         }
-        input[type="text"]:focus {
-            border-color: var(--accent-color, #ff1e2d);
-            box-shadow: 0 0 10px var(--accent-color, #ff1e2d);
-        }
+        input[type="text"]:focus { border-color: #ff1e2d; }
         button#add-btn {
-            background: var(--accent-color, #ff1e2d);
+            background: #ff1e2d;
             color: #fff;
             border: none;
             padding: 12px 24px;
             border-radius: 500px;
             font-weight: 700;
-            font-size: 14px;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
-            transition: transform 0.1s;
         }
-        button#add-btn:hover {
-            transform: scale(1.04);
-        }
+        button#add-btn:hover { filter: brightness(1.1); }
 
         .playlist-header {
             display: grid;
@@ -240,23 +120,14 @@
             background: rgba(255, 255, 255, 0.02);
             cursor: pointer;
             border: 1px solid transparent;
-            transition: background 0.2s;
         }
-        li:hover {
-            background: rgba(255, 255, 255, 0.06);
-        }
+        li:hover { background: rgba(255, 255, 255, 0.06); }
         li.active {
             background: rgba(255, 255, 255, 0.08);
-            border-left: 4px solid var(--accent-color, #ff1e2d);
+            border-left: 4px solid #ff1e2d;
         }
-        li.active .song-name {
-            color: var(--accent-color, #ff1e2d);
-            font-weight: 700;
-        }
-        .song-index {
-            color: #666;
-            font-size: 14px;
-        }
+        li.active .song-name { color: #ff1e2d; font-weight: 700; }
+        .song-index { color: #666; font-size: 14px; }
         .song-name {
             font-size: 14px;
             white-space: nowrap;
@@ -271,73 +142,17 @@
             cursor: pointer;
             font-size: 14px;
         }
-        .del-btn:hover {
-            color: var(--accent-color, #ff1e2d);
-        }
-
-        .equalizer {
-            display: none;
-            align-items: flex-end;
-            gap: 2px;
-            width: 14px;
-            height: 14px;
-        }
-        li.active .song-index { display: none; }
-        li.active .equalizer { display: flex; }
-        .bar {
-            width: 3px;
-            background: var(--accent-color, #ff1e2d);
-            animation: bounce 0.6s infinite alternate;
-        }
-        .bar:nth-child(2) { animation-delay: 0.2s; }
-        .bar:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes bounce {
-            0% { height: 3px; }
-            100% { height: 14px; }
-        }
-
-        /* --- ВІНІЛ З ВІЗУАЛІЗАТОРОМ --- */
-        .vinyl-container {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background: #111;
-            border: 2px solid #333;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
-            flex-shrink: 0;
-            transition: box-shadow 0.3s;
-        }
-        .vinyl-container.playing {
-            animation: spinVinyl 3s linear infinite;
-            box-shadow: 0 0 20px var(--accent-color, #ff1e2d);
-        }
-        .vinyl-inner {
-            width: 12px;
-            height: 12px;
-            background: var(--accent-color, #ff1e2d);
-            border-radius: 50%;
-            border: 2px solid #fff;
-        }
-        @keyframes spinVinyl {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        .del-btn:hover { color: #ff1e2d; }
 
         .spotify-player-bar {
             grid-column: 1 / 3;
             grid-row: 2 / 3;
-            background: rgba(12, 12, 12, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            background: #0c0c0c;
             border-top: 1px solid rgba(255, 255, 255, 0.08);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 16px;
+            padding: 0 20px;
             z-index: 10;
         }
         .current-info {
@@ -345,12 +160,6 @@
             display: flex;
             align-items: center;
             gap: 12px;
-        }
-        .current-text-wrap {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            overflow: hidden;
         }
         .current-title {
             font-size: 14px;
@@ -360,58 +169,40 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        .current-artist {
-            font-size: 11px;
-            color: #777;
-        }
+        .current-artist { font-size: 11px; color: #777; }
 
         .player-center-controls {
             width: 40%;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
         .player-buttons {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 16px;
         }
-
         .ctrl-btn {
-            background: rgba(20, 20, 20, 0.7);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: #1a1a1a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 50%;
-            width: 42px;
-            height: 42px;
+            width: 38px;
+            height: 38px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 15px;
             color: #fff;
             cursor: pointer;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .ctrl-btn:hover {
-            border-color: var(--accent-color, #ff1e2d);
-            box-shadow: 0 0 15px var(--accent-color, #ff1e2d);
-            transform: scale(1.1);
-        }
+        .ctrl-btn:hover { border-color: #ff1e2d; }
         .play-pause-btn {
-            width: 50px;
-            height: 50px;
-            background: var(--accent-color, #ff1e2d);
+            width: 44px;
+            height: 44px;
+            background: #ff1e2d;
             border: none;
             border-radius: 50%;
-            font-size: 18px;
-            box-shadow: 0 0 20px var(--accent-color, #ff1e2d);
-        }
-        .play-pause-btn:hover {
-            filter: brightness(1.15);
-            box-shadow: 0 0 30px var(--accent-color, #ff1e2d);
+            font-size: 16px;
         }
 
         .progress-bar-wrapper {
@@ -419,32 +210,24 @@
             align-items: center;
             gap: 10px;
             width: 100%;
-            max-width: 500px;
+            max-width: 400px;
         }
-        .time-text {
-            font-size: 11px;
-            color: #777;
-            min-width: 35px;
-            text-align: center;
-        }
+        .time-text { font-size: 11px; color: #777; min-width: 35px; text-align: center; }
         .progress-container {
             flex: 1;
-            height: 5px;
+            height: 4px;
             background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
+            border-radius: 2px;
             cursor: pointer;
             position: relative;
-            overflow: hidden;
         }
         .progress-bar {
             height: 100%;
-            background: var(--accent-color, #ff1e2d);
-            border-radius: 3px;
+            background: #ff1e2d;
+            border-radius: 2px;
             width: 0%;
-            box-shadow: 0 0 10px var(--accent-color, #ff1e2d);
         }
 
-        /* --- БЛОК КЕРУВАННЯ ГУЧНІСТЮ --- */
         .extra-controls {
             width: 30%;
             display: flex;
@@ -452,151 +235,55 @@
             justify-content: flex-end;
             gap: 10px;
         }
-        .volume-icon {
-            font-size: 16px;
-            color: #888;
-        }
         .volume-slider {
-            -webkit-appearance: none;
-            width: 100px;
-            height: 5px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 3px;
-            outline: none;
+            width: 90px;
+            height: 4px;
+            accent-color: #ff1e2d;
             cursor: pointer;
-        }
-        .volume-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: #fff;
-            cursor: pointer;
-            box-shadow: 0 0 8px var(--accent-color, #ff1e2d);
-            transition: transform 0.1s;
-        }
-        .volume-slider::-webkit-slider-thumb:hover {
-            transform: scale(1.3);
-            background: var(--accent-color, #ff1e2d);
         }
 
-        /* --- МОБІЛЬНИЙ СТИЛЬ --- */
         @media (max-width: 768px) {
-            body {
-                overflow-y: auto;
-            }
-            .app-layout {
-                display: flex;
-                flex-direction: column;
-                height: auto;
-                min-height: 100vh;
-                width: 100vw;
-            }
-            .sidebar {
-                flex-direction: row;
-                align-items: center;
-                justify-content: space-between;
-                padding: 8px 16px;
-                border-right: none;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-                background: rgba(10, 10, 10, 0.9);
-                position: sticky;
-                top: 0;
-                z-index: 100;
-            }
-            .nav-link { display: none; }
-            .cloud-status { display: none; }
-            .theme-switcher {
-                margin-top: 0;
-                padding: 4px 8px;
-                width: auto;
-                flex-direction: row;
-                align-items: center;
-                gap: 6px;
-            }
-            .theme-title { display: none; }
+            body { overflow-y: auto; }
+            .app-layout { display: flex; flex-direction: column; height: auto; min-height: 100vh; }
+            .sidebar { display: none; }
             .spotify-player-bar {
-                position: relative;
+                position: fixed;
+                bottom: 0;
+                left: 0;
                 width: 100%;
                 height: auto;
-                background: linear-gradient(180deg, rgba(25, 10, 12, 0.7) 0%, rgba(10, 10, 10, 0.4) 100%);
-                display: flex;
                 flex-direction: column;
-                align-items: center;
-                justify-content: center;
-                gap: 16px;
-                padding: 20px 20px 24px 20px;
+                padding: 12px;
+                gap: 10px;
             }
-            .spotify-player-bar .vinyl-container {
-                width: 130px;
-                height: 130px;
-                border-width: 4px;
-            }
-            .spotify-player-bar .vinyl-inner {
-                width: 38px;
-                height: 38px;
-                border-width: 4px;
-            }
-            .current-info {
-                width: 100%;
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-                gap: 12px;
-            }
-            .current-text-wrap { align-items: center; width: 100%; }
-            .player-center-controls { width: 100%; gap: 14px; }
-            .player-buttons { gap: 24px; }
-            .progress-bar-wrapper { max-width: 100%; }
-            .extra-controls {
-                width: 100%;
-                justify-content: center;
-                margin-top: 4px;
-            }
-            .main-content { padding: 20px 16px; gap: 20px; }
-            .add-card { flex-direction: column; }
-            button#add-btn { width: 100%; }
+            .current-info, .player-center-controls, .extra-controls { width: 100%; justify-content: center; }
+            .main-content { padding: 16px; padding-bottom: 140px; }
         }
     </style>
 </head>
-<body style="--accent-color: #ff1e2d;">
-
-<div class="animated-bg"></div>
+<body>
 
 <div class="app-layout">
     <div class="sidebar">
-        <div class="logo"><span id="logo-icon">🔴</span> Spotisanya</div>
-        <div class="nav-link active">🏠 Головна</div>
-        <div class="nav-link">🎵 Плейлист</div>
-
-        <!-- Хмарний статус -->
-        <div class="cloud-status">
-            <div class="cloud-status-title">Статус хмари</div>
-            <div class="cloud-status-info">Треків: <span id="stat-count">0</span></div>
-        </div>
-
-        <div class="theme-switcher">
-            <div class="theme-title">Тема неону</div>
-            <div class="theme-buttons">
-                <button class="theme-btn theme-red" onclick="setTheme('#ff1e2d', '🔴')">Red</button>
-                <button class="theme-btn theme-purple" onclick="setTheme('#9b51e0', '🟣')">Purple</button>
-                <button class="theme-btn theme-blue" onclick="setTheme('#2f80ed', '🔵')">Blue</button>
-            </div>
-        </div>
+        <div class="logo"><span>🔴</span> Spotisanya</div>
+        <div style="color: #777; font-size: 13px;">Стабільна версія</div>
     </div>
 
     <div class="spotify-player-bar">
         <div class="current-info">
-            <div class="vinyl-container" id="vinyl-disc">
-                <div class="vinyl-inner"></div>
-            </div>
-            <div class="current-text-wrap">
+            <div style="width: 32px; height: 32px; background: #ff1e2d; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px;">🎵</div>
+            <div>
                 <div class="current-title" id="current-song-title">Нічого не вибрано</div>
-                <div class="current-artist">Spotisanya Cloud</div>
+                <div class="current-artist">Cloud Player</div>
             </div>
         </div>
 
         <div class="player-center-controls">
+            <div class="player-buttons">
+                <button class="ctrl-btn" id="prev-btn">⏮</button>
+                <button class="ctrl-btn play-pause-btn" id="play-pause-btn">▶</button>
+                <button class="ctrl-btn" id="next-btn">⏭</button>
+            </div>
             <div class="progress-bar-wrapper">
                 <span class="time-text" id="current-time">0:00</span>
                 <div class="progress-container" id="progress-container">
@@ -604,30 +291,24 @@
                 </div>
                 <span class="time-text" id="duration-time">0:00</span>
             </div>
-            <div class="player-buttons">
-                <button class="ctrl-btn" id="prev-btn" title="Попередня">⏮</button>
-                <button class="ctrl-btn play-pause-btn" id="play-pause-btn" title="Грати/Пауза">▶</button>
-                <button class="ctrl-btn" id="next-btn" title="Наступна">⏭</button>
-            </div>
         </div>
 
-        <!-- Регулятор гучності -->
         <div class="extra-controls">
-            <span class="volume-icon">🔊</span>
+            <span style="font-size: 14px;">🔊</span>
             <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.01" value="1">
         </div>
     </div>
 
     <div class="main-content">
-        <div class="section-title">Додати трек до хмари</div>
+        <div class="section-title">Додати трек</div>
         <div class="add-card">
             <input type="text" id="title" placeholder="Назва треку">
-            <input type="text" id="url" placeholder="Пряме посилання на MP3">
+            <input type="text" id="url" placeholder="Посилання на MP3">
             <button id="add-btn">Додати</button>
         </div>
 
-        <div style="margin-top: 10px;">
-            <div class="section-title">Треки у плейлисті</div>
+        <div>
+            <div class="section-title">Плейлист</div>
             <div class="playlist-header">
                 <div>#</div>
                 <div>Назва</div>
@@ -638,7 +319,7 @@
     </div>
 </div>
 
-<audio id="player" crossorigin="anonymous"></audio>
+<audio id="player"></audio>
 
 <script>
     const BIN_ID = '6a7c3536da38895dfed9948e'; 
@@ -654,95 +335,9 @@
     const currentSongTitle = document.getElementById('current-song-title');
     const currentTimeEl = document.getElementById('current-time');
     const durationTimeEl = document.getElementById('duration-time');
-    const vinylDisc = document.getElementById('vinyl-disc');
-    const statCount = document.getElementById('stat-count');
     const volumeSlider = document.getElementById('volume-slider');
 
-    // Налаштування гучності
-    volumeSlider.oninput = (e) => {
-        player.volume = e.target.value;
-    };
-
-    // Налаштування Media Session для фонового відтворення на мобільних
-    function updateMediaSession(title) {
-        if ('mediaSession' in navigator) {
-            navigator.mediaSession.metadata = new MediaMetadata({
-                title: title,
-                artist: 'Spotisanya Cloud',
-                album: 'Cloud Playlist'
-            });
-
-            navigator.mediaSession.setActionHandler('play', () => {
-                if (player.paused) {
-                    player.play();
-                    vinylDisc.classList.add('playing');
-                    playPauseBtn.textContent = '❚❚';
-                }
-            });
-            navigator.mediaSession.setActionHandler('pause', () => {
-                if (!player.paused) {
-                    player.pause();
-                    vinylDisc.classList.remove('playing');
-                    playPauseBtn.textContent = '▶';
-                }
-            });
-            navigator.mediaSession.setActionHandler('previoustrack', () => {
-                document.getElementById('prev-btn').click();
-            });
-            navigator.mediaSession.setActionHandler('nexttrack', () => {
-                document.getElementById('next-btn').click();
-            });
-        }
-    }
-
-    // Налаштування Web Audio API для візуалізатора
-    let audioCtx, analyser, sourceConnected = false;
-
-    function initAudioVisualizer() {
-        if (!audioCtx) {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            analyser = audioCtx.createAnalyser();
-            analyser.fftSize = 64;
-            const source = audioCtx.createMediaElementSource(player);
-            source.connect(analyser);
-            analyser.connect(audioCtx.destination);
-            sourceConnected = true;
-            animateVisualizer();
-        } else if (audioCtx.state === 'suspended') {
-            audioCtx.resume();
-        }
-    }
-
-    const bufferLength = 32;
-    const dataArray = new Uint8Array(bufferLength);
-
-    function animateVisualizer() {
-        requestAnimationFrame(animateVisualizer);
-        if (analyser && !player.paused) {
-            analyser.getByteFrequencyData(dataArray);
-            let sum = 0;
-            for(let i = 0; i < bufferLength; i++) {
-                sum += dataArray[i];
-            }
-            let average = sum / bufferLength;
-            let scale = 1 + (average / 256) * 0.2;
-            vinylDisc.style.transform = `scale(${scale})`;
-        } else {
-            vinylDisc.style.transform = `scale(1)`;
-        }
-    }
-
-    function setTheme(color, icon) {
-        document.body.style.setProperty('--accent-color', color);
-        document.getElementById('logo-icon').textContent = icon;
-        localStorage.setItem('spotisanya_theme', JSON.stringify({ color, icon }));
-    }
-
-    const savedTheme = localStorage.getItem('spotisanya_theme');
-    if (savedTheme) {
-        const t = JSON.parse(savedTheme);
-        setTheme(t.color, t.icon);
-    }
+    volumeSlider.oninput = (e) => { player.volume = e.target.value; };
 
     function formatTime(seconds) {
         if (isNaN(seconds)) return "0:00";
@@ -755,11 +350,22 @@
         try {
             const response = await fetch(urlAPI, { headers: { 'X-Master-Key': API_KEY }});
             const result = await response.json();
-            currentSongs = result.record.songs || [];
-            statCount.textContent = currentSongs.length;
+            const cloudSongs = result.record.songs;
+
+            if (Array.isArray(cloudSongs) && cloudSongs.length > 0) {
+                currentSongs = cloudSongs;
+                localStorage.setItem('spotisanya_cache', JSON.stringify(currentSongs));
+            } else {
+                const cached = localStorage.getItem('spotisanya_cache');
+                if (cached) currentSongs = JSON.parse(cached);
+            }
             renderList();
         } catch (err) {
-            console.error('Помилка завантаження:', err);
+            const cached = localStorage.getItem('spotisanya_cache');
+            if (cached) {
+                currentSongs = JSON.parse(cached);
+                renderList();
+            }
         }
     }
 
@@ -778,11 +384,6 @@
 
             li.innerHTML = `
                 <span class="song-index">${index + 1}</span>
-                <div class="equalizer">
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                </div>
                 <span class="song-name" title="${song.title}">${song.title}</span>
                 <button class="del-btn" onclick="deleteSong(event, ${index})">✕</button>
             `;
@@ -797,70 +398,50 @@
         const song = currentSongs[currentIndex];
         
         player.src = song.url;
-        player.play();
-        initAudioVisualizer();
+        player.play().catch(e => console.log("Потокове відтворення зупинено системою:", e));
         currentSongTitle.textContent = song.title;
         playPauseBtn.textContent = '❚❚';
-        vinylDisc.classList.add('playing');
         renderList();
-        updateMediaSession(song.title);
     }
 
-    playPauseBtn.onclick = (e) => {
-        e.stopPropagation();
+    playPauseBtn.onclick = () => {
         if (currentSongs.length === 0) return;
-        initAudioVisualizer();
         if (player.paused) {
-            if (!player.src && currentSongs.length > 0) {
-                playSong(0);
-            } else {
-                player.play();
-                vinylDisc.classList.add('playing');
-            }
+            if (!player.src) playSong(0);
+            else player.play();
             playPauseBtn.textContent = '❚❚';
         } else {
             player.pause();
-            vinylDisc.classList.remove('playing');
             playPauseBtn.textContent = '▶';
         }
     };
 
-    document.getElementById('next-btn').onclick = (e) => {
-        e.stopPropagation();
+    document.getElementById('next-btn').onclick = () => {
         if (currentSongs.length === 0) return;
-        let nextIndex = (currentIndex + 1) % currentSongs.length;
-        playSong(nextIndex);
+        playSong((currentIndex + 1) % currentSongs.length);
     };
 
-    document.getElementById('prev-btn').onclick = (e) => {
-        e.stopPropagation();
+    document.getElementById('prev-btn').onclick = () => {
         if (currentSongs.length === 0) return;
-        let prevIndex = (currentIndex - 1 + currentSongs.length) % currentSongs.length;
-        playSong(prevIndex);
+        playSong((currentIndex - 1 + currentSongs.length) % currentSongs.length);
     };
 
     player.ontimeupdate = () => {
         if (player.duration) {
-            const percent = (player.currentTime / player.duration) * 100;
-            progressBar.style.width = percent + '%';
+            progressBar.style.width = ((player.currentTime / player.duration) * 100) + '%';
             currentTimeEl.textContent = formatTime(player.currentTime);
             durationTimeEl.textContent = formatTime(player.duration);
         }
     };
 
     progressContainer.onclick = (e) => {
-        const width = progressContainer.clientWidth;
-        const clickX = e.offsetX;
         if (player.duration) {
-            player.currentTime = (clickX / width) * player.duration;
+            player.currentTime = (e.offsetX / progressContainer.clientWidth) * player.duration;
         }
     };
 
     player.onended = () => {
-        let nextIndex = (currentIndex + 1) % currentSongs.length;
-        if (currentSongs.length > 0) {
-            playSong(nextIndex);
-        }
+        if (currentSongs.length > 0) playSong((currentIndex + 1) % currentSongs.length);
     };
 
     async function deleteSong(event, index) {
@@ -868,7 +449,7 @@
         try {
             const res = await fetch(urlAPI, { headers: { 'X-Master-Key': API_KEY }});
             const data = await res.json();
-            let songs = data.record.songs;
+            let songs = data.record.songs || [];
             songs.splice(index, 1);
             
             await fetch(urlAPI, {
@@ -885,10 +466,7 @@
     document.getElementById('add-btn').onclick = async () => {
         const title = document.getElementById('title').value.trim();
         const url = document.getElementById('url').value.trim();
-        if (!title || !url) {
-            alert('Заповніть обидва поля!');
-            return;
-        }
+        if (!title || !url) return alert('Заповніть поля!');
         
         try {
             const res = await fetch(urlAPI, { headers: { 'X-Master-Key': API_KEY }});
@@ -906,11 +484,9 @@
                 document.getElementById('title').value = '';
                 document.getElementById('url').value = '';
                 loadSongs();
-            } else {
-                alert('Помилка збереження');
             }
         } catch (err) {
-            alert('Помилка: ' + err.message);
+            alert('Помилка збереження');
         }
     };
 
