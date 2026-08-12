@@ -4,155 +4,88 @@
     <meta charset="UTF-8">
     <title>Хмарний Плейлист</title>
     <style>
-        body { 
-            background: #121212; 
-            color: white; 
-            font-family: sans-serif; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            height: 100vh; 
-            margin: 0; 
-        }
-        .box { 
-            width: 350px; 
-            background: #1e1e1e; 
-            padding: 20px; 
-            border-radius: 12px; 
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5); 
-        }
-        input, button { 
-            width: 100%; 
-            margin-top: 10px; 
-            padding: 10px; 
-            border-radius: 6px; 
-            border: 1px solid #333; 
-            background: #2a2a2a; 
-            color: #fff; 
-            box-sizing: border-box; 
-        }
-        button { 
-            background: #1db954; 
-            border: none; 
-            cursor: pointer; 
-            font-weight: bold; 
-        }
-        button:hover { 
-            background: #1aa34a; 
-        }
-        ul { 
-            list-style: none; 
-            padding: 0; 
-            max-height: 150px; 
-            overflow-y: auto; 
-            margin-top: 15px; 
-        }
-        li { 
-            padding: 8px 0; 
-            border-bottom: 1px solid #333; 
-            cursor: pointer; 
-            font-size: 14px; 
-        }
-        li:hover {
-            color: #1db954;
-        }
+        body { background: #121212; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .box { width: 350px; background: #1e1e1e; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        input, button { width: 100%; margin-top: 10px; padding: 10px; border-radius: 6px; border: 1px solid #333; background: #2a2a2a; color: #fff; box-sizing: border-box; }
+        button { background: #1db954; border: none; cursor: pointer; font-weight: bold; }
+        button:hover { background: #1aa34a; }
+        ul { list-style: none; padding: 0; margin-top: 15px; }
+        li { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #333; font-size: 14px; }
+        .del-btn { background: #e91e63; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; width: auto; margin-top: 0; }
+        .song-name { cursor: pointer; flex-grow: 1; margin-right: 10px; }
     </style>
 </head>
 <body>
 
 <div class="box">
-    <h3>Загальний Плейлист</h3>
-    <audio id="player" controls style="width: 100%; margin-top: 10px;"></audio>
-    
-    <div style="margin-top: 15px;">
-        <input type="text" id="title" placeholder="Назва пісні">
-        <input type="text" id="url" placeholder="Посилання на MP3 в інтернеті">
-        <button id="add-btn">Додати у плейлист</button>
-    </div>
-
+    <h3>Мій Плейлист</h3>
+    <audio id="player" controls style="width: 100%;"></audio>
+    <input type="text" id="title" placeholder="Назва пісні">
+    <input type="text" id="url" placeholder="Посилання на MP3">
+    <button id="add-btn">Додати пісню</button>
     <ul id="list"></ul>
 </div>
 
 <script>
     const BIN_ID = '6a7c3536da38895dfed9948e'; 
     const API_KEY = '$2a$10$RZSWlrF3nSMRAsv5Jlk1MOHs4qBWJ6ItuOqlU9rE1KSeii4Ck2XFu'; 
-
     const urlAPI = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
 
     async function loadSongs() {
-        try {
-            const response = await fetch(urlAPI, {
-                headers: { 'X-Master-Key': API_KEY }
-            });
-            const result = await response.json();
-            const songs = result.record.songs || [];
-
-            const list = document.getElementById('list');
-            list.innerHTML = '';
-            
-            if (songs.length === 0) {
-                list.innerHTML = '<li style="color: #888; text-align: center; cursor: default;">Плейлист порожній</li>';
-                return;
-            }
-
-            songs.forEach(song => {
-                const li = document.createElement('li');
-                li.textContent = song.title;
-                li.onclick = () => {
-                    const player = document.getElementById('player');
-                    player.src = song.url;
-                    player.play();
-                };
-                list.appendChild(li);
-            });
-        } catch (err) {
-            console.error('Помилка завантаження:', err);
-        }
+        const response = await fetch(urlAPI, { headers: { 'X-Master-Key': API_KEY }});
+        const result = await response.json();
+        const songs = result.record.songs || [];
+        const list = document.getElementById('list');
+        list.innerHTML = '';
+        
+        songs.forEach((song, index) => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+                <span class="song-name">${song.title}</span>
+                <button class="del-btn" onclick="deleteSong(${index})">Видалити</button>
+            `;
+            li.querySelector('.song-name').onclick = () => {
+                const player = document.getElementById('player');
+                player.src = song.url;
+                player.play();
+            };
+            list.appendChild(li);
+        });
     }
 
-    document.getElementById('add-btn').addEventListener('click', async () => {
-        const title = document.getElementById('title').value.trim();
-        const url = document.getElementById('url').value.trim();
+    async function deleteSong(index) {
+        const res = await fetch(urlAPI, { headers: { 'X-Master-Key': API_KEY }});
+        const data = await res.json();
+        const songs = data.record.songs;
+        songs.splice(index, 1);
+        
+        await fetch(urlAPI, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'X-Master-Key': API_KEY },
+            body: JSON.stringify({ songs })
+        });
+        loadSongs();
+    }
 
-        if (!title || !url) {
-            alert('Введіть назву та посилання на пісню!');
-            return;
-        }
-
-        try {
-            // 1. Отримуємо актуальний список із хмари
-            const getRes = await fetch(urlAPI, {
-                headers: { 'X-Master-Key': API_KEY }
-            });
-            const getResult = await getRes.json();
-            const songs = getResult.record.songs || [];
-
-            // 2. Додаємо новий трек до масиву
-            songs.push({ title, url });
-
-            // 3. Зберігаємо оновлений масив назад у хмару
-            const putRes = await fetch(urlAPI, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Master-Key': API_KEY
-                },
-                body: JSON.stringify({ songs })
-            });
-
-            if (putRes.ok) {
-                alert('Пісню додано у хмару!');
-                document.getElementById('title').value = '';
-                document.getElementById('url').value = '';
-                loadSongs();
-            } else {
-                alert('Помилка збереження');
-            }
-        } catch (err) {
-            alert('Помилка: ' + err.message);
-        }
-    });
-
+    document.getElementById('add-btn').onclick = async () => {
+        const title = document.getElementById('title').value;
+        const url = document.getElementById('url').value;
+        if (!title || !url) return alert('Заповніть поля!');
+        
+        const res = await fetch(urlAPI, { headers: { 'X-Master-Key': API_KEY }});
+        const data = await res.json();
+        const songs = data.record.songs || [];
+        songs.push({ title, url });
+        
+        await fetch(urlAPI, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json', 'X-Master-Key': API_KEY },
+            body: JSON.stringify({ songs })
+        });
+        document.getElementById('title').value = '';
+        document.getElementById('url').value = '';
+        loadSongs();
+    };
     loadSongs();
 </script>
 </body>
