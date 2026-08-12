@@ -85,6 +85,34 @@
             color: #fff;
         }
 
+        /* --- ХМАРНИЙ СТАТУС --- */
+        .cloud-status {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .cloud-status-title {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: #777;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        .cloud-status-info {
+            font-size: 13px;
+            font-weight: 600;
+            color: #ddd;
+            display: flex;
+            justify-content: space-between;
+        }
+        .cloud-status-info span {
+            color: var(--accent-color, #ff1e2d);
+        }
+
         .theme-switcher {
             margin-top: auto;
             background: rgba(20, 20, 20, 0.6);
@@ -268,6 +296,7 @@
             100% { height: 14px; }
         }
 
+        /* --- ВІНІЛ З ВІЗУАЛІЗАТОРОМ --- */
         .vinyl-container {
             width: 38px;
             height: 38px;
@@ -280,9 +309,11 @@
             position: relative;
             box-shadow: 0 0 10px rgba(0,0,0,0.5);
             flex-shrink: 0;
+            transition: box-shadow 0.3s;
         }
         .vinyl-container.playing {
             animation: spinVinyl 3s linear infinite;
+            box-shadow: 0 0 20px var(--accent-color, #ff1e2d);
         }
         .vinyl-inner {
             width: 12px;
@@ -347,7 +378,6 @@
             gap: 20px;
         }
 
-        /* УНІВЕРСАЛЬНІ НЕОНОВІ КНОПКИ (ПК ТА МОБІЛЬНІ ОДНАКОВІ) */
         .ctrl-btn {
             background: rgba(20, 20, 20, 0.7);
             border: 1px solid rgba(255, 255, 255, 0.15);
@@ -362,17 +392,13 @@
             cursor: pointer;
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            box-shadow: 0 0 12px rgba(0, 0, 0, 0.4), inset 0 0 8px rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .ctrl-btn:hover {
-            background: rgba(30, 30, 30, 0.9);
             border-color: var(--accent-color, #ff1e2d);
-            box-shadow: 0 0 15px var(--accent-color, #ff1e2d), inset 0 0 12px var(--accent-color, #ff1e2d);
+            box-shadow: 0 0 15px var(--accent-color, #ff1e2d);
             transform: scale(1.1);
-        }
-        .ctrl-btn:active {
-            transform: scale(0.95);
         }
         .play-pause-btn {
             width: 50px;
@@ -381,11 +407,11 @@
             border: none;
             border-radius: 50%;
             font-size: 18px;
-            box-shadow: 0 0 20px var(--accent-color, #ff1e2d), inset 0 0 10px rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 20px var(--accent-color, #ff1e2d);
         }
         .play-pause-btn:hover {
             filter: brightness(1.15);
-            box-shadow: 0 0 30px var(--accent-color, #ff1e2d), inset 0 0 15px rgba(255, 255, 255, 0.6);
+            box-shadow: 0 0 30px var(--accent-color, #ff1e2d);
         }
 
         .progress-bar-wrapper {
@@ -434,7 +460,6 @@
                 min-height: 100vh;
                 width: 100vw;
             }
-            
             .sidebar {
                 flex-direction: row;
                 align-items: center;
@@ -447,9 +472,8 @@
                 top: 0;
                 z-index: 100;
             }
-            .nav-link {
-                display: none; 
-            }
+            .nav-link { display: none; }
+            .cloud-status { display: none; }
             .theme-switcher {
                 margin-top: 0;
                 padding: 4px 8px;
@@ -458,48 +482,29 @@
                 align-items: center;
                 gap: 6px;
             }
-            .theme-title {
-                display: none;
-            }
-            .theme-buttons {
-                gap: 4px;
-            }
-            .theme-btn {
-                padding: 3px 8px;
-                font-size: 10px;
-            }
-
+            .theme-title { display: none; }
             .spotify-player-bar {
                 position: relative;
                 width: 100%;
                 height: auto;
                 background: linear-gradient(180deg, rgba(25, 10, 12, 0.7) 0%, rgba(10, 10, 10, 0.4) 100%);
-                backdrop-filter: blur(20px);
-                -webkit-backdrop-filter: blur(20px);
-                border-top: none;
-                border-bottom: 1px solid rgba(255, 255, 255, 0.08);
                 display: flex;
                 flex-direction: column;
                 align-items: center;
                 justify-content: center;
                 gap: 16px;
                 padding: 20px 20px 24px 20px;
-                box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6);
             }
-
             .spotify-player-bar .vinyl-container {
-                width: 140px;
-                height: 140px;
+                width: 130px;
+                height: 130px;
                 border-width: 4px;
-                border-color: #222;
-                box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 25px var(--accent-color, #ff1e2d);
             }
             .spotify-player-bar .vinyl-inner {
-                width: 40px;
-                height: 40px;
+                width: 38px;
+                height: 38px;
                 border-width: 4px;
             }
-
             .current-info {
                 width: 100%;
                 flex-direction: column;
@@ -507,43 +512,14 @@
                 text-align: center;
                 gap: 12px;
             }
-            .current-text-wrap {
-                align-items: center;
-                width: 100%;
-            }
-            .current-title {
-                font-size: 18px;
-                font-weight: 700;
-            }
-            .current-artist {
-                font-size: 12px;
-            }
-
-            .player-center-controls {
-                width: 100%;
-                gap: 14px;
-            }
-            .player-buttons {
-                gap: 24px;
-            }
-            .progress-bar-wrapper {
-                max-width: 100%;
-            }
-            .extra-controls {
-                display: none;
-            }
-
-            .main-content {
-                padding: 20px 16px;
-                overflow-y: visible;
-                gap: 20px;
-            }
-            .add-card {
-                flex-direction: column;
-            }
-            button#add-btn {
-                width: 100%;
-            }
+            .current-text-wrap { align-items: center; width: 100%; }
+            .player-center-controls { width: 100%; gap: 14px; }
+            .player-buttons { gap: 24px; }
+            .progress-bar-wrapper { max-width: 100%; }
+            .extra-controls { display: none; }
+            .main-content { padding: 20px 16px; gap: 20px; }
+            .add-card { flex-direction: column; }
+            button#add-btn { width: 100%; }
         }
     </style>
 </head>
@@ -556,6 +532,12 @@
         <div class="logo"><span id="logo-icon">🔴</span> Spotisanya</div>
         <div class="nav-link active">🏠 Головна</div>
         <div class="nav-link">🎵 Плейлист</div>
+
+        <!-- Хмарний статус -->
+        <div class="cloud-status">
+            <div class="cloud-status-title">Статус хмари</div>
+            <div class="cloud-status-info">Треків: <span id="stat-count">0</span></div>
+        </div>
 
         <div class="theme-switcher">
             <div class="theme-title">Тема неону</div>
@@ -616,7 +598,7 @@
     </div>
 </div>
 
-<audio id="player"></audio>
+<audio id="player" crossorigin="anonymous"></audio>
 
 <script>
     const BIN_ID = '6a7c3536da38895dfed9948e'; 
@@ -633,6 +615,44 @@
     const currentTimeEl = document.getElementById('current-time');
     const durationTimeEl = document.getElementById('duration-time');
     const vinylDisc = document.getElementById('vinyl-disc');
+    const statCount = document.getElementById('stat-count');
+
+    // Налаштування Web Audio API для візуалізатора
+    let audioCtx, analyser, sourceConnected = false;
+
+    function initAudioVisualizer() {
+        if (!audioCtx) {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 64;
+            const source = audioCtx.createMediaElementSource(player);
+            source.connect(analyser);
+            analyser.connect(audioCtx.destination);
+            sourceConnected = true;
+            animateVisualizer();
+        } else if (audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+    }
+
+    const bufferLength = 32;
+    const dataArray = new Uint8Array(bufferLength);
+
+    function animateVisualizer() {
+        requestAnimationFrame(animateVisualizer);
+        if (analyser && !player.paused) {
+            analyser.getByteFrequencyData(dataArray);
+            let sum = 0;
+            for(let i = 0; i < bufferLength; i++) {
+                sum += dataArray[i];
+            }
+            let average = sum / bufferLength;
+            let scale = 1 + (average / 256) * 0.2;
+            vinylDisc.style.transform = `scale(${scale})`;
+        } else {
+            vinylDisc.style.transform = `scale(1)`;
+        }
+    }
 
     function setTheme(color, icon) {
         document.body.style.setProperty('--accent-color', color);
@@ -658,6 +678,7 @@
             const response = await fetch(urlAPI, { headers: { 'X-Master-Key': API_KEY }});
             const result = await response.json();
             currentSongs = result.record.songs || [];
+            statCount.textContent = currentSongs.length;
             renderList();
         } catch (err) {
             console.error('Помилка завантаження:', err);
@@ -699,16 +720,17 @@
         
         player.src = song.url;
         player.play();
+        initAudioVisualizer();
         currentSongTitle.textContent = song.title;
         playPauseBtn.textContent = '❚❚';
         vinylDisc.classList.add('playing');
         renderList();
-        updateMediaSession(song);
     }
 
     playPauseBtn.onclick = (e) => {
         e.stopPropagation();
         if (currentSongs.length === 0) return;
+        initAudioVisualizer();
         if (player.paused) {
             if (!player.src && currentSongs.length > 0) {
                 playSong(0);
@@ -761,37 +783,6 @@
             playSong(nextIndex);
         }
     };
-
-    function updateMediaSession(song) {
-        if ('mediaSession' in navigator) {
-            navigator.mediaSession.metadata = new MediaMetadata({
-                title: song.title,
-                artist: 'Spotisanya',
-                album: 'Мій плейлист'
-            });
-
-            navigator.mediaSession.setActionHandler('nexttrack', () => {
-                let nextIndex = (currentIndex + 1) % currentSongs.length;
-                playSong(nextIndex);
-            });
-
-            navigator.mediaSession.setActionHandler('previoustrack', () => {
-                let prevIndex = (currentIndex - 1 + currentSongs.length) % currentSongs.length;
-                playSong(prevIndex);
-            });
-            
-            navigator.mediaSession.setActionHandler('play', () => {
-                player.play();
-                vinylDisc.classList.add('playing');
-                playPauseBtn.textContent = '❚❚';
-            });
-            navigator.mediaSession.setActionHandler('pause', () => {
-                player.pause();
-                vinylDisc.classList.remove('playing');
-                playPauseBtn.textContent = '▶';
-            });
-        }
-    }
 
     async function deleteSong(event, index) {
         event.stopPropagation();
