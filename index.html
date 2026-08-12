@@ -3,11 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Хмарний Плейлист</title>
+    <title>Мій Плейлист</title>
     <style>
-        * {
-            box-sizing: border-box;
-        }
+        * { box-sizing: border-box; }
         body {
             background-color: #0b0b0b;
             color: #ffffff;
@@ -32,7 +30,6 @@
             margin-bottom: 20px;
             font-size: 20px;
             text-align: center;
-            letter-spacing: 0.5px;
         }
         audio {
             width: 100%;
@@ -54,11 +51,8 @@
             color: #fff;
             font-size: 14px;
             outline: none;
-            transition: border-color 0.2s;
         }
-        input:focus {
-            border-color: #e50914;
-        }
+        input:focus { border-color: #e50914; }
         button#add-btn {
             width: 100%;
             padding: 12px;
@@ -69,20 +63,12 @@
             font-weight: bold;
             font-size: 14px;
             cursor: pointer;
-            transition: background 0.2s;
         }
-        button#add-btn:hover {
-            background: #b20710;
-        }
-        .playlist-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
+        button#add-btn:hover { background: #b20710; }
         .playlist-title {
             font-size: 14px;
             color: #b3b3b3;
+            margin-bottom: 8px;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
@@ -101,12 +87,8 @@
             margin-bottom: 6px;
             background: #222;
             border-radius: 8px;
-            transition: background 0.2s;
         }
-        li:hover {
-            background: #282828;
-        }
-        .song-info {
+        .song-name {
             cursor: pointer;
             flex-grow: 1;
             font-size: 14px;
@@ -115,13 +97,7 @@
             text-overflow: ellipsis;
             margin-right: 10px;
         }
-        .artist {
-            color: #e50914;
-            font-weight: bold;
-        }
-        .song-info:hover {
-            opacity: 0.8;
-        }
+        .song-name:hover { color: #e50914; }
         .del-btn {
             background: transparent;
             color: #888;
@@ -130,7 +106,6 @@
             cursor: pointer;
             border-radius: 4px;
             font-size: 12px;
-            transition: color 0.2s, background 0.2s;
         }
         .del-btn:hover {
             color: #fff;
@@ -141,19 +116,17 @@
 <body>
 
 <div class="player-container">
-    <h3>Мій Хмарний Плейлист</h3>
+    <h3>Мій Плейлист</h3>
     
     <audio id="player" controls></audio>
     
     <div class="input-group">
-        <input type="text" id="title" placeholder="Приклад: LOBODA - Парень">
+        <input type="text" id="title" placeholder="Назва пісні">
         <input type="text" id="url" placeholder="Пряме посилання на MP3">
         <button id="add-btn">Додати у плейлист</button>
     </div>
 
-    <div class="playlist-header">
-        <span class="playlist-title">Черга (А-Я / A-Z)</span>
-    </div>
+    <div class="playlist-title">Черга відтворення</div>
     <ul id="list"></ul>
 </div>
 
@@ -166,8 +139,7 @@
         try {
             const response = await fetch(urlAPI, { headers: { 'X-Master-Key': API_KEY }});
             const result = await response.json();
-            let songs = result.record.songs || [];
-            
+            const songs = result.record.songs || [];
             const list = document.getElementById('list');
             list.innerHTML = '';
             
@@ -176,40 +148,17 @@
                 return;
             }
 
-            // Розумне сортування: враховує і українську (А-Я), і англійську (A-Z) мови одночасно
-            songs.sort((a, b) => {
-                return a.title.localeCompare(b.title, ['uk', 'en'], { 
-                    sensitivity: 'base', 
-                    numeric: true 
-                });
-            });
-
-            songs.forEach((song) => {
+            songs.forEach((song, index) => {
                 const li = document.createElement('li');
-                
-                let displayName = song.title;
-                if (song.title.includes(' - ')) {
-                    const parts = song.title.split(' - ');
-                    const artist = parts[0];
-                    const track = parts.slice(1).join(' - ');
-                    displayName = `<span class="artist">${artist}</span> - ${track}`;
-                }
-
                 li.innerHTML = `
-                    <span class="song-info" title="${song.title}">${displayName}</span>
-                    <button class="del-btn">✕</button>
+                    <span class="song-name" title="${song.title}">${song.title}</span>
+                    <button class="del-btn" onclick="deleteSong(${index})">✕</button>
                 `;
-                
-                li.querySelector('.song-info').onclick = () => {
+                li.querySelector('.song-name').onclick = () => {
                     const player = document.getElementById('player');
                     player.src = song.url;
                     player.play();
                 };
-
-                li.querySelector('.del-btn').onclick = async () => {
-                    await deleteSongByTitle(song.title);
-                };
-
                 list.appendChild(li);
             });
         } catch (err) {
@@ -217,13 +166,12 @@
         }
     }
 
-    async function deleteSongByTitle(songTitle) {
+    async function deleteSong(index) {
         try {
             const res = await fetch(urlAPI, { headers: { 'X-Master-Key': API_KEY }});
             const data = await res.json();
-            let songs = data.record.songs || [];
-            
-            songs = songs.filter(song => song.title !== songTitle);
+            const songs = data.record.songs;
+            songs.splice(index, 1);
             
             await fetch(urlAPI, {
                 method: 'PUT',
@@ -237,7 +185,7 @@
     }
 
     document.getElementById('add-btn').onclick = async () => {
-        const title = document.getElementById('title'].value.trim();
+        const title = document.getElementById('title').value.trim();
         const url = document.getElementById('url').value.trim();
         if (!title || !url) {
             alert('Заповніть обидва поля!');
@@ -248,7 +196,6 @@
             const res = await fetch(urlAPI, { headers: { 'X-Master-Key': API_KEY }});
             const data = await res.json();
             const songs = data.record.songs || [];
-            
             songs.push({ title, url });
             
             const updateRes = await fetch(urlAPI, {
