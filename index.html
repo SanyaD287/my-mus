@@ -3,241 +3,418 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cloud Red Player</title>
+    <title>Spotify Cloud Player</title>
     <style>
         * {
             box-sizing: border-box;
         }
         body {
-            background-color: #0b0b0b;
+            background-color: #000000;
             color: #ffffff;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
-            padding: 15px;
-        }
-        .player-container {
-            width: 100%;
-            max-width: 400px;
-            background: #181818;
-            padding: 24px;
-            border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
-        }
-        h3 {
-            margin-top: 0;
-            margin-bottom: 20px;
-            font-size: 20px;
-            text-align: center;
-            letter-spacing: 0.5px;
-        }
-        
-        /* Стильний кастомний блок плеєра замість стандартного */
-        .custom-player {
-            background: #242424;
-            padding: 16px;
-            border-radius: 12px;
-            margin-bottom: 20px;
+            padding: 0;
+            height: 100vh;
             display: flex;
             flex-direction: column;
-            gap: 12px;
-        }
-        .now-playing {
-            font-size: 13px;
-            color: #b3b3b3;
-            text-align: center;
-            white-space: nowrap;
             overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .current-title {
-            color: #fff;
-            font-weight: bold;
-        }
-        
-        /* Прогрес-бар */
-        .progress-container {
-            width: 100%;
-            height: 6px;
-            background: #333;
-            border-radius: 3px;
-            cursor: pointer;
-            position: relative;
-        }
-        .progress-bar {
-            height: 100%;
-            background: #e50914;
-            border-radius: 3px;
-            width: 0%;
-            transition: width 0.1s linear;
         }
 
-        /* Кнопки керування */
-        .controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-        }
-        .ctrl-btn {
-            background: transparent;
-            border: none;
-            color: #fff;
-            font-size: 18px;
-            cursor: pointer;
-            transition: color 0.2s, transform 0.1s;
-        }
-        .ctrl-btn:hover {
-            color: #e50914;
-        }
-        .ctrl-btn:active {
-            transform: scale(0.9);
-        }
-        .play-pause-btn {
-            width: 44px;
-            height: 44px;
-            background: #e50914;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 16px;
-            color: #fff;
-            box-shadow: 0 4px 12px rgba(229, 9, 20, 0.4);
-            transition: background 0.2s, transform 0.1s;
-        }
-        .play-pause-btn:hover {
-            background: #b20710;
-            color: #fff;
+        /* --- СКАНУВАННЯ ДЕСКТОПНОГО МАКЕТУ (ПК) --- */
+        .desktop-layout {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            grid-template-rows: 1fr 90px;
+            height: 100vh;
+            width: 100vw;
         }
 
-        .input-group {
+        /* Бічна панель (Sidebar) */
+        .sidebar {
+            background-color: #000000;
+            padding: 24px 16px;
             display: flex;
             flex-direction: column;
+            gap: 20px;
+            border-right: 1px solid #121212;
+            grid-row: 1 / 2;
+        }
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: -0.5px;
+        }
+        .logo span {
+            color: #1db954;
+        }
+        .nav-link {
+            color: #b3b3b3;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
             gap: 12px;
-            margin-bottom: 20px;
+            transition: color 0.2s;
+            cursor: pointer;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: #fff;
+        }
+
+        /* Основна область контенту */
+        .main-content {
+            background: linear-gradient(180deg, #202020 0%, #121212 100%);
+            padding: 24px 32px;
+            overflow-y: auto;
+            grid-column: 2 / 3;
+            grid-row: 1 / 2;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .section-title {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 16px;
+        }
+
+        /* Додавання треків */
+        .add-card {
+            background: #181818;
+            padding: 16px;
+            border-radius: 8px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
         }
         input {
-            width: 100%;
-            padding: 12px 16px;
-            border-radius: 8px;
-            border: 1px solid #333;
+            padding: 10px 14px;
+            border-radius: 4px;
+            border: none;
             background: #242424;
             color: #fff;
             font-size: 14px;
             outline: none;
-            transition: border-color 0.2s;
+            flex: 1;
         }
         input:focus {
-            border-color: #e50914;
+            background: #2a2a2a;
+            box-shadow: 0 0 0 2px #fff;
         }
         button#add-btn {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
+            background: #1db954;
+            color: #000;
             border: none;
-            background: #e50914;
-            color: #fff;
-            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 500px;
+            font-weight: 700;
             font-size: 14px;
             cursor: pointer;
-            transition: background 0.2s;
+            transition: transform 0.1s, background-color 0.2s;
         }
         button#add-btn:hover {
-            background: #b20710;
+            background: #1ed760;
+            transform: scale(1.04);
         }
-        .playlist-title {
-            font-size: 14px;
+
+        /* Список треків (Плейлист) */
+        .playlist-header {
+            display: grid;
+            grid-template-columns: 40px 1fr 50px;
             color: #b3b3b3;
-            margin-bottom: 8px;
+            font-size: 12px;
+            font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            padding: 0 16px 8px 16px;
+            border-bottom: 1px solid #282828;
+            margin-bottom: 8px;
         }
         ul {
             list-style: none;
             padding: 0;
             margin: 0;
-            max-height: 220px;
-            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
         }
         li {
-            display: flex;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: 40px 1fr 50px;
             align-items: center;
-            padding: 10px 12px;
-            margin-bottom: 6px;
-            background: #222;
-            border-radius: 8px;
+            padding: 8px 16px;
+            border-radius: 4px;
             transition: background 0.2s;
-        }
-        li.active {
-            border: 1px solid #e50914;
-            background: #221010;
+            cursor: pointer;
         }
         li:hover {
-            background: #282828;
+            background: rgba(255, 255, 255, 0.1);
+        }
+        li.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        li.active .song-name {
+            color: #1db954;
+            font-weight: 700;
+        }
+        .song-index {
+            color: #b3b3b3;
+            font-size: 14px;
         }
         .song-name {
-            cursor: pointer;
-            flex-grow: 1;
             font-size: 14px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            margin-right: 10px;
-        }
-        .song-name:hover {
-            color: #e50914;
+            color: #fff;
         }
         .del-btn {
             background: transparent;
-            color: #888;
             border: none;
-            padding: 6px 10px;
+            color: #b3b3b3;
             cursor: pointer;
-            border-radius: 4px;
-            font-size: 12px;
-            transition: color 0.2s, background 0.2s;
+            font-size: 14px;
+            opacity: 0;
+            transition: opacity 0.2s, color 0.2s;
+        }
+        li:hover .del-btn {
+            opacity: 1;
         }
         .del-btn:hover {
             color: #fff;
-            background: #e50914;
+        }
+
+        /* Нижній плеєр у стилі Spotify (для ПК) */
+        .spotify-player-bar {
+            grid-column: 1 / 3;
+            grid-row: 2 / 3;
+            background-color: #181818;
+            border-top: 1px solid #282828;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            z-index: 10;
+        }
+        .current-info {
+            width: 30%;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .current-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #fff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .current-artist {
+            font-size: 11px;
+            color: #b3b3b3;
+        }
+
+        /* Центр керування плеєром */
+        .player-center-controls {
+            width: 40%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        .player-buttons {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        .ctrl-btn {
+            background: transparent;
+            border: none;
+            color: #b3b3b3;
+            font-size: 16px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .ctrl-btn:hover {
+            color: #fff;
+        }
+        .play-pause-btn {
+            width: 32px;
+            height: 32px;
+            background: #fff;
+            color: #000;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 12px;
+            transition: transform 0.1s, background-color 0.2s;
+        }
+        .play-pause-btn:hover {
+            transform: scale(1.06);
+            background: #f0f0f0;
+            color: #000;
+        }
+
+        /* Таймлайн */
+        .progress-bar-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            max-width: 500px;
+        }
+        .time-text {
+            font-size: 11px;
+            color: #b3b3b3;
+            min-width: 35px;
+            text-align: center;
+        }
+        .progress-container {
+            flex: 1;
+            height: 4px;
+            background: #4d4d4d;
+            border-radius: 2px;
+            cursor: pointer;
+            position: relative;
+        }
+        .progress-container:hover .progress-bar {
+            background: #1db954;
+        }
+        .progress-bar {
+            height: 100%;
+            background: #fff;
+            border-radius: 2px;
+            width: 0%;
+            position: relative;
+        }
+
+        .extra-controls {
+            width: 30%;
+        }
+
+        /* --- АДАПТИВНІСТЬ ДЛЯ ТЕЛЕФОНІВ --- */
+        @media (max-width: 768px) {
+            .desktop-layout {
+                display: flex;
+                flex-direction: column;
+                height: 100vh;
+            }
+            .sidebar {
+                display: none; /* Ховаємо десктопну бічну панель на мобільних */
+            }
+            .main-content {
+                flex: 1;
+                padding: 16px;
+                overflow-y: auto;
+            }
+            .spotify-player-bar {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 70px;
+                flex-direction: row;
+                padding: 0 12px;
+                border-top: 1px solid #282828;
+                background-color: #181818;
+            }
+            .current-info {
+                width: 55%;
+            }
+            .player-center-controls {
+                width: auto;
+                flex-direction: row;
+                gap: 12px;
+            }
+            .progress-bar-wrapper, .extra-controls, .current-artist {
+                display: none; /* Спрощуємо мобільний бар для ідеального розміщення */
+            }
+            .play-pause-btn {
+                width: 40px;
+                height: 40px;
+                font-size: 14px;
+                background: #1db954;
+                color: #000;
+            }
+            .ctrl-btn {
+                font-size: 20px;
+                color: #fff;
+            }
+            .add-card {
+                flex-direction: column;
+            }
+            button#add-btn {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
 
-<div class="player-container">
-    <h3>Мій Хмарний Плейлист</h3>
-    
-    <!-- Повністю кастомний червоний плеєр -->
-    <div class="custom-player">
-        <div class="now-playing">Зараз грає: <span id="current-song-title" class="current-title">Нічого не вибрано</span></div>
-        <div class="progress-container" id="progress-container">
-            <div class="progress-bar" id="progress-bar"></div>
+<div class="desktop-layout">
+    <!-- Бічна панель (тільки ПК) -->
+    <div class="sidebar">
+        <div class="logo"><span>🟢</span> Spotify Cloud</div>
+        <div class="nav-link active">🏠 Головна</div>
+        <div class="nav-link">🎵 Мій плейлист</div>
+    </div>
+
+    <!-- Основний контент -->
+    <div class="main-content">
+        <div class="section-title">Додати трек до хмари</div>
+        <div class="add-card">
+            <input type="text" id="title" placeholder="Назва треку">
+            <input type="text" id="url" placeholder="Пряме посилання на MP3">
+            <button id="add-btn">Додати</button>
         </div>
-        <div class="controls">
-            <button class="ctrl-btn" id="prev-btn" title="Попередня">⏮</button>
-            <button class="ctrl-btn play-pause-btn" id="play-pause-btn" title="Грати/Пауза">▶</button>
-            <button class="ctrl-btn" id="next-btn" title="Наступна">⏭</button>
+
+        <div style="margin-top: 16px;">
+            <div class="section-title">Треки у плейлисті</div>
+            <div class="playlist-header">
+                <div>#</div>
+                <div>Назва</div>
+                <div>✕</div>
+            </div>
+            <ul id="list"></ul>
         </div>
     </div>
 
-    <!-- Прихований стандартний аудіо-елемент (працює під капотом) -->
-    <audio id="player" style="display: none;"></audio>
-    
-    <div class="input-group">
-        <input type="text" id="title" placeholder="Назва пісні">
-        <input type="text" id="url" placeholder="Пряме посилання на MP3">
-        <button id="add-btn">Додати у плейлист</button>
-    </div>
+    <!-- Нижня панель плеєра (Spotify Player Bar) -->
+    <div class="spotify-player-bar">
+        <div class="current-info">
+            <div class="current-title" id="current-song-title">Нічого не вибрано</div>
+            <div class="current-artist">Cloud Player</div>
+        </div>
 
-    <div class="playlist-title">Черга відтворення</div>
-    <ul id="list"></ul>
+        <div class="player-center-controls">
+            <div class="player-buttons">
+                <button class="ctrl-btn" id="prev-btn" title="Попередня">⏮</button>
+                <button class="ctrl-btn play-pause-btn" id="play-pause-btn" title="Грати/Пауза">▶</button>
+                <button class="ctrl-btn" id="next-btn" title="Наступна">⏭</button>
+            </div>
+            <div class="progress-bar-wrapper">
+                <span class="time-text" id="current-time">0:00</span>
+                <div class="progress-container" id="progress-container">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+                <span class="time-text" id="duration-time">0:00</span>
+            </div>
+        </div>
+
+        <div class="extra-controls"></div>
+    </div>
 </div>
+
+<!-- Прихований аудіо елемент -->
+<audio id="player"></audio>
 
 <script>
     const BIN_ID = '6a7c3536da38895dfed9948e'; 
@@ -251,6 +428,15 @@
     const progressBar = document.getElementById('progress-bar');
     const progressContainer = document.getElementById('progress-container');
     const currentSongTitle = document.getElementById('current-song-title');
+    const currentTimeEl = document.getElementById('current-time');
+    const durationTimeEl = document.getElementById('duration-time');
+
+    function formatTime(seconds) {
+        if (isNaN(seconds)) return "0:00";
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+    }
 
     async function loadSongs() {
         try {
@@ -268,7 +454,7 @@
         list.innerHTML = '';
         
         if (currentSongs.length === 0) {
-            list.innerHTML = '<li style="color: #777; justify-content: center; cursor: default;">Плейлист порожній</li>';
+            list.innerHTML = '<li style="color: #777; justify-content: center; cursor: default; display: block; text-align: center; padding: 20px;">Плейлист порожній</li>';
             return;
         }
 
@@ -277,10 +463,11 @@
             if (index === currentIndex) li.classList.add('active');
 
             li.innerHTML = `
+                <span class="song-index">${index + 1}</span>
                 <span class="song-name" title="${song.title}">${song.title}</span>
-                <button class="del-btn" onclick="deleteSong(${index})">✕</button>
+                <button class="del-btn" onclick="deleteSong(event, ${index})">✕</button>
             `;
-            li.querySelector('.song-name').onclick = () => playSong(index);
+            li.onclick = () => playSong(index);
             list.appendChild(li);
         });
     }
@@ -298,8 +485,8 @@
         updateMediaSession(song);
     }
 
-    // Кнопка Play/Pause
-    playPauseBtn.onclick = () => {
+    playPauseBtn.onclick = (e) => {
+        e.stopPropagation();
         if (currentSongs.length === 0) return;
         if (player.paused) {
             if (!player.src && currentSongs.length > 0) {
@@ -314,28 +501,29 @@
         }
     };
 
-    // Наступна / Попередня кнопки
-    document.getElementById('next-btn').onclick = () => {
+    document.getElementById('next-btn').onclick = (e) => {
+        e.stopPropagation();
         if (currentSongs.length === 0) return;
         let nextIndex = (currentIndex + 1) % currentSongs.length;
         playSong(nextIndex);
     };
 
-    document.getElementById('prev-btn').onclick = () => {
+    document.getElementById('prev-btn').onclick = (e) => {
+        e.stopPropagation();
         if (currentSongs.length === 0) return;
         let prevIndex = (currentIndex - 1 + currentSongs.length) % currentSongs.length;
         playSong(prevIndex);
     };
 
-    // Оновлення прогрес-бару
     player.ontimeupdate = () => {
         if (player.duration) {
             const percent = (player.currentTime / player.duration) * 100;
             progressBar.style.width = percent + '%';
+            currentTimeEl.textContent = formatTime(player.currentTime);
+            durationTimeEl.textContent = formatTime(player.duration);
         }
     };
 
-    // Перемотування кліком по смузі
     progressContainer.onclick = (e) => {
         const width = progressContainer.clientWidth;
         const clickX = e.offsetX;
@@ -344,7 +532,6 @@
         }
     };
 
-    // Автоматичне перемикання на наступний трек
     player.onended = () => {
         let nextIndex = (currentIndex + 1) % currentSongs.length;
         if (currentSongs.length > 0) {
@@ -356,16 +543,18 @@
         if ('mediaSession' in navigator) {
             navigator.mediaSession.metadata = new MediaMetadata({
                 title: song.title,
-                artist: 'Cloud Red Player',
-                album: 'Мій Плейлист'
+                artist: 'Spotify Cloud',
+                album: 'Мій плейлист'
             });
 
             navigator.mediaSession.setActionHandler('nexttrack', () => {
-                document.getElementById('next-btn').click();
+                let nextIndex = (currentIndex + 1) % currentSongs.length;
+                playSong(nextIndex);
             });
 
             navigator.mediaSession.setActionHandler('previoustrack', () => {
-                document.getElementById('prev-btn').click();
+                let prevIndex = (currentIndex - 1 + currentSongs.length) % currentSongs.length;
+                playSong(prevIndex);
             });
             
             navigator.mediaSession.setActionHandler('play', () => {
@@ -379,7 +568,8 @@
         }
     }
 
-    async function deleteSong(index) {
+    async function deleteSong(event, index) {
+        event.stopPropagation();
         try {
             const res = await fetch(urlAPI, { headers: { 'X-Master-Key': API_KEY }});
             const data = await res.json();
