@@ -2,717 +2,180 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Red Web Player</title>
-    <!-- FontAwesome для іконок -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Supabase JS SDK -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>Мій Музичний Плеєр</title>
+    <!-- Підключаємо Supabase JS Client один раз -->
+    <script src="https://cdn.jsdelivr.5net/npm/@supabase/supabase-js@2"></script>
     <style>
-        :root {
-            --accent-red: #e50914;
-            --accent-red-glow: rgba(229, 9, 20, 0.4);
-            --bg-color: #121212;
-            --card-bg: #181818;
-            --card-hover: #282828;
-            --text-muted: #b3b3b3;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            user-select: none;
-        }
-
         body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-            background: #000; 
-            color: #fff; 
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px 0; 
-        }
-
-        .spotify-player { 
-            width: 100%;
-            max-width: 380px; 
-            background: linear-gradient(180deg, #2a1010 0%, var(--card-bg) 100%); 
-            padding: 24px; 
-            border-radius: 24px; 
-            box-shadow: 0 15px 35px rgba(229, 9, 20, 0.15);
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-
-        .header-title {
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-muted);
-            text-align: center;
-            font-weight: 700;
-        }
-
-        .cover-art-wrapper {
-            width: 100%;
-            aspect-ratio: 1 / 1;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
-            background: #282828;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-top: 2px;
-        }
-
-        .cover-art-wrapper i {
-            font-size: 80px;
-            color: #404040;
-        }
-
-        .track-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 2px;
-        }
-
-        .track-details {
-            overflow: hidden;
-        }
-
-        .track-name {
-            font-size: 18px;
-            font-weight: 700;
-            color: #fff;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .artist-name {
-            font-size: 14px;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
-
-        .progress-wrapper {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .progress-container {
-            width: 100%;
-            height: 4px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 4px;
-            cursor: pointer;
-            position: relative;
-            transition: height 0.1s;
-        }
-
-        .progress-container:hover {
-            height: 6px;
-        }
-
-        .progress-bar {
-            height: 100%;
-            width: 0%;
-            background: #fff;
-            border-radius: 4px;
-        }
-
-        .progress-container:hover .progress-bar {
-            background: var(--accent-red);
-        }
-
-        .time-display {
-            display: flex;
-            justify-content: space-between;
-            font-size: 11px;
-            color: var(--text-muted);
-            font-weight: 500;
-        }
-
-        .controls { 
+            background: #121212; 
+            color: white; 
+            font-family: sans-serif; 
             display: flex; 
-            justify-content: space-between; 
+            justify-content: center; 
             align-items: center; 
-            margin: 2px 0;
+            height: 100vh; 
+            margin: 0; 
         }
-
-        .btn-icon { 
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 18px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 36px;
-            height: 36px;
+        .box { 
+            width: 350px; 
+            background: #1e1e1e; 
+            padding: 20px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5); 
         }
-
-        .btn-icon:hover { 
+        input, button { 
+            width: 100%; 
+            margin-top: 10px; 
+            padding: 10px; 
+            border-radius: 6px; 
+            border: 1px solid #333; 
+            background: #2a2a2a; 
             color: #fff; 
-            transform: scale(1.08);
+            box-sizing: border-box; 
         }
-
-        .btn-main { 
-            background: var(--accent-red); 
-            color: #fff; 
-            width: 56px;
-            height: 56px;
-            border-radius: 50%; 
-            font-size: 20px;
-            box-shadow: 0 4px 15px var(--accent-red-glow);
+        button { 
+            background: #1db954; 
+            border: none; 
+            cursor: pointer; 
+            font-weight: bold; 
         }
-
-        .btn-main:hover {
-            transform: scale(1.05);
-            background: #ff1e27;
-            color: #fff;
+        button:hover { 
+            background: #1aa34a; 
         }
-
-        .volume-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            color: var(--text-muted);
-            font-size: 14px;
-            padding: 0 4px;
-        }
-
-        .volume-slider {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 4px;
-            border-radius: 4px;
-            background: rgba(255, 255, 255, 0.2);
-            outline: none;
-            cursor: pointer;
-        }
-
-        .volume-slider::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: #fff;
-            cursor: pointer;
-        }
-
-        .sort-wrapper {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 10px;
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-
-        .sort-select {
-            background: #282828;
-            color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 12px;
-            outline: none;
-            cursor: pointer;
-        }
-
-        .sort-select:hover {
-            border-color: var(--accent-red);
-        }
-
         ul { 
             list-style: none; 
             padding: 0; 
-            max-height: 140px; 
+            max-height: 150px; 
             overflow-y: auto; 
+            margin-top: 15px; 
         }
-
         li { 
-            padding: 8px 10px; 
-            border-radius: 8px; 
+            padding: 8px 0; 
+            border-bottom: 1px solid #333; 
             cursor: pointer; 
-            font-size: 13px;
-            color: var(--text-muted);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: 0.2s;
+            font-size: 14px; 
         }
-
-        li:hover { 
-            background: var(--card-hover); 
-            color: #fff;
-        }
-
-        li.active { 
-            color: var(--accent-red); 
-            font-weight: 700;
-        }
-
-        /* Панель завантаження у хмару */
-        .add-song-container {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding-top: 10px;
-        }
-
-        .add-song-input {
-            background: #282828;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 8px 12px;
-            border-radius: 8px;
-            color: #fff;
-            font-size: 13px;
-            outline: none;
-        }
-
-        .add-song-input:focus {
-            border-color: var(--accent-red);
-        }
-
-        .add-row {
-            display: flex;
-            gap: 8px;
-        }
-
-        .file-btn {
-            flex: 1;
-            background: #282828;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: var(--text-muted);
-            padding: 8px;
-            border-radius: 8px;
-            font-size: 12px;
-            cursor: pointer;
-            text-align: center;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .file-btn:hover {
-            border-color: var(--accent-red);
-            color: #fff;
-        }
-
-        .btn-add {
-            background: var(--accent-red);
-            color: #fff;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .btn-add:hover {
-            background: #ff1e27;
-        }
-
-        .btn-add:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        @media (min-width: 768px) {
-            .spotify-player {
-                max-width: 420px;
-            }
+        li:hover {
+            color: #1db954;
         }
     </style>
 </head>
 <body>
 
-    <div class="spotify-player">
-        <div class="header-title">Хмарний Плейлист</div>
-
-        <div class="cover-art-wrapper">
-            <i class="fa-solid fa-music"></i>
-        </div>
-
-        <div class="track-info">
-            <div class="track-details">
-                <div class="track-name" id="current-title">Назва треку</div>
-                <div class="artist-name" id="current-artist">Мій Плеєр</div>
-            </div>
-            <button class="btn-icon" id="heart-btn" style="font-size: 20px;"><i class="fa-regular fa-heart"></i></button>
-        </div>
-
-        <audio id="audio"></audio>
-
-        <div class="progress-wrapper">
-            <div class="progress-container" id="progress-container">
-                <div class="progress-bar" id="progress-bar"></div>
-            </div>
-            <div class="time-display">
-                <span id="current-time">0:00</span>
-                <span id="duration-time">0:00</span>
-            </div>
-        </div>
-
-        <div class="controls">
-            <button class="btn-icon" id="shuffle-btn"><i class="fa-solid fa-shuffle"></i></button>
-            <button class="btn-icon" id="prev-btn"><i class="fa-solid fa-backward-step"></i></button>
-            <button class="btn-icon btn-main" id="play-btn"><i class="fa-solid fa-play" id="play-icon"></i></button>
-            <button class="btn-icon" id="next-btn"><i class="fa-solid fa-forward-step"></i></button>
-            <button class="btn-icon" id="repeat-btn"><i class="fa-solid fa-repeat"></i></button>
-        </div>
-
-        <div class="volume-wrapper">
-            <i class="fa-solid fa-volume-high" id="volume-icon"></i>
-            <input type="range" class="volume-slider" id="volume-slider" min="0" max="1" step="0.01" value="1">
-        </div>
-
-        <div class="sort-wrapper">
-            <span>Сортування:</span>
-            <select class="sort-select" id="sort-select">
-                <option value="title">За назвою пісні</option>
-                <option value="artist">За виконавцем</option>
-            </select>
-        </div>
-
-        <ul id="playlist"></ul>
-
-        <!-- Панель завантаження треків у хмару -->
-        <div class="add-song-container">
-            <input type="text" id="new-song-name" class="add-song-input" placeholder="Виконавець — Назва">
-            <div class="add-row">
-                <input type="file" id="audio-file-input" accept="audio/*" style="display: none;">
-                <label for="audio-file-input" class="file-btn" id="file-btn-label">Вибрати MP3</label>
-                <button type="button" class="btn-add" id="add-song-btn">Завантажити</button>
-            </div>
-        </div>
+<div class="box">
+    <h3>Хмарний плейлист</h3>
+    <audio id="player" controls style="width: 100%; margin-top: 10px;"></audio>
+    
+    <div style="margin-top: 15px;">
+        <input type="text" id="title" placeholder="Назва пісні">
+        <input type="file" id="file" accept="audio/*">
+        <button id="upload-btn">Додати у плейлист</button>
     </div>
 
-    <script>
-        // --- ВСТАВТЕ СВОЇ ДАНІ З SUPABASE СЮДИ ---
-        const SUPABASE_URL = "https://ntuceyndohduottmkiiz.supabase.co";
-        const SUPABASE_ANON_KEY = "sb_publishable_TK3Z5X3RPTctlJ85bVcGRg_RVpS0dJg";
-        // ----------------------------------------
+    <ul id="list"></ul>
+</div>
 
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+<script>
+    // Захист від повторного оголошення клієнта
+    if (!window.supabaseClient) {
+        window.supabaseClient = window.supabase.createClient(
+            'https://ntuceyndohduottkkilz.supabase.co', 
+            'sb_publishable_TK325X3RPCtJ385DvCgRG_RvP50dJg'
+        );
+    }
+    const db = window.supabaseClient;
 
-        let songs = [];
-        let currentTrackIndex = 0;
-        let isShuffle = false;
-        let isRepeat = false;
-        let selectedFile = null;
+    // Функція завантаження списку пісень з бази даних
+    async function loadSongs() {
+        try {
+            const { data, error } = await db.from('songs').select('*');
+            if (error) throw error;
 
-        const playlist = document.getElementById('playlist');
-        const audio = document.getElementById('audio');
-        const playBtn = document.getElementById('play-btn');
-        const playIcon = document.getElementById('play-icon');
-        const prevBtn = document.getElementById('prev-btn');
-        const nextBtn = document.getElementById('next-btn');
-        const shuffleBtn = document.getElementById('shuffle-btn');
-        const repeatBtn = document.getElementById('repeat-btn');
-        const heartBtn = document.getElementById('heart-btn');
-        const currentTitle = document.getElementById('current-title');
-        const currentArtist = document.getElementById('current-artist');
-        const sortSelect = document.getElementById('sort-select');
-        
-        const progressBar = document.getElementById('progress-bar');
-        const progressContainer = document.getElementById('progress-container');
-        const currentTimeEl = document.getElementById('current-time');
-        const durationTimeEl = document.getElementById('duration-time');
-
-        const volumeSlider = document.getElementById('volume-slider');
-        const volumeIcon = document.getElementById('volume-icon');
-
-        const newSongNameInput = document.getElementById('new-song-name');
-        const audioFileInput = document.getElementById('audio-file-input');
-        const fileBtnLabel = document.getElementById('file-btn-label');
-        const addSongBtn = document.getElementById('add-song-btn');
-
-        function parseSong(fullName) {
-            const parts = fullName.split(/—|-/);
-            if (parts.length > 1) {
-                return { 
-                    artist: parts[0].trim(), 
-                    title: parts.slice(1).join('-').trim()
-                };
-            }
-            return { artist: "Виконавець", title: fullName.trim() };
-        }
-
-        // Завантаження плейлиста з хмари Supabase
-        async function fetchPlaylist() {
-            const { data, error } = await supabase.from('playlist').select('*');
-            if (error) {
-                console.error("Помилка завантаження плейлиста:", error);
+            const list = document.getElementById('list');
+            list.innerHTML = '';
+            
+            if (!data || data.length === 0) {
+                list.innerHTML = '<li style="color: #888; text-align: center; cursor: default;">Плейлист порожній</li>';
                 return;
             }
-            songs = data || [];
-            sortSongs(sortSelect.value);
-            if (songs.length > 0 && !audio.src) {
-                loadTrack(0);
-            }
-        }
 
-        function sortSongs(criteria) {
-            const currentSong = songs[currentTrackIndex];
-
-            songs.sort((a, b) => {
-                const parsedA = parseSong(a.name);
-                const parsedB = parseSong(b.name);
-
-                if (criteria === 'artist') {
-                    const artistCompare = parsedA.artist.localeCompare(parsedB.artist, ['en', 'uk'], { sensitivity: 'base' });
-                    if (artistCompare !== 0) return artistCompare;
-                    return parsedA.title.localeCompare(parsedB.title, ['en', 'uk'], { sensitivity: 'base' });
-                } else {
-                    return parsedA.title.localeCompare(parsedB.title, ['en', 'uk'], { sensitivity: 'base' });
-                }
-            });
-
-            if (currentSong) {
-                currentTrackIndex = songs.findIndex(s => s.file === currentSong.file);
-            }
-
-            renderPlaylist();
-        }
-
-        function renderPlaylist() {
-            playlist.innerHTML = '';
-            songs.forEach((song, index) => {
+            data.forEach(s => {
                 const li = document.createElement('li');
-                li.textContent = song.name;
-                if (index === currentTrackIndex) li.classList.add('active');
-                li.addEventListener('click', () => {
-                    loadTrack(index);
-                    audio.play();
-                    playIcon.className = 'fa-solid fa-pause';
-                });
-                playlist.appendChild(li);
+                li.textContent = s.title;
+                li.onclick = () => { 
+                    const player = document.getElementById('player');
+                    player.src = s.url; 
+                    player.play(); 
+                };
+                list.appendChild(li);
             });
+        } catch (err) {
+            console.error('Помилка завантаження плейлиста:', err.message);
+        }
+    }
+
+    // Обробник натискання на кнопку завантаження
+    document.getElementById('upload-btn').addEventListener('click', async () => {
+        const fileInput = document.getElementById('file');
+        const titleInput = document.getElementById('title');
+        const uploadBtn = document.getElementById('upload-btn');
+        
+        const file = fileInput.files[0];
+        const title = titleInput.value.trim();
+
+        if (!file || !title) {
+            alert('Будь ласка, виберіть файл і введіть назву пісні!');
+            return;
         }
 
-        function updateMediaSession() {
-            if ('mediaSession' in navigator && songs[currentTrackIndex]) {
-                const parsed = parseSong(songs[currentTrackIndex].name);
-                navigator.mediaSession.metadata = new MediaMetadata({
-                    title: parsed.title,
-                    artist: parsed.artist
-                });
+        uploadBtn.textContent = 'Завантаження...';
+        uploadBtn.disabled = true;
 
-                navigator.mediaSession.setActionHandler('previoustrack', prevTrack);
-                navigator.mediaSession.setActionHandler('nexttrack', nextTrack);
-                navigator.mediaSession.setActionHandler('play', playPause);
-                navigator.mediaSession.setActionHandler('pause', playPause);
-            }
-        }
+        try {
+            // Безпечне ім'я файлу для сховища
+            const fileExtension = file.name.split('.').pop();
+            const fileName = `${Date.now()}_track.${fileExtension}`;
 
-        function loadTrack(index) {
-            if (!songs[index]) return;
-            currentTrackIndex = index;
-            audio.src = songs[index].file;
-            
-            const parsed = parseSong(songs[index].name);
-            currentArtist.textContent = parsed.artist;
-            currentTitle.textContent = parsed.title;
-            
-            const items = playlist.querySelectorAll('li');
-            items.forEach((li, i) => {
-                li.classList.toggle('active', i === index);
-            });
+            // 1. Завантаження у сховище (бакет "song")
+            const { error: uploadError } = await db.storage
+                .from('song')
+                .upload(fileName, file);
 
-            updateMediaSession();
-        }
+            if (uploadError) throw new Error('Помилка сховища: ' + uploadError.message);
 
-        function playPause() {
-            if (audio.paused) {
-                audio.play();
-                playIcon.className = 'fa-solid fa-pause';
-            } else {
-                audio.pause();
-                playIcon.className = 'fa-solid fa-play';
-            }
-        }
+            // 2. Отримання публічного посилання
+            const { data: publicUrlData } = db.storage
+                .from('song')
+                .getPublicUrl(fileName);
 
-        function nextTrack() {
-            if (songs.length === 0) return;
-            if (isShuffle) {
-                let randomIndex;
-                do {
-                    randomIndex = Math.floor(Math.random() * songs.length);
-                } while (randomIndex === currentTrackIndex && songs.length > 1);
-                currentTrackIndex = randomIndex;
-            } else {
-                currentTrackIndex = (currentTrackIndex + 1) % songs.length;
-            }
-            loadTrack(currentTrackIndex);
-            audio.play();
-            playIcon.className = 'fa-solid fa-pause';
-        }
-
-        function prevTrack() {
-            if (songs.length === 0) return;
-            currentTrackIndex = (currentTrackIndex - 1 + songs.length) % songs.length;
-            loadTrack(currentTrackIndex);
-            audio.play();
-            playIcon.className = 'fa-solid fa-pause';
-        }
-
-        function formatTime(seconds) {
-            if (isNaN(seconds)) return "0:00";
-            const mins = Math.floor(seconds / 60);
-            const secs = Math.floor(seconds % 60);
-            return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-        }
-
-        // Обробка вибору файлу для завантаження
-        fileBtnLabel.addEventListener('click', () => audioFileInput.click());
-
-        audioFileInput.addEventListener('change', (e) => {
-            selectedFile = e.target.files[0];
-            if (selectedFile) {
-                fileBtnLabel.textContent = selectedFile.name;
-                if (!newSongNameInput.value) {
-                    // Автоматично підставляємо назву без розширення
-                    newSongNameInput.value = selectedFile.name.replace(/\.[^/.]+$/, "");
-                }
-            }
-        });
-
-        // Кнопка завантаження у хмару
-        addSongBtn.addEventListener('click', async () => {
-            const songName = newSongNameInput.value.trim();
-            if (!songName || !selectedFile) {
-                alert("Вкажіть назву (Виконавець — Назва) та виберіть MP3 файл!");
-                return;
-            }
-
-            addSongBtn.disabled = true;
-            addSongBtn.textContent = "Завантаження...";
-
-            const fileExt = selectedFile.name.split('.').pop();
-            const fileName = `${Date.now()}.${fileExt}`;
-
-            // 1. Завантажуємо файл у сховище Supabase (Bucket "songs")
-            const { error: uploadError } = await supabase.storage
-                .from('songs')
-                .upload(fileName, selectedFile);
-
-            if (uploadError) {
-                alert("Помилка завантаження файлу: " + uploadError.message);
-                addSongBtn.disabled = false;
-                addSongBtn.textContent = "Завантажити";
-                return;
-            }
-
-            // 2. Отримуємо публічне посилання на файл
-            const { data: publicUrlData } = supabase.storage.from('songs').getPublicUrl(fileName);
             const publicUrl = publicUrlData.publicUrl;
 
-            // 3. Зберігаємо інформацію в базу даних
-            const { error: dbError } = await supabase.from('playlist').insert([
-                { name: songName, file: publicUrl }
-            ]);
+            // 3. Запис інформації в таблицю бази даних "songs"
+            const { error: dbError } = await db
+                .from('songs')
+                .insert([{ title: title, url: publicUrl }]);
 
-            if (dbError) {
-                alert("Помилка збереження в базу: " + dbError.message);
-            } else {
-                newSongNameInput.value = '';
-                fileBtnLabel.textContent = 'Вибрати MP3';
-                selectedFile = null;
-                audioFileInput.value = '';
-                await fetchPlaylist();
-            }
+            if (dbError) throw new Error('Помилка бази даних: ' + dbError.message);
 
-            addSongBtn.disabled = false;
-            addSongBtn.textContent = "Завантажити";
-        });
+            alert('Пісню успішно додано!');
+            
+            // Очищуємо поля форми
+            fileInput.value = '';
+            titleInput.value = '';
+            
+            // Оновлюємо список на екрані
+            loadSongs();
+        } catch (err) {
+            console.error(err);
+            alert(err.message);
+        } finally {
+            uploadBtn.textContent = 'Додати у плейлист';
+            uploadBtn.disabled = false;
+        }
+    });
 
-        audio.addEventListener('timeupdate', () => {
-            if (audio.duration) {
-                const progressPercent = (audio.currentTime / audio.duration) * 100;
-                progressBar.style.width = `${progressPercent}%`;
-                currentTimeEl.textContent = formatTime(audio.currentTime);
-                durationTimeEl.textContent = formatTime(audio.duration);
-            }
-        });
-
-        progressContainer.addEventListener('click', (e) => {
-            const width = progressContainer.clientWidth;
-            const clickX = e.offsetX;
-            const duration = audio.duration;
-            if (duration) {
-                audio.currentTime = (clickX / width) * duration;
-            }
-        });
-
-        volumeSlider.addEventListener('input', (e) => {
-            const val = e.target.value;
-            audio.volume = val;
-            if (val == 0) {
-                volumeIcon.className = 'fa-solid fa-volume-xmark';
-            } else if (val < 0.5) {
-                volumeIcon.className = 'fa-solid fa-volume-low';
-            } else {
-                volumeIcon.className = 'fa-solid fa-volume-high';
-            }
-        });
-
-        shuffleBtn.addEventListener('click', () => {
-            isShuffle = !isShuffle;
-            shuffleBtn.style.color = isShuffle ? 'var(--accent-red)' : 'var(--text-muted)';
-        });
-
-        repeatBtn.addEventListener('click', () => {
-            isRepeat = !isRepeat;
-            repeatBtn.style.color = isRepeat ? 'var(--accent-red)' : 'var(--text-muted)';
-        });
-
-        heartBtn.addEventListener('click', () => {
-            const icon = heartBtn.querySelector('i');
-            const isLiked = icon.classList.contains('fa-solid');
-            if (isLiked) {
-                icon.className = 'fa-regular fa-heart';
-                heartBtn.style.color = 'var(--text-muted)';
-            } else {
-                icon.className = 'fa-solid fa-heart';
-                heartBtn.style.color = 'var(--accent-red)';
-            }
-        });
-
-        sortSelect.addEventListener('change', (e) => {
-            sortSongs(e.target.value);
-        });
-
-        playBtn.addEventListener('click', playPause);
-        nextBtn.addEventListener('click', nextTrack);
-        prevBtn.addEventListener('click', prevTrack);
-
-        audio.addEventListener('ended', () => {
-            if (isRepeat) {
-                audio.currentTime = 0;
-                audio.play();
-            } else {
-                nextTrack();
-            }
-        });
-
-        // Запуск при завантаженні сторінки
-        fetchPlaylist();
-    </script>
+    // Завантажуємо список пісень при старті
+    loadSongs();
+</script>
 </body>
 </html>
