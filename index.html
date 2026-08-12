@@ -347,10 +347,10 @@
             gap: 20px;
         }
 
-        /* НЕОНОВІ КНОПКИ */
+        /* УНІВЕРСАЛЬНІ НЕОНОВІ КНОПКИ (ПК ТА МОБІЛЬНІ ОДНАКОВІ) */
         .ctrl-btn {
-            background: rgba(20, 20, 20, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(20, 20, 20, 0.7);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             border-radius: 50%;
             width: 42px;
             height: 42px;
@@ -362,11 +362,11 @@
             cursor: pointer;
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4), inset 0 0 8px rgba(255, 255, 255, 0.05);
+            box-shadow: 0 0 12px rgba(0, 0, 0, 0.4), inset 0 0 8px rgba(255, 255, 255, 0.05);
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .ctrl-btn:hover {
-            background: rgba(30, 30, 30, 0.8);
+            background: rgba(30, 30, 30, 0.9);
             border-color: var(--accent-color, #ff1e2d);
             box-shadow: 0 0 15px var(--accent-color, #ff1e2d), inset 0 0 12px var(--accent-color, #ff1e2d);
             transform: scale(1.1);
@@ -524,30 +524,8 @@
                 gap: 14px;
             }
             .player-buttons {
-                gap: 28px;
+                gap: 24px;
             }
-            
-            /* Мобільні неонові кнопки перемикання */
-            .ctrl-btn {
-                width: 50px;
-                height: 50px;
-                font-size: 16px;
-                background: rgba(25, 25, 25, 0.7);
-                border: 1px solid rgba(255, 255, 255, 0.15);
-                box-shadow: 0 0 12px rgba(0, 0, 0, 0.5), inset 0 0 6px rgba(255, 255, 255, 0.05);
-            }
-            .ctrl-btn:active {
-                border-color: var(--accent-color, #ff1e2d);
-                box-shadow: 0 0 15px var(--accent-color, #ff1e2d);
-            }
-            .play-pause-btn {
-                width: 60px;
-                height: 60px;
-                font-size: 20px;
-                background: var(--accent-color, #ff1e2d);
-                box-shadow: 0 0 25px var(--accent-color, #ff1e2d), inset 0 0 12px rgba(255, 255, 255, 0.4);
-            }
-
             .progress-bar-wrapper {
                 max-width: 100%;
             }
