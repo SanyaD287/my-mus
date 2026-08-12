@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spotisanya - Full Uniform Glass Edition</title>
+    <title>Spotisanya - Cyber Glass Edition</title>
     <style>
         * {
             box-sizing: border-box;
@@ -38,7 +38,7 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* --- УНІВЕРСАЛЬНИЙ МАКЕТ (1 в 1 для всіх пристроїв) --- */
+        /* --- УНІВЕРСАЛЬНИЙ МАКЕТ --- */
         .app-layout {
             display: grid;
             grid-template-columns: 240px 1fr;
@@ -47,7 +47,7 @@
             width: 100vw;
         }
 
-        /* Бічна панель з ефектом скла */
+        /* Бічна панель */
         .sidebar {
             background: rgba(10, 10, 10, 0.75);
             backdrop-filter: blur(20px);
@@ -355,32 +355,36 @@
             align-items: center;
             gap: 20px;
         }
+
+        /* Кнопки перемикання */
         .ctrl-btn {
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.06);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 50%;
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 14px;
             color: #fff;
             cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            transition: background 0.2s, transform 0.1s;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: all 0.2s ease;
         }
         .ctrl-btn:hover {
             background: rgba(255, 255, 255, 0.15);
+            border-color: var(--accent-color, #ff1e2d);
             transform: scale(1.1);
         }
         .play-pause-btn {
-            width: 42px;
-            height: 42px;
+            width: 44px;
+            height: 44px;
             background: var(--accent-color, #ff1e2d);
             border: none;
             border-radius: 50%;
-            font-size: 15px;
+            font-size: 16px;
             box-shadow: 0 0 15px var(--accent-color, #ff1e2d);
         }
 
@@ -418,38 +422,68 @@
             width: 30%;
         }
 
-        /* --- СУПЕР-ТОЧНА АДАПТИВНІСТЬ 1 В 1 ДЛЯ ТЕЛЕФОНІВ ТАБЛЕТІВ --- */
+        /* --- АДАПТИВНІСТЬ ДЛЯ ТЕЛЕФОНІВ (ПІДНЯТО ВИЩЕ ВІД SAFARI BAR) --- */
         @media (max-width: 768px) {
             .app-layout {
                 grid-template-columns: 1fr;
-                grid-template-rows: 65px 1fr 115px;
+                /* Додали відступ знизу, а саму панель зробили компактнішою */
+                grid-template-rows: 70px 1fr 125px;
+                height: calc(100vh - env(safe-area-inset-bottom));
             }
             .sidebar {
                 grid-column: 1 / 2;
                 grid-row: 1 / 2;
                 flex-direction: row;
                 align-items: center;
+                justify-content: space-between;
                 padding: 10px 16px;
                 border-right: none;
                 border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-                gap: 12px;
+                gap: 8px;
             }
-            .nav-link, .theme-switcher {
-                display: none; /* Економимо місце на мобільному, залишаючи шапку з лого */
+            .nav-link {
+                display: none; 
             }
+            .theme-switcher {
+                margin-top: 0;
+                padding: 6px 10px;
+                width: auto;
+                flex-direction: row;
+                align-items: center;
+                gap: 8px;
+            }
+            .theme-title {
+                display: none;
+            }
+            .theme-buttons {
+                gap: 4px;
+            }
+            .theme-btn {
+                padding: 4px 10px;
+                font-size: 10px;
+            }
+
             .main-content {
                 grid-column: 1 / 2;
                 grid-row: 2 / 3;
                 padding: 16px;
+                padding-bottom: 30px; /* щоб список не ховався під плеєр */
             }
+            
+            /* Плеєр тепер піднято вище, щоб Safari-панель не перекривала кнопки й полосу */
             .spotify-player-bar {
                 grid-column: 1 / 2;
                 grid-row: 3 / 4;
-                height: 115px;
+                height: 125px;
                 flex-direction: column;
                 justify-content: center;
                 gap: 8px;
-                padding: 8px 16px;
+                padding: 10px 16px;
+                margin-bottom: 25px; /* Підіймаємо панель повністю над адресною строкою Safari */
+                border-radius: 16px 16px 0 0;
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                border-bottom: none;
+                box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.5);
             }
             .current-info {
                 width: 100%;
@@ -459,7 +493,7 @@
                 gap: 6px;
             }
             .player-buttons {
-                gap: 28px;
+                gap: 32px;
             }
             .progress-bar-wrapper {
                 max-width: 100%;
@@ -482,7 +516,7 @@
 <div class="animated-bg"></div>
 
 <div class="app-layout">
-    <!-- Сайдбар / Верхня панель (ідентична на всіх пристроях) -->
+    <!-- Шапка / Сайдбар з неоновими темами -->
     <div class="sidebar">
         <div class="logo"><span id="logo-icon">🔴</span> Spotisanya</div>
         <div class="nav-link active">🏠 Головна</div>
@@ -519,7 +553,7 @@
         </div>
     </div>
 
-    <!-- Нижня панель плеєра -->
+    <!-- Нижня панель плеєра (піднята вище) -->
     <div class="spotify-player-bar">
         <div class="current-info">
             <div class="vinyl-container" id="vinyl-disc">
