@@ -2,7 +2,7 @@
 <html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>Локальний Музичний Плеєр</title>
+    <title>Хмарний Плейлист</title>
     <style>
         body { 
             background: #121212; 
@@ -61,12 +61,12 @@
 <body>
 
 <div class="box">
-    <h3>Мій Плейлист</h3>
+    <h3>Загальний Плейлист</h3>
     <audio id="player" controls style="width: 100%; margin-top: 10px;"></audio>
     
     <div style="margin-top: 15px;">
         <input type="text" id="title" placeholder="Назва пісні">
-        <input type="file" id="file" accept="audio/*">
+        <input type="text" id="url" placeholder="Посилання на MP3 в інтернеті">
         <button id="add-btn">Додати у плейлист</button>
     </div>
 
@@ -74,39 +74,23 @@
 </div>
 
 <script>
-    let db;
+    const BIN_ID = '6a7c3536da38895dfed9948e'; 
+    const API_KEY = '$2a$10$RZSWlrF3nSMRAsv5Jlk1MOHs4qBWJ6ItuOqlU9rE1KSeii4Ck2XFu'; 
 
-    // Створюємо або відкриваємо локальну базу даних у браузері
-    const request = indexedDB.open('LocalMusicDB', 1);
+    const urlAPI = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
 
-    request.onerror = (event) => {
-        console.error('Помилка бази даних:', event.target.error);
-    };
+    async function loadSongs() {
+        try {
+            const response = await fetch(urlAPI, {
+                headers: { 'X-Master-Key': API_KEY }
+            });
+            const result = await response.json();
+            const songs = result.record.songs || [];
 
-    request.onupgradeneeded = (event) => {
-        db = event.target.result;
-        if (!db.objectStoreNames.contains('songs')) {
-            db.createObjectStore('songs', { keyPath: 'id', autoIncrement: true });
-        }
-    };
-
-    request.onsuccess = (event) => {
-        db = event.target.result;
-        loadSongs();
-    };
-
-    // Функція завантаження списку пісень із бази браузера
-    function loadSongs() {
-        const list = document.getElementById('list');
-        list.innerHTML = '';
-
-        const transaction = db.transaction(['songs'], 'readonly');
-        const store = transaction.objectStore('songs');
-        const request = store.getAll();
-
-        request.onsuccess = () => {
-            const songs = request.result;
-            if (!songs || songs.length === 0) {
+            const list = document.getElementById('list');
+            list.innerHTML = '';
+            
+            if (songs.length === 0) {
                 list.innerHTML = '<li style="color: #888; text-align: center; cursor: default;">Плейлист порожній</li>';
                 return;
             }
@@ -114,56 +98,62 @@
             songs.forEach(song => {
                 const li = document.createElement('li');
                 li.textContent = song.title;
-                
-                // При кліку створюємо локальне посилання на файл і відтворюємо
                 li.onclick = () => {
                     const player = document.getElementById('player');
-                    const blobUrl = URL.createObjectURL(song.fileBlob);
-                    player.src = blobUrl;
+                    player.src = song.url;
                     player.play();
                 };
-                
                 list.appendChild(li);
             });
-        };
+        } catch (err) {
+            console.error('Помилка завантаження:', err);
+        }
     }
 
-    // Обробник натискання на кнопку додавання
-    document.getElementById('add-btn').addEventListener('click', () => {
-        const fileInput = document.getElementById('file');
-        const titleInput = document.getElementById('title');
-        
-        const file = fileInput.files[0];
-        const title = titleInput.value.trim();
+    document.getElementById('add-btn').addEventListener('click', async () => {
+        const title = document.getElementById('title').value.trim();
+        const url = document.getElementById('url').value.trim();
 
-        if (!file || !title) {
-            alert('Виберіть файл і введіть назву пісні!');
+        if (!title || !url) {
+            alert('Введіть назву та посилання на пісню!');
             return;
         }
 
-        const transaction = db.transaction(['songs'], 'readwrite');
-        const store = transaction.objectStore('songs');
+        try {
+            // 1. Отримуємо актуальний список із хмари
+            const getRes = await fetch(urlAPI, {
+                headers: { 'X-Master-Key': API_KEY }
+            });
+            const getResult = await getRes.json();
+            const songs = getResult.record.songs || [];
 
-        const songData = {
-            title: title,
-            fileBlob: file, // Зберігаємо сам аудіофайл у пам'яті браузера
-            createdAt: Date.now()
-        };
+            // 2. Додаємо новий трек до масиву
+            songs.push({ title, url });
 
-        const request = store.add(songData);
+            // 3. Зберігаємо оновлений масив назад у хмару
+            const putRes = await fetch(urlAPI, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Master-Key': API_KEY
+                },
+                body: JSON.stringify({ songs })
+            });
 
-        request.onsuccess = () => {
-            alert('Пісню успішно додано!');
-            fileInput.value = '';
-            titleInput.value = '';
-            loadSongs(); // Оновлюємо список на екрані
-        };
-
-        request.onerror = (event) => {
-            console.error('Помилка збереження:', event.target.error);
-            alert('Не вдалося зберегти пісню.');
-        };
+            if (putRes.ok) {
+                alert('Пісню додано у хмару!');
+                document.getElementById('title').value = '';
+                document.getElementById('url').value = '';
+                loadSongs();
+            } else {
+                alert('Помилка збереження');
+            }
+        } catch (err) {
+            alert('Помилка: ' + err.message);
+        }
     });
+
+    loadSongs();
 </script>
 </body>
 </html>
