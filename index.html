@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cloud Red Player</title>
+    <title>Хмарний Плейлист</title>
     <style>
         * {
             box-sizing: border-box;
@@ -74,10 +74,15 @@
         button#add-btn:hover {
             background: #b20710;
         }
+        .playlist-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
         .playlist-title {
             font-size: 14px;
             color: #b3b3b3;
-            margin-bottom: 8px;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
@@ -101,7 +106,7 @@
         li:hover {
             background: #282828;
         }
-        .song-name {
+        .song-info {
             cursor: pointer;
             flex-grow: 1;
             font-size: 14px;
@@ -110,8 +115,12 @@
             text-overflow: ellipsis;
             margin-right: 10px;
         }
-        .song-name:hover {
+        .artist {
             color: #e50914;
+            font-weight: bold;
+        }
+        .song-info:hover {
+            opacity: 0.8;
         }
         .del-btn {
             background: transparent;
@@ -137,12 +146,14 @@
     <audio id="player" controls></audio>
     
     <div class="input-group">
-        <input type="text" id="title" placeholder="Назва пісні">
+        <input type="text" id="title" placeholder="Приклад: LOBODA - Парень">
         <input type="text" id="url" placeholder="Пряме посилання на MP3">
         <button id="add-btn">Додати у плейлист</button>
     </div>
 
-    <div class="playlist-title">Черга відтворення</div>
+    <div class="playlist-header">
+        <span class="playlist-title">Черга (А-Я / A-Z)</span>
+    </div>
     <ul id="list"></ul>
 </div>
 
@@ -155,7 +166,8 @@
         try {
             const response = await fetch(urlAPI, { headers: { 'X-Master-Key': API_KEY }});
             const result = await response.json();
-            const songs = result.record.songs || [];
+            let songs = result.record.songs || [];
+            
             const list = document.getElementById('list');
             list.innerHTML = '';
             
@@ -164,17 +176,40 @@
                 return;
             }
 
-            songs.forEach((song, index) => {
+            // Розумне сортування: враховує і українську (А-Я), і англійську (A-Z) мови одночасно
+            songs.sort((a, b) => {
+                return a.title.localeCompare(b.title, ['uk', 'en'], { 
+                    sensitivity: 'base', 
+                    numeric: true 
+                });
+            });
+
+            songs.forEach((song) => {
                 const li = document.createElement('li');
+                
+                let displayName = song.title;
+                if (song.title.includes(' - ')) {
+                    const parts = song.title.split(' - ');
+                    const artist = parts[0];
+                    const track = parts.slice(1).join(' - ');
+                    displayName = `<span class="artist">${artist}</span> - ${track}`;
+                }
+
                 li.innerHTML = `
-                    <span class="song-name" title="${song.title}">${song.title}</span>
-                    <button class="del-btn" onclick="deleteSong(${index})">✕</button>
+                    <span class="song-info" title="${song.title}">${displayName}</span>
+                    <button class="del-btn">✕</button>
                 `;
-                li.querySelector('.song-name').onclick = () => {
+                
+                li.querySelector('.song-info').onclick = () => {
                     const player = document.getElementById('player');
                     player.src = song.url;
                     player.play();
                 };
+
+                li.querySelector('.del-btn').onclick = async () => {
+                    await deleteSongByTitle(song.title);
+                };
+
                 list.appendChild(li);
             });
         } catch (err) {
@@ -182,12 +217,13 @@
         }
     }
 
-    async function deleteSong(index) {
+    async function deleteSongByTitle(songTitle) {
         try {
             const res = await fetch(urlAPI, { headers: { 'X-Master-Key': API_KEY }});
             const data = await res.json();
-            const songs = data.record.songs;
-            songs.splice(index, 1);
+            let songs = data.record.songs || [];
+            
+            songs = songs.filter(song => song.title !== songTitle);
             
             await fetch(urlAPI, {
                 method: 'PUT',
@@ -201,7 +237,7 @@
     }
 
     document.getElementById('add-btn').onclick = async () => {
-        const title = document.getElementById('title').value.trim();
+        const title = document.getElementById('title'].value.trim();
         const url = document.getElementById('url').value.trim();
         if (!title || !url) {
             alert('Заповніть обидва поля!');
@@ -212,6 +248,7 @@
             const res = await fetch(urlAPI, { headers: { 'X-Master-Key': API_KEY }});
             const data = await res.json();
             const songs = data.record.songs || [];
+            
             songs.push({ title, url });
             
             const updateRes = await fetch(urlAPI, {
