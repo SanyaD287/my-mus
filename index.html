@@ -537,10 +537,10 @@
     const savedTheme = localStorage.getItem('spotisanya_theme');
     if (savedTheme) setTheme(savedTheme);
 
-    // Зберігаємо еквалайзер опціональним, щоб він не блокував фоновий аудіопотік при згортанні
+    // Web Audio API Setup
     let audioCtx, sourceNode, lowFilter, midFilter, highFilter, analyser;
     function initAudioContext() {
-        if (audioCtx || !window.AudioContext && !window.webkitAudioContext) return;
+        if (audioCtx) return;
         try {
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             sourceNode = audioCtx.createMediaElementSource(player);
@@ -567,7 +567,7 @@
             highFilter.connect(analyser);
             analyser.connect(audioCtx.destination);
         } catch(e) {
-            console.log("AudioContext skipped for background playback compatibility:", e);
+            console.log("AudioContext error:", e);
         }
     }
 
@@ -705,7 +705,11 @@
 
     function playSong(index) {
         if (index < 0 || index >= currentSongs.length) return;
-        
+        initAudioContext();
+        if (audioCtx && audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+
         currentIndex = index;
         const song = currentSongs[currentIndex];
         
@@ -722,6 +726,7 @@
         renderList();
     }
 
+    // Алгоритм Фішера-Єйтса для Shuffle
     function getNextShuffleIndex() {
         if (currentSongs.length <= 1) return 0;
         let randomIndex;
@@ -754,6 +759,10 @@
 
     playPauseBtn.onclick = () => {
         if (currentSongs.length === 0) return;
+        initAudioContext();
+        if (audioCtx && audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
 
         if (player.paused) {
             if (!player.src && currentSongs.length > 0) {
@@ -840,7 +849,7 @@
         }
     });
 
-    // Візуалізатор (не заважає фону)
+    // Світломузика
     const dataArray = new Uint8Array(16);
     setInterval(() => {
         const bars = document.querySelectorAll('.bar');
@@ -910,7 +919,7 @@
             const data = await res.json();
             let songs = data.record.songs || [];
             songs.push({ title, url });
-            
+
             await fetch(urlAPI, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json', 'X-Master-Key': API_KEY },
@@ -925,7 +934,7 @@
         }
     };
 
-    // Ініціалізація при завантаженні сторінки
+    // Завантаження треків при старті
     loadSongs();
 </script>
 </body>
