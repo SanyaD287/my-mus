@@ -169,7 +169,6 @@
         }
         .del-btn:hover { color: var(--accent); }
 
-        /* Фіксований плеєр знизу для телефону */
         .mobile-player {
             position: fixed;
             bottom: 0;
@@ -279,12 +278,11 @@
     <ul id="list"></ul>
 </div>
 
-<!-- Мобільний плеєр знизу -->
 <div class="mobile-player">
     <div class="player-top">
         <div class="song-info">
             <div class="current-title" id="current-song-title">Нічого не вибрано</div>
-            <div class="current-artist">Cloud Player</div>
+            <div class="current-artist">SpotiSanya Mobile</div>
         </div>
     </div>
 
@@ -409,18 +407,32 @@
         renderList();
     };
 
-    function setupMediaSession(songTitle) {
+    function updateMediaSession(title) {
         if ('mediaSession' in navigator) {
             navigator.mediaSession.metadata = new MediaMetadata({
-                title: songTitle,
-                artist: 'SpotiSanya Mobile',
-                album: 'Cloud Stream'
+                title: title,
+                artist: 'SpotiSanya',
+                album: 'Cloud Playlist',
+                artwork: [
+                    { src: 'https://cdn-icons-png.flaticon.com/512/3659/3659898.png', sizes: '96x96', type: 'image/png' },
+                    { src: 'https://cdn-icons-png.flaticon.com/512/3659/3659898.png', sizes: '512x512', type: 'image/png' }
+                ]
             });
 
-            navigator.mediaSession.setActionHandler('play', () => { player.play(); playPauseBtn.textContent = '❚❚'; });
-            navigator.mediaSession.setActionHandler('pause', () => { player.pause(); playPauseBtn.textContent = '▶'; });
-            navigator.mediaSession.setActionHandler('previoustrack', playPrev);
-            navigator.mediaSession.setActionHandler('nexttrack', playNext);
+            navigator.mediaSession.setActionHandler('play', () => {
+                player.play();
+                playPauseBtn.textContent = '❚❚';
+            });
+            navigator.mediaSession.setActionHandler('pause', () => {
+                player.pause();
+                playPauseBtn.textContent = '▶';
+            });
+            navigator.mediaSession.setActionHandler('previoustrack', () => {
+                playPrev();
+            });
+            navigator.mediaSession.setActionHandler('nexttrack', () => {
+                playNext();
+            });
         }
     }
 
@@ -433,7 +445,7 @@
         player.load();
         player.play().then(() => {
             playPauseBtn.textContent = '❚❚';
-            setupMediaSession(song.title);
+            updateMediaSession(song.title);
         }).catch(e => {
             console.log("Playback error:", e);
         });
