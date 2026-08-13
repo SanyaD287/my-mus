@@ -20,7 +20,7 @@
 
         .app-layout {
             display: grid;
-            grid-template-columns: 240px 1fr;
+            grid-template-columns: 240px 1fr 300px;
             grid-template-rows: 1fr 90px;
             height: 100vh;
             width: 100vw;
@@ -45,6 +45,33 @@
         }
         .logo span { color: #ff1e2d; }
 
+        /* Lyrics Panel */
+        .lyrics-sidebar {
+            background: #0a0a0a;
+            border-left: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            grid-column: 3 / 4;
+            grid-row: 1 / 2;
+        }
+        .lyrics-title { font-size: 14px; font-weight: 700; color: #aaa; text-transform: uppercase; }
+        .lyrics-textarea {
+            width: 100%;
+            flex: 1;
+            background: #121212;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            color: #fff;
+            padding: 12px;
+            font-size: 13px;
+            resize: none;
+            outline: none;
+            line-height: 1.5;
+        }
+        .lyrics-textarea:focus { border-color: #ff1e2d; }
+
         .main-content {
             padding: 24px 32px;
             overflow-y: auto;
@@ -61,7 +88,7 @@
             margin-bottom: 12px;
         }
 
-        .add-card, .search-card {
+        .add-card, .equalizer-card {
             background: #121212;
             padding: 16px;
             border-radius: 12px;
@@ -70,6 +97,38 @@
             align-items: center;
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
+        .equalizer-card {
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+        .eq-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            color: #888;
+        }
+        .eq-slider {
+            width: 80px;
+            accent-color: #ff1e2d;
+            cursor: pointer;
+        }
+        .eq-presets {
+            display: flex;
+            gap: 6px;
+        }
+        .eq-preset-btn {
+            background: #1e1e1e;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+        .eq-preset-btn:hover { border-color: #ff1e2d; }
+
         input[type="text"] {
             padding: 12px 14px;
             border-radius: 8px;
@@ -92,7 +151,6 @@
         }
         button#add-btn:hover { filter: brightness(1.1); }
 
-        /* Drag and Drop Zone styling */
         .drop-zone {
             border: 2px dashed rgba(255, 255, 255, 0.15);
             border-radius: 12px;
@@ -170,7 +228,7 @@
         .del-btn:hover { color: #ff1e2d !important; }
 
         .spotify-player-bar {
-            grid-column: 1 / 3;
+            grid-column: 1 / 4;
             grid-row: 2 / 3;
             background: #0c0c0c;
             border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -181,7 +239,7 @@
             z-index: 10;
         }
         .current-info {
-            width: 30%;
+            width: 25%;
             display: flex;
             align-items: center;
             gap: 12px;
@@ -197,7 +255,7 @@
         .current-artist { font-size: 11px; color: #777; }
 
         .player-center-controls {
-            width: 40%;
+            width: 45%;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -269,7 +327,6 @@
             cursor: pointer;
         }
 
-        /* Visualizer */
         .visualizer {
             display: flex;
             align-items: flex-end;
@@ -282,13 +339,13 @@
             background: #ff1e2d;
             height: 4px;
             border-radius: 2px;
-            transition: height 0.1s ease;
+            transition: height 0.05s ease;
         }
 
         @media (max-width: 768px) {
             body { overflow-y: auto; }
             .app-layout { display: flex; flex-direction: column; height: auto; min-height: 100vh; }
-            .sidebar { display: none; }
+            .sidebar, .lyrics-sidebar { display: none; }
             .spotify-player-bar {
                 position: fixed;
                 bottom: 0;
@@ -309,7 +366,12 @@
 <div class="app-layout">
     <div class="sidebar">
         <div class="logo"><span>🔴</span> Spotisanya</div>
-        <div style="color: #777; font-size: 13px;">1.5v Pro</div>
+        <div style="color: #777; font-size: 13px;">1.6v Pro Max</div>
+    </div>
+
+    <div class="lyrics-sidebar">
+        <div class="lyrics-title">Текст пісні (Lyrics)</div>
+        <textarea id="lyrics-input" class="lyrics-textarea" placeholder="Введіть або вставте текст пісні сюди... Автоматично збережеться для цього треку."></textarea>
     </div>
 
     <div class="spotify-player-bar">
@@ -350,6 +412,28 @@
     </div>
 
     <div class="main-content">
+        <div class="section-title">Еквалайзер (Web Audio API)</div>
+        <div class="equalizer-card">
+            <div class="eq-group">
+                <label>Low (Баси)</label>
+                <input type="range" id="eq-low" class="eq-slider" min="-20" max="20" step="1" value="0">
+            </div>
+            <div class="eq-group">
+                <label>Mid (Середні)</label>
+                <input type="range" id="eq-mid" class="eq-slider" min="-20" max="20" step="1" value="0">
+            </div>
+            <div class="eq-group">
+                <label>High (Високі)</label>
+                <input type="range" id="eq-high" class="eq-slider" min="-20" max="20" step="1" value="0">
+            </div>
+            <div class="eq-presets">
+                <button class="eq-preset-btn" onclick="setEqPreset(0, 0, 0)">Normal</button>
+                <button class="eq-preset-btn" onclick="setEqPreset(12, -2, 4)">Bass Boost</button>
+                <button class="eq-preset-btn" onclick="setEqPreset(8, 4, 8)">Rock</button>
+                <button class="eq-preset-btn" onclick="setEqPreset(10, 2, 10)">Electronic</button>
+            </div>
+        </div>
+
         <div class="section-title">Додати трек</div>
         <div class="add-card">
             <input type="text" id="title" placeholder="Назва треку">
@@ -386,7 +470,7 @@
     let currentSongs = [];
     let queue = [];
     let currentIndex = 0;
-    let loopMode = 0; // 0: Вимкнено, 1: Повтор плейлиста, 2: Повтор треку
+    let loopMode = 0; 
     let searchQuery = '';
 
     const player = document.getElementById('player');
@@ -399,7 +483,59 @@
     const volumeSlider = document.getElementById('volume-slider');
     const searchInput = document.getElementById('search-input');
     const loopBtn = document.getElementById('loop-btn');
-    const dropZone = id => document.getElementById('drop-zone');
+    const lyricsInput = document.getElementById('lyrics-input');
+
+    // Web Audio API Setup
+    let audioCtx, sourceNode, lowFilter, midFilter, highFilter, analyser;
+    function initAudioContext() {
+        if (audioCtx) return;
+        try {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            sourceNode = audioCtx.createMediaElementSource(player);
+            
+            lowFilter = audioCtx.createBiquadFilter();
+            lowFilter.type = 'lowshelf';
+            lowFilter.frequency.value = 250;
+
+            midFilter = audioCtx.createBiquadFilter();
+            midFilter.type = 'peaking';
+            midFilter.frequency.value = 1500;
+            midFilter.Q.value = 1;
+
+            highFilter = audioCtx.createBiquadFilter();
+            highFilter.type = 'highshelf';
+            highFilter.frequency.value = 4000;
+
+            analyser = audioCtx.createAnalyser();
+            analyser.fftSize = 64;
+
+            sourceNode.connect(lowFilter);
+            lowFilter.connect(midFilter);
+            midFilter.connect(highFilter);
+            highFilter.connect(analyser);
+            analyser.connect(audioCtx.destination);
+        } catch(e) {
+            console.log("AudioContext error:", e);
+        }
+    }
+
+    // EQ Sliders
+    const eqLow = document.getElementById('eq-low');
+    const eqMid = document.getElementById('eq-mid');
+    const eqHigh = document.getElementById('eq-high');
+
+    eqLow.oninput = (e) => { if (lowFilter) lowFilter.gain.value = parseFloat(e.target.value); };
+    eqMid.oninput = (e) => { if (midFilter) midFilter.gain.value = parseFloat(e.target.value); };
+    eqHigh.oninput = (e) => { if (highFilter) highFilter.gain.value = parseFloat(e.target.value); };
+
+    window.setEqPreset = (low, mid, high) => {
+        eqLow.value = low;
+        eqMid.value = mid;
+        eqHigh.value = high;
+        if (lowFilter) lowFilter.gain.value = low;
+        if (midFilter) midFilter.gain.value = mid;
+        if (highFilter) highFilter.gain.value = high;
+    };
 
     volumeSlider.oninput = (e) => { player.volume = e.target.value; };
 
@@ -443,12 +579,22 @@
             const song = currentSongs[currentIndex];
             player.src = song.url;
             currentSongTitle.textContent = song.title;
+            loadLyricsForCurrent();
             if (savedTime) {
                 player.currentTime = parseFloat(savedTime);
             }
             renderList();
         }
     }
+
+    function loadLyricsForCurrent() {
+        const savedLyrics = localStorage.getItem(`spotisanya_lyrics_${currentIndex}`);
+        lyricsInput.value = savedLyrics || '';
+    }
+
+    lyricsInput.oninput = () => {
+        localStorage.setItem(`spotisanya_lyrics_${currentIndex}`, lyricsInput.value);
+    };
 
     function renderList() {
         const list = document.getElementById('list');
@@ -462,7 +608,7 @@
             return;
         }
 
-        filteredSongs.forEach((song, displayIdx) => {
+        filteredSongs.forEach((song) => {
             const li = document.createElement('li');
             const isPlaying = song.originalIndex === currentIndex;
             if (isPlaying) li.classList.add('active');
@@ -489,7 +635,6 @@
     function addToQueue(event, index) {
         event.stopPropagation();
         queue.push(index);
-        alert(`Трек "${currentSongs[index].title}" додано в чергу!`);
     }
 
     function setupMediaSession(songTitle) {
@@ -509,6 +654,11 @@
 
     function playSong(index) {
         if (index < 0 || index >= currentSongs.length) return;
+        initAudioContext();
+        if (audioCtx && audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+
         currentIndex = index;
         const song = currentSongs[currentIndex];
         
@@ -522,6 +672,7 @@
         });
         
         currentSongTitle.textContent = song.title;
+        loadLyricsForCurrent();
         renderList();
     }
 
@@ -544,6 +695,11 @@
 
     playPauseBtn.onclick = () => {
         if (currentSongs.length === 0) return;
+        initAudioContext();
+        if (audioCtx && audioCtx.state === 'suspended') {
+            audioCtx.resume();
+        }
+
         if (player.paused) {
             if (!player.src && currentSongs.length > 0) {
                 playSong(0);
@@ -567,20 +723,17 @@
         if (loopMode === 0) {
             loopBtn.textContent = '🔁';
             loopBtn.classList.remove('active-mode');
-            loopBtn.title = "Повтор вимкнено";
         } else if (loopMode === 1) {
             loopBtn.textContent = '🔁';
             loopBtn.classList.add('active-mode');
-            loopBtn.title = "Повтор всього плейлиста";
         } else if (loopMode === 2) {
             loopBtn.textContent = '🔂';
             loopBtn.classList.add('active-mode');
-            loopBtn.title = "Повтор одного треку";
         }
     };
 
     window.addEventListener('keydown', (e) => {
-        if (document.activeElement.tagName === 'INPUT') return;
+        if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
 
         if (e.code === 'MediaPlayPause' || e.code === 'Space') {
             e.preventDefault();
@@ -600,7 +753,6 @@
             currentTimeEl.textContent = formatTime(player.currentTime);
             durationTimeEl.textContent = formatTime(player.duration);
 
-            // Збереження прогресу в реальному часі
             localStorage.setItem('spotisanya_last_index', currentIndex);
             localStorage.setItem('spotisanya_last_time', player.currentTime);
         }
@@ -620,7 +772,7 @@
         }
     };
 
-    // Drag and Drop локальних MP3 файлів
+    // Drag and Drop
     const dropZoneEl = document.getElementById('drop-zone');
     ['dragenter', 'dragover'].forEach(eventName => {
         dropZoneEl.addEventListener(eventName, (e) => { e.preventDefault(); dropZoneEl.classList.add('dragover'); }, false);
@@ -644,14 +796,21 @@
         }
     });
 
-    // Анімація еквалайзера
+    // Світломузика (Аналізатор частот та динамічний ефект)
+    const dataArray = new Uint8Array(16);
     setInterval(() => {
         const bars = document.querySelectorAll('.bar');
-        bars.forEach(bar => {
-            const height = player.paused ? 4 : Math.floor(Math.random() * 16) + 4;
-            bar.style.height = height + 'px';
-        });
-    }, 120);
+        if (analyser && !player.paused) {
+            analyser.getByteFrequencyData(dataArray);
+            bars.forEach((bar, i) => {
+                const val = dataArray[i * 2] || 4;
+                const height = Math.max(4, Math.floor((val / 255) * 20));
+                bar.style.height = height + 'px';
+            });
+        } else {
+            bars.forEach(bar => { bar.style.height = '4px'; });
+        }
+    }, 60);
 
     async function renameSong(event, index) {
         event.stopPropagation();
