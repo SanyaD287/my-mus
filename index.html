@@ -1,108 +1,58 @@
 <!DOCTYPE html>
-<html lang="uk" data-theme="cyberpunk">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>SpotiSanya Mobile</title>
     <style>
-        :root {
-            --accent: #00ff66;
-            --accent-glow: rgba(0, 255, 102, 0.2);
-            --bg-main: #020804;
-            --bg-card: #0c160e;
-            --border-color: rgba(0, 255, 102, 0.15);
-            --text-main: #ffffff;
-            --text-muted: #777777;
-        }
-
-        [data-theme="neon"] {
-            --accent: #b026ff;
-            --accent-glow: rgba(176, 38, 255, 0.2);
-            --bg-main: #06020a;
-            --bg-card: #12081c;
-            --border-color: rgba(176, 38, 255, 0.15);
-        }
-
-        [data-theme="spotify"] {
-            --accent: #1db954;
-            --accent-glow: rgba(29, 185, 84, 0.2);
-            --bg-main: #121212;
-            --bg-card: #181818;
-            --border-color: rgba(255, 255, 255, 0.1);
-        }
-
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body {
-            background-color: var(--bg-main);
-            color: var(--text-main);
+            background-color: #050505;
+            color: #ffffff;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        .header {
+            padding: 16px 20px;
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #0a0a0a;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .header span { color: #ff1e2d; }
+        .version { font-size: 12px; color: #666; font-weight: normal; }
+
+        .main-content {
             padding: 16px;
-            padding-bottom: 220px;
+            padding-bottom: 180px;
+            flex: 1;
             display: flex;
             flex-direction: column;
             gap: 16px;
         }
 
-        /* Верхня панель: Лого і Теми */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .logo {
-            font-size: 16px;
-            font-weight: 800;
-            letter-spacing: 0.5px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .logo span { color: var(--accent); }
-
-        .skin-btns { display: flex; gap: 6px; }
-        .skin-btn {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            color: var(--text-muted);
-            padding: 6px 10px;
-            border-radius: 8px;
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-        }
-        .skin-btn:active { color: var(--accent); border-color: var(--accent); }
-
-        /* Пошук і Список треків */
-        .card {
-            background: var(--bg-card);
-            padding: 14px;
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
         .search-box {
             width: 100%;
-            padding: 12px 14px;
+            padding: 12px 16px;
             border-radius: 10px;
-            border: 1px solid var(--border-color);
-            background: var(--bg-main);
-            color: var(--text-main);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: #151515;
+            color: #fff;
             font-size: 14px;
             outline: none;
         }
-        .search-box:focus { border-color: var(--accent); }
-
-        .playlist-title {
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+        .search-box:focus { border-color: #ff1e2d; }
 
         ul {
             list-style: none;
@@ -110,9 +60,7 @@
             margin: 0;
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            max-height: 45vh;
-            overflow-y: auto;
+            gap: 8px;
         }
         li {
             display: flex;
@@ -120,66 +68,64 @@
             justify-content: space-between;
             padding: 12px 14px;
             border-radius: 10px;
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid transparent;
-            cursor: pointer;
+            background: #111;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            gap: 10px;
         }
         li.active {
-            background: var(--accent-glow);
-            border-color: var(--accent);
+            background: rgba(255, 30, 45, 0.1);
+            border-color: #ff1e2d;
         }
-        li.active .song-name { color: var(--accent); font-weight: 700; }
+        .song-info {
+            flex: 1;
+            overflow: hidden;
+            cursor: pointer;
+        }
         .song-name {
             font-size: 14px;
+            font-weight: 500;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            flex: 1;
-            margin-right: 10px;
+            color: #fff;
         }
+        li.active .song-name { color: #ff1e2d; font-weight: 700; }
+        
         .del-btn {
             background: transparent;
             border: none;
-            color: var(--text-muted);
+            color: #666;
             font-size: 16px;
-            padding: 4px;
+            padding: 8px;
             cursor: pointer;
         }
-        .del-btn:active { color: var(--accent); }
+        .del-btn:active { color: #ff1e2d; }
 
-        /* Фіксований мінімалістичний плеєр знизу */
-        .mobile-player {
+        /* Фіксована панель плеєра внизу */
+        .player-bar {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            background: var(--bg-card);
-            border-top: 1px solid var(--border-color);
-            padding: 16px;
+            background: #0c0c0c;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 14px 16px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
             z-index: 100;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.6);
-            border-top-left-radius: 20px;
-            border-top-right-radius: 20px;
         }
 
-        .song-info {
-            text-align: center;
-            overflow: hidden;
-            padding: 0 10px;
-        }
-        .current-title {
-            font-size: 15px;
-            font-weight: 700;
+        .track-title-bar {
+            font-size: 14px;
+            font-weight: 600;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            text-align: center;
+            color: #fff;
         }
 
-        /* Зручна смуга перемотування */
         .progress-container {
             width: 100%;
             height: 6px;
@@ -190,79 +136,61 @@
         }
         .progress-bar {
             height: 100%;
-            background: var(--accent);
+            background: #ff1e2d;
             border-radius: 3px;
             width: 0%;
-            position: relative;
         }
 
-        /* Кнопки керування */
-        .player-controls {
+        .controls-row {
             display: flex;
             align-items: center;
             justify-content: space-around;
-            padding: 0 10px;
         }
         .ctrl-btn {
             background: transparent;
             border: none;
-            color: var(--text-main);
+            color: #fff;
             font-size: 22px;
             cursor: pointer;
             padding: 8px;
         }
-        .ctrl-btn.active-mode { color: var(--accent); }
-        .play-pause-btn {
-            width: 56px;
-            height: 56px;
-            background: var(--accent);
+        .play-btn {
+            width: 50px;
+            height: 50px;
+            background: #ff1e2d;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #000;
             font-size: 20px;
-            box-shadow: 0 4px 15px var(--accent-glow);
         }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <div class="logo"><span>⚡</span> SpotiSanya</div>
-    <div class="skin-btns">
-        <button class="skin-btn" onclick="setTheme('cyberpunk')">Cyber</button>
-        <button class="skin-btn" onclick="setTheme('neon')">Neon</button>
-        <button class="skin-btn" onclick="setTheme('spotify')">Spotify</button>
-    </div>
+    <div><span>🔴</span> SpotiSanya</div>
+    <div class="version">Mobile v1</div>
 </div>
 
-<div class="card">
-    <div class="playlist-title">Пошук та Плейлист</div>
-    <input type="text" id="search-input" class="search-box" placeholder="🔍 Знайти трек...">
+<div class="main-content">
+    <input type="text" id="search-input" class="search-box" placeholder="🔍 Пошук треку...">
     <ul id="list"></ul>
 </div>
 
-<!-- Мобільний плеєр -->
-<div class="mobile-player">
-    <div class="song-info">
-        <div class="current-title" id="current-song-title">Оберіть трек</div>
-    </div>
-
+<div class="player-bar">
+    <div class="track-title-bar" id="current-song-title">Нічого не вибрано</div>
     <div class="progress-container" id="progress-container">
         <div class="progress-bar" id="progress-bar"></div>
     </div>
-
-    <div class="player-controls">
-        <button class="ctrl-btn" id="shuffle-btn" title="Shuffle">🔀</button>
+    <div class="controls-row">
         <button class="ctrl-btn" id="prev-btn">⏮</button>
-        <button class="ctrl-btn play-pause-btn" id="play-pause-btn">▶</button>
+        <button class="ctrl-btn play-btn" id="play-pause-btn">▶</button>
         <button class="ctrl-btn" id="next-btn">⏭</button>
-        <button class="ctrl-btn" id="loop-btn" title="Loop">🔁</button>
     </div>
 </div>
 
-<audio id="player" preload="auto" crossorigin="anonymous"></audio>
+<audio id="player" preload="auto"></audio>
 
 <script>
     const BIN_ID = '6a7c3536da38895dfed9948e'; 
@@ -270,10 +198,7 @@
     const urlAPI = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
 
     let currentSongs = [];
-    let queue = [];
     let currentIndex = 0;
-    let loopMode = 0; 
-    let shuffleMode = false;
     let searchQuery = '';
 
     const player = document.getElementById('player');
@@ -282,98 +207,52 @@
     const progressContainer = document.getElementById('progress-container');
     const currentSongTitle = document.getElementById('current-song-title');
     const searchInput = document.getElementById('search-input');
-    const loopBtn = document.getElementById('loop-btn');
-    const shuffleBtn = document.getElementById('shuffle-btn');
-
-    window.setTheme = (themeName) => {
-        document.documentElement.setAttribute('data-theme', themeName);
-        localStorage.setItem('spotisanya_theme', themeName);
-    };
-    const savedTheme = localStorage.getItem('spotisanya_theme');
-    if (savedTheme) setTheme(savedTheme);
+    const listEl = document.getElementById('list');
 
     async function loadSongs() {
         try {
             const response = await fetch(urlAPI, { headers: { 'X-Master-Key': API_KEY }});
             const result = await response.json();
-            const cloudSongs = result.record.songs;
-
-            if (Array.isArray(cloudSongs) && cloudSongs.length > 0) {
-                currentSongs = cloudSongs;
-                localStorage.setItem('spotisanya_cache', JSON.stringify(currentSongs));
-            } else {
-                const cached = localStorage.getItem('spotisanya_cache');
-                if (cached) currentSongs = JSON.parse(cached);
-            }
-            renderList();
-            restoreSavedPosition();
+            currentSongs = result.record.songs || [];
+            localStorage.setItem('spotisanya_cache', JSON.stringify(currentSongs));
         } catch (err) {
             const cached = localStorage.getItem('spotisanya_cache');
-            if (cached) {
-                currentSongs = JSON.parse(cached);
-                renderList();
-                restoreSavedPosition();
-            }
+            if (cached) currentSongs = JSON.parse(cached);
         }
-    }
-
-    function restoreSavedPosition() {
-        const savedIndex = localStorage.getItem('spotisanya_last_index');
-        const savedTime = localStorage.getItem('spotisanya_last_time');
-        if (savedIndex !== null && currentSongs[savedIndex]) {
-            currentIndex = parseInt(savedIndex);
-            const song = currentSongs[currentIndex];
-            player.src = song.url;
-            currentSongTitle.textContent = song.title;
-            if (savedTime) {
-                player.currentTime = parseFloat(savedTime);
-            }
-            renderList();
-        }
-    }
-
-    function saveState() {
-        localStorage.setItem('spotisanya_last_index', currentIndex);
-        localStorage.setItem('spotisanya_last_time', player.currentTime);
+        renderList();
     }
 
     function renderList() {
-        const list = document.getElementById('list');
-        list.innerHTML = '';
-        
-        const filteredSongs = currentSongs.map((song, originalIndex) => ({ ...song, originalIndex }))
+        listEl.innerHTML = '';
+        const filtered = currentSongs
+            .map((song, idx) => ({ ...song, origIdx: idx }))
             .filter(song => song.title.toLowerCase().includes(searchQuery.toLowerCase()));
 
-        if (filteredSongs.length === 0) {
-            list.innerHTML = '<li style="color: var(--text-muted); justify-content: center; border:none; background:none; padding: 20px;">Нічого не знайдено</li>';
+        if (filtered.length === 0) {
+            listEl.innerHTML = '<li style="justify-content: center; color: #666;">Нічого не знайдено</li>';
             return;
         }
 
-        filteredSongs.forEach((song) => {
+        filtered.forEach(song => {
             const li = document.createElement('li');
-            const isPlaying = song.originalIndex === currentIndex;
-            if (isPlaying) li.classList.add('active');
+            if (song.origIdx === currentIndex) li.classList.add('active');
 
             li.innerHTML = `
-                <span class="song-name" title="${song.title}">${song.originalIndex + 1}. ${song.title}</span>
-                <button class="del-btn" onclick="deleteSong(event, ${song.originalIndex})">✕</button>
+                <div class="song-info" onclick="playSong(${song.origIdx})">
+                    <div class="song-name">${song.title}</div>
+                </div>
+                <button class="del-btn" onclick="deleteSong(event, ${song.origIdx})">✕</button>
             `;
-            li.onclick = () => playSong(song.originalIndex);
-            list.appendChild(li);
+            listEl.appendChild(li);
         });
     }
 
-    searchInput.oninput = (e) => {
-        searchQuery = e.target.value;
-        renderList();
-    };
-
-    function updateMediaSession(title) {
+    function setupMediaSession(title) {
         if ('mediaSession' in navigator) {
             navigator.mediaSession.metadata = new MediaMetadata({
                 title: title,
-                artist: 'SpotiSanya Mobile',
-                album: 'Cloud Stream'
+                artist: 'SpotiSanya',
+                album: 'Cloud Playlist'
             });
 
             navigator.mediaSession.setActionHandler('play', () => { player.play(); playPauseBtn.textContent = '❚❚'; });
@@ -387,38 +266,18 @@
         if (index < 0 || index >= currentSongs.length) return;
         currentIndex = index;
         const song = currentSongs[currentIndex];
-        
+
         player.src = song.url;
-        player.load();
         player.play().then(() => {
             playPauseBtn.textContent = '❚❚';
-            updateMediaSession(song.title);
-        }).catch(e => {
-            console.log("Playback error:", e);
-        });
-        
+            setupMediaSession(song.title);
+        }).catch(e => console.log(e));
+
         currentSongTitle.textContent = song.title;
         renderList();
     }
 
-    function getNextShuffleIndex() {
-        if (currentSongs.length <= 1) return 0;
-        let randomIndex;
-        do {
-            randomIndex = Math.floor(Math.random() * currentSongs.length);
-        } while (randomIndex === currentIndex);
-        return randomIndex;
-    }
-
     function playNext() {
-        if (queue.length > 0) {
-            playSong(queue.shift());
-            return;
-        }
-        if (shuffleMode) {
-            playSong(getNextShuffleIndex());
-            return;
-        }
         if (currentSongs.length > 0) {
             playSong((currentIndex + 1) % currentSongs.length);
         }
@@ -436,7 +295,8 @@
             if (!player.src) {
                 playSong(0);
             } else {
-                player.play().then(() => { playPauseBtn.textContent = '❚❚'; });
+                player.play();
+                playPauseBtn.textContent = '❚❚';
             }
         } else {
             player.pause();
@@ -447,36 +307,25 @@
     document.getElementById('next-btn').onclick = playNext;
     document.getElementById('prev-btn').onclick = playPrev;
 
-    shuffleBtn.onclick = () => {
-        shuffleMode = !shuffleMode;
-        shuffleBtn.classList.toggle('active-mode', shuffleMode);
-    };
-
-    loopBtn.onclick = () => {
-        loopMode = (loopMode + 1) % 3;
-        loopBtn.classList.toggle('active-mode', loopMode > 0);
-        loopBtn.textContent = loopMode === 2 ? '🔂' : '🔁';
-    };
-
     player.ontimeupdate = () => {
         if (player.duration) {
             progressBar.style.width = ((player.currentTime / player.duration) * 100) + '%';
-            saveState();
         }
     };
 
     progressContainer.onclick = (e) => {
         if (player.duration) {
-            player.currentTime = (e.offsetX / progressContainer.clientWidth) * player.duration;
+            const rect = progressContainer.getBoundingClientRect();
+            const pos = (e.clientX - rect.left) / rect.width;
+            player.currentTime = pos * player.duration;
         }
     };
 
-    player.onended = () => {
-        if (loopMode === 2) {
-            player.play();
-        } else {
-            playNext();
-        }
+    player.onended = playNext;
+
+    searchInput.oninput = (e) => {
+        searchQuery = e.target.value;
+        renderList();
     };
 
     async function deleteSong(event, index) {
