@@ -266,7 +266,7 @@
 <div class="app-layout">
     <div class="sidebar">
         <div class="logo"><span>🔴</span> Spotisanya</div>
-        <div style="color: #777; font-size: 13px;">1.1v</div>
+        <div style="color: #777; font-size: 13px;">1.3v</div>
     </div>
 
     <div class="spotify-player-bar">
@@ -301,7 +301,7 @@
 
     <div class="main-content">
         <div class="section-title">Додати трек</div>
-        <div class="add-card">
+        <div class="add-card">,
             <input type="text" id="title" placeholder="Назва треку">
             <input type="text" id="url" placeholder="Посилання на MP3">
             <button id="add-btn">Додати</button>
@@ -319,7 +319,7 @@
     </div>
 </div>
 
-<audio id="player"></audio>
+<audio id="player" preload="auto"></audio>
 
 <script>
     const BIN_ID = '6a7c3536da38895dfed9948e'; 
@@ -397,25 +397,16 @@
             navigator.mediaSession.metadata = new MediaMetadata({
                 title: songTitle,
                 artist: 'SpotiSanya Cloud Player',
-                album: 'Cloud Playlist',
-                artwork: [
-                    { src: 'https://via.placeholder.com/512', sizes: '512x512', type: 'image/png' }
-                ]
+                album: 'Cloud Playlist'
             });
 
-            navigator.mediaSession.setActionHandler('play', () => {
-                player.play();
-                playPauseBtn.textContent = '❚❚';
-            });
-            navigator.mediaSession.setActionHandler('pause', () => {
-                player.pause();
-                playPauseBtn.textContent = '▶';
-            });
+            navigator.mediaSession.setActionHandler('play', () => { player.play(); playPauseBtn.textContent = '❚❚'; });
+            navigator.mediaSession.setActionHandler('pause', () => { player.pause(); playPauseBtn.textContent = '▶'; });
             navigator.mediaSession.setActionHandler('previoustrack', () => {
-                document.getElementById('prev-btn').click();
+                if (currentSongs.length > 0) playSong((currentIndex - 1 + currentSongs.length) % currentSongs.length);
             });
             navigator.mediaSession.setActionHandler('nexttrack', () => {
-                document.getElementById('next-btn').click();
+                if (currentSongs.length > 0) playSong((currentIndex + 1) % currentSongs.length);
             });
         }
     }
@@ -426,20 +417,29 @@
         const song = currentSongs[currentIndex];
         
         player.src = song.url;
-        player.play().catch(e => console.log("Потокове відтворення зупинено системою:", e));
-        currentSongTitle.textContent = song.title;
-        playPauseBtn.textContent = '❚❚';
+        player.load();
+        player.play().then(() => {
+            playPauseBtn.textContent = '❚❚';
+            setupMediaSession(song.title);
+        }).catch(e => {
+            console.log("Потокове відтворення заблоковано браузером:", e);
+        });
         
-        setupMediaSession(song.title);
+        currentSongTitle.textContent = song.title;
         renderList();
     }
 
     playPauseBtn.onclick = () => {
         if (currentSongs.length === 0) return;
         if (player.paused) {
-            if (!player.src && currentSongs.length > 0) playSong(0);
-            else player.play();
-            playPauseBtn.textContent = '❚❚';
+            if (!player.src && currentSongs.length > 0) {
+                playSong(0);
+            } else {
+                player.play().then(() => {
+                    playPauseBtn.textContent = '❚❚';
+                    if (currentSongs[currentIndex]) setupMediaSession(currentSongs[currentIndex].title);
+                });
+            }
         } else {
             player.pause();
             playPauseBtn.textContent = '▶';
@@ -455,6 +455,23 @@
         if (currentSongs.length === 0) return;
         playSong((currentIndex - 1 + currentSongs.length) % currentSongs.length);
     };
+
+    // --- ПЕРЕХОПЛЕННЯ МУЛЬТИМЕДІЙНИХ КЛАВІШ ТА КНОПОК НА ПК ---
+    window.addEventListener('keydown', (e) => {
+        // Не перехоплюємо, якщо користувач пише назву треку або посилання в інпут
+        if (document.activeElement.tagName === 'INPUT') return;
+
+        if (e.code === 'MediaPlayPause' || e.code === 'Space') {
+            e.preventDefault();
+            playPauseBtn.click();
+        } else if (e.code === 'MediaTrackNext' || e.code === 'ArrowRight' && e.altKey) {
+            e.preventDefault();
+            document.getElementById('next-btn').click();
+        } else if (e.code === 'MediaTrackPrevious' || e.code === 'ArrowLeft' && e.altKey) {
+            e.preventDefault();
+            document.getElementById('prev-btn').click();
+        }
+    });
 
     player.ontimeupdate = () => {
         if (player.duration) {
@@ -499,7 +516,7 @@
         if (!title || !url) return alert('Заповніть поля!');
         
         try {
-            const res = await fetch(urlAPI, { headers: { 'X-Master-Key': API_KEY }});
+            const res = label = await fetch(urlAPI, { headers: { 'X-Master-Key': API_KEY }});
             const data = await res.json();
             const songs = data.record.songs || [];
             songs.push({ title, url });
