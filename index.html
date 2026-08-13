@@ -94,7 +94,7 @@
 
         .playlist-header {
             display: grid;
-            grid-template-columns: 40px 1fr 50px;
+            grid-template-columns: 40px 1fr 75px;
             color: #777;
             font-size: 12px;
             font-weight: 700;
@@ -113,7 +113,7 @@
         }
         li {
             display: grid;
-            grid-template-columns: 40px 1fr 50px;
+            grid-template-columns: 40px 1fr 75px;
             align-items: center;
             padding: 10px 16px;
             border-radius: 8px;
@@ -135,14 +135,22 @@
             text-overflow: ellipsis;
             color: #fff;
         }
-        .del-btn {
+        .action-btns {
+            display: flex;
+            gap: 6px;
+            justify-content: flex-end;
+            align-items: center;
+        }
+        .del-btn, .edit-btn {
             background: transparent;
             border: none;
             color: #666;
             cursor: pointer;
-            font-size: 14px;
+            font-size: 13px;
+            padding: 4px;
         }
         .del-btn:hover { color: #ff1e2d; }
+        .edit-btn:hover { color: #fff; }
 
         .spotify-player-bar {
             grid-column: 1 / 3;
@@ -266,7 +274,7 @@
 <div class="app-layout">
     <div class="sidebar">
         <div class="logo"><span>🔴</span> Spotisanya</div>
-        <div style="color: #777; font-size: 13px;">1.3v</div>
+        <div style="color: #777; font-size: 13px;">1.4v</div>
     </div>
 
     <div class="spotify-player-bar">
@@ -301,7 +309,7 @@
 
     <div class="main-content">
         <div class="section-title">Додати трек</div>
-        <div class="add-card">,
+        <div class="add-card">
             <input type="text" id="title" placeholder="Назва треку">
             <input type="text" id="url" placeholder="Посилання на MP3">
             <button id="add-btn">Додати</button>
@@ -312,7 +320,7 @@
             <div class="playlist-header">
                 <div>#</div>
                 <div>Назва</div>
-                <div>✕</div>
+                <div style="text-align: right;">Дії</div>
             </div>
             <ul id="list"></ul>
         </div>
@@ -385,7 +393,10 @@
             li.innerHTML = `
                 <span class="song-index">${index + 1}</span>
                 <span class="song-name" title="${song.title}">${song.title}</span>
-                <button class="del-btn" onclick="deleteSong(event, ${index})">✕</button>
+                <div class="action-btns">
+                    <button class="edit-btn" onclick="renameSong(event, ${index})" title="Змінити назву">✏️</button>
+                    <button class="del-btn" onclick="deleteSong(event, ${index})" title="Видалити">✕</button>
+                </div>
             `;
             li.onclick = () => playSong(index);
             list.appendChild(li);
@@ -456,18 +467,16 @@
         playSong((currentIndex - 1 + currentSongs.length) % currentSongs.length);
     };
 
-    // --- ПЕРЕХОПЛЕННЯ МУЛЬТИМЕДІЙНИХ КЛАВІШ ТА КНОПОК НА ПК ---
     window.addEventListener('keydown', (e) => {
-        // Не перехоплюємо, якщо користувач пише назву треку або посилання в інпут
         if (document.activeElement.tagName === 'INPUT') return;
 
         if (e.code === 'MediaPlayPause' || e.code === 'Space') {
             e.preventDefault();
             playPauseBtn.click();
-        } else if (e.code === 'MediaTrackNext' || e.code === 'ArrowRight' && e.altKey) {
+        } else if (e.code === 'MediaTrackNext' || (e.code === 'ArrowRight' && e.altKey)) {
             e.preventDefault();
             document.getElementById('next-btn').click();
-        } else if (e.code === 'MediaTrackPrevious' || e.code === 'ArrowLeft' && e.altKey) {
+        } else if (e.code === 'MediaTrackPrevious' || (e.code === 'ArrowLeft' && e.altKey)) {
             e.preventDefault();
             document.getElementById('prev-btn').click();
         }
@@ -490,6 +499,31 @@
     player.onended = () => {
         if (currentSongs.length > 0) playSong((currentIndex + 1) % currentSongs.length);
     };
+
+    async function renameSong(event, index) {
+        event.stopPropagation();
+        const currentSong = currentSongs[index];
+        const newTitle = prompt("Введіть нову назву треку:", currentSong.title);
+        if (!newTitle || !newTitle.trim()) return;
+
+        try {
+            const res = await fetch(urlAPI, { headers: { 'X-Master-Key': API_KEY }});
+            const data = await res.json();
+            let songs = data.record.songs || [];
+            if (songs[index]) {
+                songs[index].title = newTitle.trim();
+            }
+            
+            await fetch(urlAPI, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'X-Master-Key': API_KEY },
+                body: JSON.stringify({ songs })
+            });
+            loadSongs();
+        } catch (err) {
+            alert('Помилка перейменування');
+        }
+    }
 
     async function deleteSong(event, index) {
         event.stopPropagation();
@@ -516,7 +550,7 @@
         if (!title || !url) return alert('Заповніть поля!');
         
         try {
-            const res = label = await fetch(urlAPI, { headers: { 'X-Master-Key': API_KEY }});
+            const res = await fetch(urlAPI, { headers: { 'X-Master-Key': API_KEY }});
             const data = await res.json();
             const songs = data.record.songs || [];
             songs.push({ title, url });
