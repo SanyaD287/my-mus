@@ -61,7 +61,7 @@
             margin-bottom: 12px;
         }
 
-        .add-card {
+        .add-card, .search-card {
             background: #121212;
             padding: 16px;
             border-radius: 12px;
@@ -92,9 +92,25 @@
         }
         button#add-btn:hover { filter: brightness(1.1); }
 
+        /* Drag and Drop Zone styling */
+        .drop-zone {
+            border: 2px dashed rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            color: #777;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+        .drop-zone.dragover {
+            border-color: #ff1e2d;
+            background: rgba(255, 30, 45, 0.05);
+            color: #fff;
+        }
+
         .playlist-header {
             display: grid;
-            grid-template-columns: 40px 1fr 75px;
+            grid-template-columns: 40px 1fr 110px;
             color: #777;
             font-size: 12px;
             font-weight: 700;
@@ -113,7 +129,7 @@
         }
         li {
             display: grid;
-            grid-template-columns: 40px 1fr 75px;
+            grid-template-columns: 40px 1fr 110px;
             align-items: center;
             padding: 10px 16px;
             border-radius: 8px;
@@ -137,20 +153,21 @@
         }
         .action-btns {
             display: flex;
-            gap: 6px;
+            gap: 4px;
             justify-content: flex-end;
             align-items: center;
         }
-        .del-btn, .edit-btn {
+        .action-btn {
             background: transparent;
             border: none;
             color: #666;
             cursor: pointer;
-            font-size: 13px;
-            padding: 4px;
+            font-size: 12px;
+            padding: 4px 6px;
+            border-radius: 4px;
         }
-        .del-btn:hover { color: #ff1e2d; }
-        .edit-btn:hover { color: #fff; }
+        .action-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+        .del-btn:hover { color: #ff1e2d !important; }
 
         .spotify-player-bar {
             grid-column: 1 / 3;
@@ -202,8 +219,10 @@
             justify-content: center;
             color: #fff;
             cursor: pointer;
+            font-size: 14px;
         }
         .ctrl-btn:hover { border-color: #ff1e2d; }
+        .ctrl-btn.active-mode { border-color: #ff1e2d; color: #ff1e2d; }
         .play-pause-btn {
             width: 44px;
             height: 44px;
@@ -241,13 +260,29 @@
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            gap: 10px;
+            gap: 14px;
         }
         .volume-slider {
             width: 90px;
             height: 4px;
             accent-color: #ff1e2d;
             cursor: pointer;
+        }
+
+        /* Visualizer */
+        .visualizer {
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            height: 20px;
+            width: 50px;
+        }
+        .bar {
+            width: 4px;
+            background: #ff1e2d;
+            height: 4px;
+            border-radius: 2px;
+            transition: height 0.1s ease;
         }
 
         @media (max-width: 768px) {
@@ -274,7 +309,7 @@
 <div class="app-layout">
     <div class="sidebar">
         <div class="logo"><span>🔴</span> Spotisanya</div>
-        <div style="color: #777; font-size: 13px;">1.4v</div>
+        <div style="color: #777; font-size: 13px;">1.5v Pro</div>
     </div>
 
     <div class="spotify-player-bar">
@@ -288,9 +323,10 @@
 
         <div class="player-center-controls">
             <div class="player-buttons">
-                <button class="ctrl-btn" id="prev-btn">⏮</button>
+                <button class="ctrl-btn" id="loop-btn" title="Режим повтору">🔁</button>
+                <button class="ctrl-btn" id="prev-btn" title="Попередній">⏮</button>
                 <button class="ctrl-btn play-pause-btn" id="play-pause-btn">▶</button>
-                <button class="ctrl-btn" id="next-btn">⏭</button>
+                <button class="ctrl-btn" id="next-btn" title="Наступний">⏭</button>
             </div>
             <div class="progress-bar-wrapper">
                 <span class="time-text" id="current-time">0:00</span>
@@ -302,6 +338,12 @@
         </div>
 
         <div class="extra-controls">
+            <div class="visualizer" id="visualizer">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
             <span style="font-size: 14px;">🔊</span>
             <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.01" value="1">
         </div>
@@ -315,8 +357,15 @@
             <button id="add-btn">Додати</button>
         </div>
 
+        <div class="drop-zone" id="drop-zone">
+            📥 Перетягніть MP3 файли сюди для миттєвого відтворення
+        </div>
+
         <div>
-            <div class="section-title">Плейлист</div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <div class="section-title" style="margin-bottom: 0;">Плейлист</div>
+                <input type="text" id="search-input" placeholder="🔍 Пошук треку..." style="max-width: 250px; padding: 8px 12px; font-size: 13px;">
+            </div>
             <div class="playlist-header">
                 <div>#</div>
                 <div>Назва</div>
@@ -327,7 +376,7 @@
     </div>
 </div>
 
-<audio id="player" preload="auto"></audio>
+<audio id="player" preload="auto" crossorigin="anonymous"></audio>
 
 <script>
     const BIN_ID = '6a7c3536da38895dfed9948e'; 
@@ -335,7 +384,11 @@
     const urlAPI = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
 
     let currentSongs = [];
+    let queue = [];
     let currentIndex = 0;
+    let loopMode = 0; // 0: Вимкнено, 1: Повтор плейлиста, 2: Повтор треку
+    let searchQuery = '';
+
     const player = document.getElementById('player');
     const playPauseBtn = document.getElementById('play-pause-btn');
     const progressBar = document.getElementById('progress-bar');
@@ -344,6 +397,9 @@
     const currentTimeEl = document.getElementById('current-time');
     const durationTimeEl = document.getElementById('duration-time');
     const volumeSlider = document.getElementById('volume-slider');
+    const searchInput = document.getElementById('search-input');
+    const loopBtn = document.getElementById('loop-btn');
+    const dropZone = id => document.getElementById('drop-zone');
 
     volumeSlider.oninput = (e) => { player.volume = e.target.value; };
 
@@ -368,12 +424,29 @@
                 if (cached) currentSongs = JSON.parse(cached);
             }
             renderList();
+            restoreSavedPosition();
         } catch (err) {
             const cached = localStorage.getItem('spotisanya_cache');
             if (cached) {
                 currentSongs = JSON.parse(cached);
                 renderList();
+                restoreSavedPosition();
             }
+        }
+    }
+
+    function restoreSavedPosition() {
+        const savedIndex = localStorage.getItem('spotisanya_last_index');
+        const savedTime = localStorage.getItem('spotisanya_last_time');
+        if (savedIndex !== null && currentSongs[savedIndex]) {
+            currentIndex = parseInt(savedIndex);
+            const song = currentSongs[currentIndex];
+            player.src = song.url;
+            currentSongTitle.textContent = song.title;
+            if (savedTime) {
+                player.currentTime = parseFloat(savedTime);
+            }
+            renderList();
         }
     }
 
@@ -381,26 +454,42 @@
         const list = document.getElementById('list');
         list.innerHTML = '';
         
-        if (currentSongs.length === 0) {
-            list.innerHTML = '<li style="color: #666; justify-content: center; cursor: default; display: block; text-align: center; padding: 20px;">Плейлист порожній</li>';
+        const filteredSongs = currentSongs.map((song, originalIndex) => ({ ...song, originalIndex }))
+            .filter(song => song.title.toLowerCase().includes(searchQuery.toLowerCase()));
+
+        if (filteredSongs.length === 0) {
+            list.innerHTML = '<li style="color: #666; justify-content: center; cursor: default; display: block; text-align: center; padding: 20px;">Нічого не знайдено</li>';
             return;
         }
 
-        currentSongs.forEach((song, index) => {
+        filteredSongs.forEach((song, displayIdx) => {
             const li = document.createElement('li');
-            if (index === currentIndex) li.classList.add('active');
+            const isPlaying = song.originalIndex === currentIndex;
+            if (isPlaying) li.classList.add('active');
 
             li.innerHTML = `
-                <span class="song-index">${index + 1}</span>
+                <span class="song-index">${song.originalIndex + 1}</span>
                 <span class="song-name" title="${song.title}">${song.title}</span>
                 <div class="action-btns">
-                    <button class="edit-btn" onclick="renameSong(event, ${index})" title="Змінити назву">✏️</button>
-                    <button class="del-btn" onclick="deleteSong(event, ${index})" title="Видалити">✕</button>
+                    <button class="action-btn" onclick="addToQueue(event, ${song.originalIndex})" title="Грати наступним">⏭+</button>
+                    <button class="action-btn" onclick="renameSong(event, ${song.originalIndex})" title="Змінити назву">✏️</button>
+                    <button class="action-btn del-btn" onclick="deleteSong(event, ${song.originalIndex})" title="Видалити">✕</button>
                 </div>
             `;
-            li.onclick = () => playSong(index);
+            li.onclick = () => playSong(song.originalIndex);
             list.appendChild(li);
         });
+    }
+
+    searchInput.oninput = (e) => {
+        searchQuery = e.target.value;
+        renderList();
+    };
+
+    function addToQueue(event, index) {
+        event.stopPropagation();
+        queue.push(index);
+        alert(`Трек "${currentSongs[index].title}" додано в чергу!`);
     }
 
     function setupMediaSession(songTitle) {
@@ -413,12 +502,8 @@
 
             navigator.mediaSession.setActionHandler('play', () => { player.play(); playPauseBtn.textContent = '❚❚'; });
             navigator.mediaSession.setActionHandler('pause', () => { player.pause(); playPauseBtn.textContent = '▶'; });
-            navigator.mediaSession.setActionHandler('previoustrack', () => {
-                if (currentSongs.length > 0) playSong((currentIndex - 1 + currentSongs.length) % currentSongs.length);
-            });
-            navigator.mediaSession.setActionHandler('nexttrack', () => {
-                if (currentSongs.length > 0) playSong((currentIndex + 1) % currentSongs.length);
-            });
+            navigator.mediaSession.setActionHandler('previoustrack', playPrev);
+            navigator.mediaSession.setActionHandler('nexttrack', playNext);
         }
     }
 
@@ -440,6 +525,23 @@
         renderList();
     }
 
+    function playNext() {
+        if (queue.length > 0) {
+            const nextIndex = queue.shift();
+            playSong(nextIndex);
+            return;
+        }
+        if (currentSongs.length > 0) {
+            playSong((currentIndex + 1) % currentSongs.length);
+        }
+    }
+
+    function playPrev() {
+        if (currentSongs.length > 0) {
+            playSong((currentIndex - 1 + currentSongs.length) % currentSongs.length);
+        }
+    }
+
     playPauseBtn.onclick = () => {
         if (currentSongs.length === 0) return;
         if (player.paused) {
@@ -457,14 +559,24 @@
         }
     };
 
-    document.getElementById('next-btn').onclick = () => {
-        if (currentSongs.length === 0) return;
-        playSong((currentIndex + 1) % currentSongs.length);
-    };
+    document.getElementById('next-btn').onclick = playNext;
+    document.getElementById('prev-btn').onclick = playPrev;
 
-    document.getElementById('prev-btn').onclick = () => {
-        if (currentSongs.length === 0) return;
-        playSong((currentIndex - 1 + currentSongs.length) % currentSongs.length);
+    loopBtn.onclick = () => {
+        loopMode = (loopMode + 1) % 3;
+        if (loopMode === 0) {
+            loopBtn.textContent = '🔁';
+            loopBtn.classList.remove('active-mode');
+            loopBtn.title = "Повтор вимкнено";
+        } else if (loopMode === 1) {
+            loopBtn.textContent = '🔁';
+            loopBtn.classList.add('active-mode');
+            loopBtn.title = "Повтор всього плейлиста";
+        } else if (loopMode === 2) {
+            loopBtn.textContent = '🔂';
+            loopBtn.classList.add('active-mode');
+            loopBtn.title = "Повтор одного треку";
+        }
     };
 
     window.addEventListener('keydown', (e) => {
@@ -475,10 +587,10 @@
             playPauseBtn.click();
         } else if (e.code === 'MediaTrackNext' || (e.code === 'ArrowRight' && e.altKey)) {
             e.preventDefault();
-            document.getElementById('next-btn').click();
+            playNext();
         } else if (e.code === 'MediaTrackPrevious' || (e.code === 'ArrowLeft' && e.altKey)) {
             e.preventDefault();
-            document.getElementById('prev-btn').click();
+            playPrev();
         }
     });
 
@@ -487,6 +599,10 @@
             progressBar.style.width = ((player.currentTime / player.duration) * 100) + '%';
             currentTimeEl.textContent = formatTime(player.currentTime);
             durationTimeEl.textContent = formatTime(player.duration);
+
+            // Збереження прогресу в реальному часі
+            localStorage.setItem('spotisanya_last_index', currentIndex);
+            localStorage.setItem('spotisanya_last_time', player.currentTime);
         }
     };
 
@@ -497,8 +613,45 @@
     };
 
     player.onended = () => {
-        if (currentSongs.length > 0) playSong((currentIndex + 1) % currentSongs.length);
+        if (loopMode === 2) {
+            player.play();
+        } else {
+            playNext();
+        }
     };
+
+    // Drag and Drop локальних MP3 файлів
+    const dropZoneEl = document.getElementById('drop-zone');
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropZoneEl.addEventListener(eventName, (e) => { e.preventDefault(); dropZoneEl.classList.add('dragover'); }, false);
+    });
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropZoneEl.addEventListener(eventName, (e) => { e.preventDefault(); dropZoneEl.classList.remove('dragover'); }, false);
+    });
+    dropZoneEl.addEventListener('drop', (e) => {
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+            const file = files[0];
+            if (file.type.includes('audio') || file.name.endsWith('.mp3')) {
+                const blobUrl = URL.createObjectURL(file);
+                const title = file.name.replace(/\.[^/.]+$/, "");
+                currentSongs.push({ title, url: blobUrl });
+                renderList();
+                playSong(currentSongs.length - 1);
+            } else {
+                alert('Будь ласка, перетягніть аудіофайл (MP3)');
+            }
+        }
+    });
+
+    // Анімація еквалайзера
+    setInterval(() => {
+        const bars = document.querySelectorAll('.bar');
+        bars.forEach(bar => {
+            const height = player.paused ? 4 : Math.floor(Math.random() * 16) + 4;
+            bar.style.height = height + 'px';
+        });
+    }, 120);
 
     async function renameSong(event, index) {
         event.stopPropagation();
