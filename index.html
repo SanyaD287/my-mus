@@ -477,10 +477,13 @@
         </div>
 
         <div class="section-title">Додати трек</div>
-        <div class="add-card">
+        <div class="add-card" style="flex-wrap: wrap;">
             <input type="text" id="title" placeholder="Назва треку">
             <input type="text" id="url" placeholder="Посилання на MP3">
             <button id="add-btn">Додати</button>
+            <!-- Додана кнопка імпорту папки -->
+            <input type="file" id="folder-input" webkitdirectory directory multiple style="display: none;">
+            <button id="folder-btn" class="skin-btn" style="padding: 12px 20px; font-size: 13px; font-weight: 700; cursor: pointer;">📂 Імпортувати папку</button>
         </div>
 
         <div class="drop-zone" id="drop-zone">
@@ -849,6 +852,38 @@
         }
     });
 
+    // Обробник імпорту папки
+    const folderBtn = document.getElementById('folder-btn');
+    const folderInput = document.getElementById('folder-input');
+
+    folderBtn.onclick = () => folderInput.click();
+
+    folderInput.onchange = (e) => {
+        const files = e.target.files;
+        let addedCount = 0;
+
+        for (let file of files) {
+            if (file.type.includes('audio') || file.name.endsWith('.mp3') || file.name.endsWith('.wav') || file.name.endsWith('.flac')) {
+                const blobUrl = URL.createObjectURL(file);
+                const title = file.name.replace(/\.[^/.]+$/, "");
+                currentSongs.push({ title, url: blobUrl });
+                addedCount++;
+            }
+        }
+
+        if (addedCount > 0) {
+            renderList();
+            if (!player.src && currentSongs.length > 0) {
+                playSong(currentSongs.length - addedCount);
+            }
+            alert(`Успішно імпортовано треків: ${addedCount}`);
+        } else {
+            alert('У вибраній папці не знайдено аудіофайлів!');
+        }
+        
+        folderInput.value = '';
+    };
+
     // Світломузика
     const dataArray = new Uint8Array(16);
     setInterval(() => {
@@ -925,16 +960,14 @@
                 headers: { 'Content-Type': 'application/json', 'X-Master-Key': API_KEY },
                 body: JSON.stringify({ songs })
             });
-
             document.getElementById('title').value = '';
             document.getElementById('url').value = '';
             loadSongs();
         } catch (err) {
-            alert('Помилка додавання треку');
+            alert('Помилка додавання');
         }
     };
 
-    // Завантаження треків при старті
     loadSongs();
 </script>
 </body>
