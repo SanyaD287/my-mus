@@ -20,7 +20,7 @@
 
         .app-layout {
             display: grid;
-            grid-template-columns: 240px 1fr 300px;
+            grid-template-columns: 240px 1fr;
             grid-template-rows: 1fr 90px;
             height: 100vh;
             width: 100vw;
@@ -44,33 +44,6 @@
             gap: 8px;
         }
         .logo span { color: #ff1e2d; }
-
-        /* Lyrics Panel */
-        .lyrics-sidebar {
-            background: #0a0a0a;
-            border-left: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            grid-column: 3 / 4;
-            grid-row: 1 / 2;
-        }
-        .lyrics-title { font-size: 14px; font-weight: 700; color: #aaa; text-transform: uppercase; }
-        .lyrics-textarea {
-            width: 100%;
-            flex: 1;
-            background: #121212;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 8px;
-            color: #fff;
-            padding: 12px;
-            font-size: 13px;
-            resize: none;
-            outline: none;
-            line-height: 1.5;
-        }
-        .lyrics-textarea:focus { border-color: #ff1e2d; }
 
         .main-content {
             padding: 24px 32px;
@@ -110,7 +83,7 @@
             color: #888;
         }
         .eq-slider {
-            width: 80px;
+            width: 100px;
             accent-color: #ff1e2d;
             cursor: pointer;
         }
@@ -228,7 +201,7 @@
         .del-btn:hover { color: #ff1e2d !important; }
 
         .spotify-player-bar {
-            grid-column: 1 / 4;
+            grid-column: 1 / 3;
             grid-row: 2 / 3;
             background: #0c0c0c;
             border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -345,7 +318,7 @@
         @media (max-width: 768px) {
             body { overflow-y: auto; }
             .app-layout { display: flex; flex-direction: column; height: auto; min-height: 100vh; }
-            .sidebar, .lyrics-sidebar { display: none; }
+            .sidebar { display: none; }
             .spotify-player-bar {
                 position: fixed;
                 bottom: 0;
@@ -366,12 +339,7 @@
 <div class="app-layout">
     <div class="sidebar">
         <div class="logo"><span>🔴</span> Spotisanya</div>
-        <div style="color: #777; font-size: 13px;">1.6v Pro Max</div>
-    </div>
-
-    <div class="lyrics-sidebar">
-        <div class="lyrics-title">Текст пісні (Lyrics)</div>
-        <textarea id="lyrics-input" class="lyrics-textarea" placeholder="Введіть або вставте текст пісні сюди... Автоматично збережеться для цього треку."></textarea>
+        <div style="color: #777; font-size: 13px;">1.7v Pro</div>
     </div>
 
     <div class="spotify-player-bar">
@@ -483,7 +451,6 @@
     const volumeSlider = document.getElementById('volume-slider');
     const searchInput = document.getElementById('search-input');
     const loopBtn = document.getElementById('loop-btn');
-    const lyricsInput = document.getElementById('lyrics-input');
 
     // Web Audio API Setup
     let audioCtx, sourceNode, lowFilter, midFilter, highFilter, analyser;
@@ -579,22 +546,12 @@
             const song = currentSongs[currentIndex];
             player.src = song.url;
             currentSongTitle.textContent = song.title;
-            loadLyricsForCurrent();
             if (savedTime) {
                 player.currentTime = parseFloat(savedTime);
             }
             renderList();
         }
     }
-
-    function loadLyricsForCurrent() {
-        const savedLyrics = localStorage.getItem(`spotisanya_lyrics_${currentIndex}`);
-        lyricsInput.value = savedLyrics || '';
-    }
-
-    lyricsInput.oninput = () => {
-        localStorage.setItem(`spotisanya_lyrics_${currentIndex}`, lyricsInput.value);
-    };
 
     function renderList() {
         const list = document.getElementById('list');
@@ -672,7 +629,6 @@
         });
         
         currentSongTitle.textContent = song.title;
-        loadLyricsForCurrent();
         renderList();
     }
 
