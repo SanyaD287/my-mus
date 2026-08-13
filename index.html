@@ -266,7 +266,7 @@
 <div class="app-layout">
     <div class="sidebar">
         <div class="logo"><span>🔴</span> Spotisanya</div>
-        <div style="color: #777; font-size: 13px;">1.0v</div>
+        <div style="color: #777; font-size: 13px;">1.1v</div>
     </div>
 
     <div class="spotify-player-bar">
@@ -392,6 +392,34 @@
         });
     }
 
+    function setupMediaSession(songTitle) {
+        if ('mediaSession' in navigator) {
+            navigator.mediaSession.metadata = new MediaMetadata({
+                title: songTitle,
+                artist: 'SpotiSanya Cloud Player',
+                album: 'Cloud Playlist',
+                artwork: [
+                    { src: 'https://via.placeholder.com/512', sizes: '512x512', type: 'image/png' }
+                ]
+            });
+
+            navigator.mediaSession.setActionHandler('play', () => {
+                player.play();
+                playPauseBtn.textContent = '❚❚';
+            });
+            navigator.mediaSession.setActionHandler('pause', () => {
+                player.pause();
+                playPauseBtn.textContent = '▶';
+            });
+            navigator.mediaSession.setActionHandler('previoustrack', () => {
+                document.getElementById('prev-btn').click();
+            });
+            navigator.mediaSession.setActionHandler('nexttrack', () => {
+                document.getElementById('next-btn').click();
+            });
+        }
+    }
+
     function playSong(index) {
         if (index < 0 || index >= currentSongs.length) return;
         currentIndex = index;
@@ -401,13 +429,15 @@
         player.play().catch(e => console.log("Потокове відтворення зупинено системою:", e));
         currentSongTitle.textContent = song.title;
         playPauseBtn.textContent = '❚❚';
+        
+        setupMediaSession(song.title);
         renderList();
     }
 
     playPauseBtn.onclick = () => {
         if (currentSongs.length === 0) return;
         if (player.paused) {
-            if (!player.src) playSong(0);
+            if (!player.src && currentSongs.length > 0) playSong(0);
             else player.play();
             playPauseBtn.textContent = '❚❚';
         } else {
