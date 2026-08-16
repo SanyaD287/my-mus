@@ -542,12 +542,7 @@
     // Web Audio API Setup
     let audioCtx, sourceNode, lowFilter, midFilter, highFilter, analyser;
     function initAudioContext() {
-        if (audioCtx) {
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-            return;
-        }
+        if (audioCtx) return;
         try {
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             sourceNode = audioCtx.createMediaElementSource(player);
@@ -711,22 +706,6 @@
         historyContainer.innerHTML = playHistory.map(s => `<span style="background: var(--bg-sidebar); padding: 4px 8px; border-radius: 4px; border: 1px solid var(--border-color);">${s.title}</span>`).join(' ');
     }
 
-    // Реєстрація Media Session для фонової роботи та керування з системи
-    function updateMediaSession(song) {
-        if ('mediaSession' in navigator) {
-            navigator.mediaSession.metadata = new MediaMetadata({
-                title: song.title,
-                artist: 'SpotiSanya Player',
-                album: 'Cloud Playlist'
-            });
-
-            navigator.mediaSession.setActionHandler('play', () => { player.play(); playPauseBtn.textContent = '❚❚'; });
-            navigator.mediaSession.setActionHandler('pause', () => { player.pause(); playPauseBtn.textContent = '▶'; });
-            navigator.mediaSession.setActionHandler('previoustrack', playPrev);
-            navigator.mediaSession.setActionHandler('nexttrack', playNext);
-        }
-    }
-
     function playSong(index) {
         if (index < 0 || index >= currentSongs.length) return;
         initAudioContext();
@@ -739,7 +718,6 @@
         player.play().then(() => {
             playPauseBtn.textContent = '❚❚';
             updateHistory(song);
-            updateMediaSession(song);
         }).catch(e => {
             console.log("Потокове відтворення заблоковано:", e);
         });
