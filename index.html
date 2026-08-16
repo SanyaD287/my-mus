@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SpotiSanya</title>
     <style>
-        /* Теми оформлення (Скін-менеджер) */
         :root {
             --accent: #ff1e2d;
             --accent-glow: rgba(255, 30, 45, 0.15);
@@ -120,7 +119,7 @@
             margin-bottom: 12px;
         }
 
-        .add-card, .equalizer-card, .history-card {
+        .add-card, .equalizer-card {
             background: var(--bg-card);
             padding: 16px;
             border-radius: 12px;
@@ -360,21 +359,6 @@
             cursor: pointer;
         }
 
-        .visualizer {
-            display: flex;
-            align-items: flex-end;
-            gap: 2px;
-            height: 20px;
-            width: 50px;
-        }
-        .bar {
-            width: 4px;
-            background: var(--accent);
-            height: 4px;
-            border-radius: 2px;
-            transition: height 0.05s ease;
-        }
-
         @media (max-width: 768px) {
             body { overflow-y: auto; }
             .app-layout { display: flex; flex-direction: column; height: auto; min-height: 100vh; }
@@ -399,10 +383,10 @@
 <div class="app-layout">
     <div class="sidebar">
         <div class="logo"><span>🔴</span> Spotisanya</div>
-        <div style="color: var(--text-muted); font-size: 13px;">1.8v Pro</div>
+        <div style="color: var(--text-muted); font-size: 13px;">1.8v Lite</div>
 
         <div class="skin-selector">
-            <div class="skin-label">Скін / Тема</div>
+            <div class="skin-label">Тема</div>
             <div class="skin-btns">
                 <button class="skin-btn" onclick="setTheme('cyberpunk')">Cyber</button>
                 <button class="skin-btn" onclick="setTheme('neon')">Neon</button>
@@ -416,14 +400,14 @@
             <div style="width: 32px; height: 32px; background: var(--accent); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px;">🎵</div>
             <div>
                 <div class="current-title" id="current-song-title">Нічого не вибрано</div>
-                <div class="current-artist">Cloud Player</div>
+                <div class="current-artist">Player</div>
             </div>
         </div>
 
         <div class="player-center-controls">
             <div class="player-buttons">
-                <button class="ctrl-btn" id="shuffle-btn" title="Випадковий порядок (Shuffle)">🔀</button>
-                <button class="ctrl-btn" id="loop-btn" title="Режим повтору">🔁</button>
+                <button class="ctrl-btn" id="shuffle-btn" title="Випадковий порядок">🔀</button>
+                <button class="ctrl-btn" id="loop-btn" title="Повтор">🔁</button>
                 <button class="ctrl-btn" id="prev-btn" title="Попередній">⏮</button>
                 <button class="ctrl-btn play-pause-btn" id="play-pause-btn">▶</button>
                 <button class="ctrl-btn" id="next-btn" title="Наступний">⏭</button>
@@ -438,30 +422,24 @@
         </div>
 
         <div class="extra-controls">
-            <div class="visualizer" id="visualizer">
-                <div class="bar"></div>
-                <div class="bar"></div>
-                <div class="bar"></div>
-                <div class="bar"></div>
-            </div>
             <span style="font-size: 14px;">🔊</span>
             <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.01" value="1">
         </div>
     </div>
 
     <div class="main-content">
-        <div class="section-title">Еквалайзер (Web Audio API)</div>
+        <div class="section-title">Еквалайзер</div>
         <div class="equalizer-card">
             <div class="eq-group">
-                <label>Low (Баси)</label>
+                <label>Low</label>
                 <input type="range" id="eq-low" class="eq-slider" min="-20" max="20" step="1" value="0">
             </div>
             <div class="eq-group">
-                <label>Mid (Середні)</label>
+                <label>Mid</label>
                 <input type="range" id="eq-mid" class="eq-slider" min="-20" max="20" step="1" value="0">
             </div>
             <div class="eq-group">
-                <label>High (Високі)</label>
+                <label>High</label>
                 <input type="range" id="eq-high" class="eq-slider" min="-20" max="20" step="1" value="0">
             </div>
             <div class="eq-presets">
@@ -471,28 +449,23 @@
             </div>
         </div>
 
-        <div class="section-title">Історія прослуховування</div>
-        <div class="history-card" id="history-container" style="font-size: 13px; color: var(--text-muted);">
-            Ще нічого не слухали в цій сесії.
-        </div>
-
         <div class="section-title">Додати трек</div>
         <div class="add-card" style="flex-wrap: wrap;">
             <input type="text" id="title" placeholder="Назва треку">
             <input type="text" id="url" placeholder="Посилання на MP3">
             <button id="add-btn">Додати</button>
             <input type="file" id="folder-input" webkitdirectory directory multiple style="display: none;">
-            <button id="folder-btn" class="skin-btn" style="padding: 12px 20px; font-size: 13px; font-weight: 700; cursor: pointer;">📂 Імпортувати папку</button>
+            <button id="folder-btn" class="skin-btn" style="padding: 12px 20px; font-size: 13px; font-weight: 700; cursor: pointer;">📂 Папка</button>
         </div>
 
         <div class="drop-zone" id="drop-zone">
-            📥 Перетягніть MP3 файли сюди для миттєвого відтворення
+            📥 Перетягніть MP3 файли сюди
         </div>
 
         <div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                 <div class="section-title" style="margin-bottom: 0;">Плейлист</div>
-                <input type="text" id="search-input" placeholder="🔍 Пошук треку..." style="max-width: 250px; padding: 8px 12px; font-size: 13px;">
+                <input type="text" id="search-input" placeholder="🔍 Пошук..." style="max-width: 250px; padding: 8px 12px; font-size: 13px;">
             </div>
             <div class="playlist-header">
                 <div>#</div>
@@ -517,7 +490,6 @@
     let loopMode = 0; 
     let shuffleMode = false;
     let searchQuery = '';
-    let playHistory = [];
 
     const player = document.getElementById('player');
     const playPauseBtn = document.getElementById('play-pause-btn');
@@ -531,7 +503,6 @@
     const loopBtn = document.getElementById('loop-btn');
     const shuffleBtn = document.getElementById('shuffle-btn');
 
-    // Скін-менеджер
     window.setTheme = (themeName) => {
         document.documentElement.setAttribute('data-theme', themeName);
         localStorage.setItem('spotisanya_theme', themeName);
@@ -539,8 +510,7 @@
     const savedTheme = localStorage.getItem('spotisanya_theme');
     if (savedTheme) setTheme(savedTheme);
 
-    // Web Audio API Setup
-    let audioCtx, sourceNode, lowFilter, midFilter, highFilter, analyser;
+    let audioCtx, sourceNode, lowFilter, midFilter, highFilter;
     function initAudioContext() {
         if (audioCtx) return;
         try {
@@ -560,27 +530,20 @@
             highFilter.type = 'highshelf';
             highFilter.frequency.value = 4000;
 
-            analyser = audioCtx.createAnalyser();
-            analyser.fftSize = 64;
-
             sourceNode.connect(lowFilter);
             lowFilter.connect(midFilter);
             midFilter.connect(highFilter);
-            highFilter.connect(analyser);
-            analyser.connect(audioCtx.destination);
-        } catch(e) {
-            console.log("AudioContext error:", e);
-        }
+            highFilter.connect(audioCtx.destination);
+        } catch(e) {}
     }
 
-    // EQ Sliders & Volume
     const eqLow = document.getElementById('eq-low');
     const eqMid = document.getElementById('eq-mid');
     const eqHigh = document.getElementById('eq-high');
 
-    eqLow.oninput = (e) => { if (lowFilter) lowFilter.gain.value = parseFloat(e.target.value); saveState(); };
-    eqMid.oninput = (e) => { if (midFilter) midFilter.gain.value = parseFloat(e.target.value); saveState(); };
-    eqHigh.oninput = (e) => { if (highFilter) highFilter.gain.value = parseFloat(e.target.value); saveState(); };
+    eqLow.oninput = (e) => { if (lowFilter) lowFilter.gain.value = parseFloat(e.target.value); };
+    eqMid.oninput = (e) => { if (midFilter) midFilter.gain.value = parseFloat(e.target.value); };
+    eqHigh.oninput = (e) => { if (highFilter) highFilter.gain.value = parseFloat(e.target.value); };
 
     window.setEqPreset = (low, mid, high) => {
         eqLow.value = low;
@@ -589,7 +552,6 @@
         if (lowFilter) lowFilter.gain.value = low;
         if (midFilter) midFilter.gain.value = mid;
         if (highFilter) highFilter.gain.value = high;
-        saveState();
     };
 
     volumeSlider.oninput = (e) => { 
@@ -624,37 +586,15 @@
                 if (cached) currentSongs = JSON.parse(cached);
             }
             renderList();
-            restoreSavedPosition();
         } catch (err) {
             const cached = localStorage.getItem('spotisanya_cache');
             if (cached) {
                 currentSongs = JSON.parse(cached);
                 renderList();
-                restoreSavedPosition();
             }
         }
     }
     loadSongs();
-
-    function restoreSavedPosition() {
-        const savedIndex = localStorage.getItem('spotisanya_last_index');
-        const savedTime = localStorage.getItem('spotisanya_last_time');
-        if (savedIndex !== null && currentSongs[savedIndex]) {
-            currentIndex = parseInt(savedIndex);
-            const song = currentSongs[currentIndex];
-            player.src = song.url;
-            currentSongTitle.textContent = song.title;
-            if (savedTime) {
-                player.currentTime = parseFloat(savedTime);
-            }
-            renderList();
-        }
-    }
-
-    function saveState() {
-        localStorage.setItem('spotisanya_last_index', currentIndex);
-        localStorage.setItem('spotisanya_last_time', player.currentTime);
-    }
 
     function renderList() {
         const list = document.getElementById('list');
@@ -670,15 +610,14 @@
 
         filteredSongs.forEach((song) => {
             const li = document.createElement('li');
-            const isPlaying = song.originalIndex === currentIndex;
-            if (isPlaying) li.classList.add('active');
+            if (song.originalIndex === currentIndex) li.classList.add('active');
 
             li.innerHTML = `
                 <span class="song-index">${song.originalIndex + 1}</span>
                 <span class="song-name" title="${song.title}">${song.title}</span>
                 <div class="action-btns">
-                    <button class="action-btn" onclick="addToQueue(event, ${song.originalIndex})" title="Грати наступним">⏭+</button>
-                    <button class="action-btn" onclick="renameSong(event, ${song.originalIndex})" title="Змінити назву">✏️</button>
+                    <button class="action-btn" onclick="addToQueue(event, ${song.originalIndex})" title="Наступним">⏭+</button>
+                    <button class="action-btn" onclick="renameSong(event, ${song.originalIndex})" title="Змінити">✏️</button>
                     <button class="action-btn del-btn" onclick="deleteSong(event, ${song.originalIndex})" title="Видалити">✕</button>
                 </div>
             `;
@@ -697,15 +636,6 @@
         queue.push(index);
     }
 
-    function updateHistory(song) {
-        playHistory = playHistory.filter(s => s.title !== song.title);
-        playHistory.unshift(song);
-        if (playHistory.length > 5) playHistory.pop();
-
-        const historyContainer = document.getElementById('history-container');
-        historyContainer.innerHTML = playHistory.map(s => `<span style="background: var(--bg-sidebar); padding: 4px 8px; border-radius: 4px; border: 1px solid var(--border-color);">${s.title}</span>`).join(' ');
-    }
-
     function playSong(index) {
         if (index < 0 || index >= currentSongs.length) return;
         initAudioContext();
@@ -717,42 +647,25 @@
         player.load();
         player.play().then(() => {
             playPauseBtn.textContent = '❚❚';
-            updateHistory(song);
-        }).catch(e => {
-            console.log("Потокове відтворення заблоковано:", e);
-        });
+        }).catch(e => {});
         
         currentSongTitle.textContent = song.title;
         renderList();
     }
 
-    function getNextShuffleIndex() {
-        if (currentSongs.length <= 1) return 0;
-        let randomIndex;
-        do {
-            randomIndex = Math.floor(Math.random() * currentSongs.length);
-        } while (randomIndex === currentIndex);
-        return randomIndex;
-    }
-
     function playNext() {
         if (queue.length > 0) {
-            const nextIndex = queue.shift();
-            playSong(nextIndex);
+            playSong(queue.shift());
             return;
         }
-        if (shuffleMode) {
-            playSong(getNextShuffleIndex());
+        if (shuffleMode && currentSongs.length > 1) {
+            let rnd;
+            do { rnd = Math.floor(Math.random() * currentSongs.length); } while (rnd === currentIndex);
+            playSong(rnd);
             return;
         }
         if (currentSongs.length > 0) {
             playSong((currentIndex + 1) % currentSongs.length);
-        }
-    }
-
-    function playPrev() {
-        if (currentSongs.length > 0) {
-            playSong((currentIndex - 1 + currentSongs.length) % currentSongs.length);
         }
     }
 
@@ -761,11 +674,8 @@
         initAudioContext();
 
         if (player.paused) {
-            if (!player.src && currentSongs.length > 0) {
-                playSong(0);
-            } else {
-                player.play().then(() => { playPauseBtn.textContent = '❚❚'; });
-            }
+            if (!player.src) playSong(0);
+            else player.play().then(() => { playPauseBtn.textContent = '❚❚'; });
         } else {
             player.pause();
             playPauseBtn.textContent = '▶';
@@ -773,29 +683,19 @@
     };
 
     document.getElementById('next-btn').onclick = playNext;
-    document.getElementById('prev-btn').onclick = playPrev;
+    document.getElementById('prev-btn').onclick = () => {
+        if (currentSongs.length > 0) playSong((currentIndex - 1 + currentSongs.length) % currentSongs.length);
+    };
 
     shuffleBtn.onclick = () => {
         shuffleMode = !shuffleMode;
-        if (shuffleMode) {
-            shuffleBtn.classList.add('active-mode');
-        } else {
-            shuffleBtn.classList.remove('active-mode');
-        }
+        shuffleBtn.classList.toggle('active-mode', shuffleMode);
     };
 
     loopBtn.onclick = () => {
         loopMode = (loopMode + 1) % 3;
-        if (loopMode === 0) {
-            loopBtn.textContent = '🔁';
-            loopBtn.classList.remove('active-mode');
-        } else if (loopMode === 1) {
-            loopBtn.textContent = '🔁';
-            loopBtn.classList.add('active-mode');
-        } else if (loopMode === 2) {
-            loopBtn.textContent = '🔂';
-            loopBtn.classList.add('active-mode');
-        }
+        loopBtn.classList.toggle('active-mode', loopMode > 0);
+        loopBtn.textContent = loopMode === 2 ? '🂡' : '🔁';
     };
 
     player.ontimeupdate = () => {
@@ -803,7 +703,6 @@
             progressBar.style.width = ((player.currentTime / player.duration) * 100) + '%';
             currentTimeEl.textContent = formatTime(player.currentTime);
             durationTimeEl.textContent = formatTime(player.duration);
-            saveState();
         }
     };
 
@@ -814,28 +713,18 @@
     };
 
     player.onended = () => {
-        if (loopMode === 2) {
-            player.play();
-        } else {
-            playNext();
-        }
+        if (loopMode === 2) player.play();
+        else playNext();
     };
 
-    // Додавання треку через хмару
     document.getElementById('add-btn').onclick = async () => {
-        const titleInput = document.getElementById('title');
-        const urlInput = document.getElementById('url');
-        const title = titleInput.value.trim();
-        const url = urlInput.value.trim();
-
-        if (!title || !url) {
-            alert('Заповніть назву та посилання!');
-            return;
-        }
+        const title = document.getElementById('title').value.trim();
+        const url = document.getElementById('url').value.trim();
+        if (!title || !url) return alert('Заповніть поля!');
 
         currentSongs.push({ title, url });
-        titleInput.value = '';
-        urlInput.value = '';
+        document.getElementById('title').value = '';
+        document.getElementById('url').value = '';
         renderList();
 
         try {
@@ -845,94 +734,50 @@
                 body: JSON.stringify({ songs: currentSongs })
             });
             localStorage.setItem('spotisanya_cache', JSON.stringify(currentSongs));
-        } catch(err) {
-            console.log("Помилка збереження в хмару:", err);
+        } catch(err) {}
+    };
+
+    const dropZoneEl = document.getElementById('drop-zone');
+    dropZoneEl.ondragover = (e) => { e.preventDefault(); dropZoneEl.classList.add('dragover'); };
+    dropZoneEl.ondragleave = () => dropZoneEl.classList.remove('dragover');
+    dropZoneEl.ondrop = (e) => {
+        e.preventDefault();
+        dropZoneEl.classList.remove('dragover');
+        if (e.dataTransfer.files.length > 0) {
+            const file = e.dataTransfer.files[0];
+            if (file.type.includes('audio') || file.name.endsWith('.mp3')) {
+                currentSongs.push({ title: file.name.replace(/\.[^/.]+$/, ""), url: URL.createObjectURL(file) });
+                renderList();
+                playSong(currentSongs.length - 1);
+            }
         }
     };
 
-    // Drag and Drop
-    const dropZoneEl = document.getElementById('drop-zone');
-    ['dragenter', 'dragover'].forEach(eventName => {
-        dropZoneEl.addEventListener(eventName, (e) => { e.preventDefault(); dropZoneEl.classList.add('dragover'); }, false);
-    });
-    ['dragleave', 'drop'].forEach(eventName => {
-        dropZoneEl.addEventListener(eventName, (e) => { e.preventDefault(); dropZoneEl.classList.remove('dragover'); }, false);
-    });
-    dropZoneEl.addEventListener('drop', (e) => {
-        const files = e.dataTransfer.files;
-        if (files.length > 0) {
-            const file = files[0];
-            if (file.type.includes('audio') || file.name.endsWith('.mp3')) {
-                const blobUrl = URL.createObjectURL(file);
-                const title = file.name.replace(/\.[^/.]+$/, "");
-                currentSongs.push({ title, url: blobUrl });
-                renderList();
-                playSong(currentSongs.length - 1);
-            } else {
-                alert('Будь ласка, перетягніть аудіофайл (MP3)');
-            }
-        }
-    });
-
-    // Імпорт папки
     const folderBtn = document.getElementById('folder-btn');
     const folderInput = document.getElementById('folder-input');
-
     folderBtn.onclick = () => folderInput.click();
-
     folderInput.onchange = (e) => {
-        const files = e.target.files;
-        let addedCount = 0;
-
-        for (let file of files) {
-            if (file.type.includes('audio') || file.name.endsWith('.mp3') || file.name.endsWith('.wav') || file.name.endsWith('.flac')) {
-                const blobUrl = URL.createObjectURL(file);
-                const title = file.name.replace(/\.[^/.]+$/, "");
-                currentSongs.push({ title, url: blobUrl });
-                addedCount++;
+        let added = 0;
+        for (let file of e.target.files) {
+            if (file.name.endsWith('.mp3') || file.name.endsWith('.wav')) {
+                currentSongs.push({ title: file.name.replace(/\.[^/.]+$/, ""), url: URL.createObjectURL(file) });
+                added++;
             }
         }
-
-        if (addedCount > 0) {
+        if (added > 0) {
             renderList();
-            if (!player.src && currentSongs.length > 0) {
-                playSong(currentSongs.length - addedCount);
-            }
-            alert(`Успішно імпортовано треків: ${addedCount}`);
-        } else {
-            alert('У вибраній папці не знайдено аудіофайлів!');
+            if (!player.src) playSong(currentSongs.length - added);
         }
         folderInput.value = '';
     };
 
-    // Візуалізація
-    const dataArray = new Uint8Array(16);
-    setInterval(() => {
-        const bars = document.querySelectorAll('.bar');
-        if (analyser && !player.paused) {
-            analyser.getByteFrequencyData(dataArray);
-            bars.forEach((bar, i) => {
-                const val = dataArray[i * 2] || 4;
-                const height = Math.max(4, Math.floor((val / 255) * 20));
-                bar.style.height = height + 'px';
-            });
-        } else {
-            bars.forEach(bar => { bar.style.height = '4px'; });
-        }
-    }, 60);
-
     async function renameSong(event, index) {
         event.stopPropagation();
-        const currentSong = currentSongs[index];
-        const newTitle = prompt("Введіть нову назву треку:", currentSong.title);
+        const newTitle = prompt("Нова назва:", currentSongs[index].title);
         if (!newTitle || !newTitle.trim()) return;
-
         currentSongs[index].title = newTitle.trim();
         renderList();
-        if (index === currentIndex) {
-            currentSongTitle.textContent = newTitle.trim();
-        }
-
+        if (index === currentIndex) currentSongTitle.textContent = newTitle.trim();
         try {
             await fetch(urlAPI, {
                 method: 'PUT',
@@ -940,18 +785,14 @@
                 body: JSON.stringify({ songs: currentSongs })
             });
             localStorage.setItem('spotisanya_cache', JSON.stringify(currentSongs));
-        } catch(err) {
-            console.log("Помилка оновлення хмари:", err);
-        }
+        } catch(err) {}
     }
 
     async function deleteSong(event, index) {
         event.stopPropagation();
-        if (!confirm("Видалити цей трек?")) return;
-
+        if (!confirm("Видалити?")) return;
         currentSongs.splice(index, 1);
         renderList();
-
         try {
             await fetch(urlAPI, {
                 method: 'PUT',
@@ -959,9 +800,7 @@
                 body: JSON.stringify({ songs: currentSongs })
             });
             localStorage.setItem('spotisanya_cache', JSON.stringify(currentSongs));
-        } catch(err) {
-            console.log("Помилка видалення з хмари:", err);
-        }
+        } catch(err) {}
     }
 </script>
 </body>
