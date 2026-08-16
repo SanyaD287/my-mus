@@ -481,7 +481,6 @@
             <input type="text" id="title" placeholder="Назва треку">
             <input type="text" id="url" placeholder="Посилання на MP3">
             <button id="add-btn">Додати</button>
-            <!-- Додана кнопка імпорту папки -->
             <input type="file" id="folder-input" webkitdirectory directory multiple style="display: none;">
             <button id="folder-btn" class="skin-btn" style="padding: 12px 20px; font-size: 13px; font-weight: 700; cursor: pointer;">📂 Імпортувати папку</button>
         </div>
@@ -543,7 +542,12 @@
     // Web Audio API Setup
     let audioCtx, sourceNode, lowFilter, midFilter, highFilter, analyser;
     function initAudioContext() {
-        if (audioCtx) return;
+        if (audioCtx) {
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return;
+        }
         try {
             audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             sourceNode = audioCtx.createMediaElementSource(player);
@@ -635,6 +639,7 @@
             }
         }
     }
+    loadSongs();
 
     function restoreSavedPosition() {
         const savedIndex = localStorage.getItem('spotisanya_last_index');
@@ -706,12 +711,25 @@
         historyContainer.innerHTML = playHistory.map(s => `<span style="background: var(--bg-sidebar); padding: 4px 8px; border-radius: 4px; border: 1px solid var(--border-color);">${s.title}</span>`).join(' ');
     }
 
+    // Реєстрація Media Session для фонової роботи та керування з системи
+    function updateMediaSession(song) {
+        if ('mediaSession' in navigator) {
+            navigator.mediaSession.metadata = new MediaMetadata({
+                title: song.title,
+                artist: 'SpotiSanya Player',
+                album: 'Cloud Playlist'
+            });
+
+            navigator.mediaSession.setActionHandler('play', () => { player.play(); playPauseBtn.textContent = '❚❚'; });
+            navigator.mediaSession.setActionHandler('pause', () => { player.pause(); playPauseBtn.textContent = '▶'; });
+            navigator.mediaSession.setActionHandler('previoustrack', playPrev);
+            navigator.mediaSession.setActionHandler('nexttrack', playNext);
+        }
+    }
+
     function playSong(index) {
         if (index < 0 || index >= currentSongs.length) return;
         initAudioContext();
-        if (audioCtx && audioCtx.state === 'suspended') {
-            audioCtx.resume();
-        }
 
         currentIndex = index;
         const song = currentSongs[currentIndex];
@@ -721,6 +739,7 @@
         player.play().then(() => {
             playPauseBtn.textContent = '❚❚';
             updateHistory(song);
+            updateMediaSession(song);
         }).catch(e => {
             console.log("Потокове відтворення заблоковано:", e);
         });
@@ -729,7 +748,6 @@
         renderList();
     }
 
-    // Алгоритм Фішера-Єйтса для Shuffle
     function getNextShuffleIndex() {
         if (currentSongs.length <= 1) return 0;
         let randomIndex;
@@ -763,9 +781,6 @@
     playPauseBtn.onclick = () => {
         if (currentSongs.length === 0) return;
         initAudioContext();
-        if (audioCtx && audioCtx.state === 'suspended') {
-            audioCtx.resume();
-        }
 
         if (player.paused) {
             if (!player.src && currentSongs.length > 0) {
@@ -828,6 +843,35 @@
         }
     };
 
+    // Додавання треку через хмару
+    document.getElementById('add-btn').onclick = async () => {
+        const titleInput = document.getElementById('title');
+        const urlInput = document.getElementById('url');
+        const title = titleInput.value.trim();
+        const url = urlInput.value.trim();
+
+        if (!title || !url) {
+            alert('Заповніть назву та посилання!');
+            return;
+        }
+
+        currentSongs.push({ title, url });
+        titleInput.value = '';
+        urlInput.value = '';
+        renderList();
+
+        try {
+            await fetch(urlAPI, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'X-Master-Key': API_KEY },
+                body: JSON.stringify({ songs: currentSongs })
+            });
+            localStorage.setItem('spotisanya_cache', JSON.stringify(currentSongs));
+        } catch(err) {
+            console.log("Помилка збереження в хмару:", err);
+        }
+    };
+
     // Drag and Drop
     const dropZoneEl = document.getElementById('drop-zone');
     ['dragenter', 'dragover'].forEach(eventName => {
@@ -852,7 +896,7 @@
         }
     });
 
-    // Обробник імпорту папки
+    // Імпорт папки
     const folderBtn = document.getElementById('folder-btn');
     const folderInput = document.getElementById('folder-input');
 
@@ -880,11 +924,10 @@
         } else {
             alert('У вибраній папці не знайдено аудіофайлів!');
         }
-        
         folderInput.value = '';
     };
 
-    // Світломузика
+    // Візуалізація
     const dataArray = new Uint8Array(16);
     setInterval(() => {
         const bars = document.querySelectorAll('.bar');
@@ -906,69 +949,42 @@
         const newTitle = prompt("Введіть нову назву треку:", currentSong.title);
         if (!newTitle || !newTitle.trim()) return;
 
+        currentSongs[index].title = newTitle.trim();
+        renderList();
+        if (index === currentIndex) {
+            currentSongTitle.textContent = newTitle.trim();
+        }
+
         try {
-            const res = await fetch(urlAPI, { headers: { 'X-Master-Key': API_KEY }});
-            const data = await res.json();
-            let songs = data.record.songs || [];
-            if (songs[index]) {
-                songs[index].title = newTitle.trim();
-            }
-            
             await fetch(urlAPI, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json', 'X-Master-Key': API_KEY },
-                body: JSON.stringify({ songs })
+                body: JSON.stringify({ songs: currentSongs })
             });
-            loadSongs();
-        } catch (err) {
-            alert('Помилка перейменування');
+            localStorage.setItem('spotisanya_cache', JSON.stringify(currentSongs));
+        } catch(err) {
+            console.log("Помилка оновлення хмари:", err);
         }
     }
 
     async function deleteSong(event, index) {
         event.stopPropagation();
+        if (!confirm("Видалити цей трек?")) return;
+
+        currentSongs.splice(index, 1);
+        renderList();
+
         try {
-            const res = await fetch(urlAPI, { headers: { 'X-Master-Key': API_KEY }});
-            const data = await res.json();
-            let songs = data.record.songs || [];
-            songs.splice(index, 1);
-            
             await fetch(urlAPI, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json', 'X-Master-Key': API_KEY },
-                body: JSON.stringify({ songs })
+                body: JSON.stringify({ songs: currentSongs })
             });
-            loadSongs();
-        } catch (err) {
-            alert('Помилка видалення');
+            localStorage.setItem('spotisanya_cache', JSON.stringify(currentSongs));
+        } catch(err) {
+            console.log("Помилка видалення з хмари:", err);
         }
     }
-
-    document.getElementById('add-btn').onclick = async () => {
-        const title = document.getElementById('title').value.trim();
-        const url = document.getElementById('url').value.trim();
-        if (!title || !url) return alert('Заповніть поля!');
-        
-        try {
-            const res = await fetch(urlAPI, { headers: { 'X-Master-Key': API_KEY }});
-            const data = await res.json();
-            let songs = data.record.songs || [];
-            songs.push({ title, url });
-
-            await fetch(urlAPI, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json', 'X-Master-Key': API_KEY },
-                body: JSON.stringify({ songs })
-            });
-            document.getElementById('title').value = '';
-            document.getElementById('url').value = '';
-            loadSongs();
-        } catch (err) {
-            alert('Помилка додавання');
-        }
-    };
-
-    loadSongs();
 </script>
 </body>
 </html>
