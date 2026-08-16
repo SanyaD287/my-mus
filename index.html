@@ -1,46 +1,17 @@
 <!DOCTYPE html>
-<html lang="uk" data-theme="cyberpunk">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SpotiSanya</title>
+    <title>SpotiSanya Lite</title>
     <style>
         :root {
-            --accent: #ff1e2d;
-            --accent-glow: rgba(255, 30, 45, 0.15);
-            --bg-main: #050505;
-            --bg-sidebar: #0a0a0a;
-            --bg-card: #121212;
-            --border-color: rgba(255, 255, 255, 0.08);
-            --text-main: #ffffff;
-            --text-muted: #777777;
-        }
-
-        [data-theme="cyberpunk"] {
-            --accent: #00ff66;
-            --accent-glow: rgba(0, 255, 102, 0.15);
-            --bg-main: #020804;
-            --bg-sidebar: #040c06;
-            --bg-card: #0c160e;
-            --border-color: rgba(0, 255, 102, 0.15);
-        }
-
-        [data-theme="neon"] {
-            --accent: #b026ff;
-            --accent-glow: rgba(176, 38, 255, 0.15);
-            --bg-main: #06020a;
-            --bg-sidebar: #0a0412;
-            --bg-card: #12081c;
-            --border-color: rgba(176, 38, 255, 0.15);
-        }
-
-        [data-theme="spotify"] {
             --accent: #1db954;
-            --accent-glow: rgba(29, 185, 84, 0.15);
             --bg-main: #121212;
-            --bg-sidebar: #000000;
             --bg-card: #181818;
             --border-color: rgba(255, 255, 255, 0.1);
+            --text-main: #ffffff;
+            --text-muted: #b3b3b3;
         }
 
         * { box-sizing: border-box; }
@@ -54,133 +25,70 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            transition: background 0.3s, color 0.3s;
         }
 
         .app-layout {
-            display: grid;
-            grid-template-columns: 240px 1fr;
-            grid-template-rows: 1fr 90px;
+            display: flex;
+            flex-direction: column;
             height: 100vh;
             width: 100vw;
         }
 
-        .sidebar {
-            background: var(--bg-sidebar);
-            padding: 24px 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-            border-right: 1px solid var(--border-color);
-            grid-row: 1 / 2;
-        }
-        .logo {
-            font-size: 20px;
-            font-weight: bold;
-            color: var(--text-main);
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .logo span { color: var(--accent); }
-
-        .skin-selector {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-top: 10px;
-        }
-        .skin-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; }
-        .skin-btns { display: flex; gap: 6px; flex-wrap: wrap; }
-        .skin-btn {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-size: 11px;
-            cursor: pointer;
-        }
-        .skin-btn:hover { border-color: var(--accent); }
-
         .main-content {
             padding: 24px 32px;
             overflow-y: auto;
-            grid-column: 2 / 3;
-            grid-row: 1 / 2;
+            flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 24px;
+            gap: 20px;
+            padding-bottom: 110px;
         }
 
         .section-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
 
-        .add-card, .equalizer-card {
+        .add-card {
             background: var(--bg-card);
             padding: 16px;
             border-radius: 12px;
             display: flex;
-            gap: 12px;
+            gap: 10px;
             align-items: center;
             border: 1px solid var(--border-color);
-        }
-        .equalizer-card {
-            justify-content: space-between;
             flex-wrap: wrap;
         }
-        .eq-group {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            font-size: 11px;
-            color: var(--text-muted);
-        }
-        .eq-slider {
-            width: 100px;
-            accent-color: var(--accent);
-            cursor: pointer;
-        }
-        .eq-presets {
-            display: flex;
-            gap: 6px;
-        }
-        .eq-preset-btn {
-            background: var(--bg-sidebar);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 6px 10px;
-            border-radius: 6px;
-            font-size: 11px;
-            cursor: pointer;
-        }
-        .eq-preset-btn:hover { border-color: var(--accent); }
 
         input[type="text"] {
-            padding: 12px 14px;
+            padding: 10px 14px;
             border-radius: 8px;
             border: 1px solid var(--border-color);
-            background: var(--bg-sidebar);
+            background: #242424;
             color: var(--text-main);
             font-size: 14px;
             outline: none;
             flex: 1;
         }
         input[type="text"]:focus { border-color: var(--accent); }
-        button#add-btn {
+
+        button {
             background: var(--accent);
             color: #000;
             border: none;
-            padding: 12px 24px;
+            padding: 10px 20px;
             border-radius: 500px;
             font-weight: 700;
             cursor: pointer;
         }
-        button#add-btn:hover { filter: brightness(1.1); }
+        button:hover { filter: brightness(1.1); }
+
+        .secondary-btn {
+            background: #242424;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+        }
 
         .drop-zone {
             border: 2px dashed var(--border-color);
@@ -189,17 +97,11 @@
             text-align: center;
             color: var(--text-muted);
             font-size: 13px;
-            transition: 0.2s;
-        }
-        .drop-zone.dragover {
-            border-color: var(--accent);
-            background: var(--accent-glow);
-            color: var(--text-main);
         }
 
         .playlist-header {
             display: grid;
-            grid-template-columns: 40px 1fr 110px;
+            grid-template-columns: 40px 1fr 100px;
             color: var(--text-muted);
             font-size: 12px;
             font-weight: 700;
@@ -218,7 +120,7 @@
         }
         li {
             display: grid;
-            grid-template-columns: 40px 1fr 110px;
+            grid-template-columns: 40px 1fr 100px;
             align-items: center;
             padding: 10px 16px;
             border-radius: 8px;
@@ -238,13 +140,11 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            color: var(--text-main);
         }
         .action-btns {
             display: flex;
             gap: 4px;
             justify-content: flex-end;
-            align-items: center;
         }
         .action-btn {
             background: transparent;
@@ -256,82 +156,63 @@
             border-radius: 4px;
         }
         .action-btn:hover { background: rgba(255,255,255,0.1); color: var(--text-main); }
-        .del-btn:hover { color: var(--accent) !important; }
+        .del-btn:hover { color: #ff4d4d !important; }
 
-        .spotify-player-bar {
-            grid-column: 1 / 3;
-            grid-row: 2 / 3;
-            background: var(--bg-sidebar);
+        .player-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #000;
             border-top: 1px solid var(--border-color);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 0 20px;
+            padding: 12px 20px;
+            gap: 16px;
             z-index: 10;
         }
         .current-info {
             width: 25%;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-        .current-title {
             font-size: 14px;
-            font-weight: 500;
-            color: var(--text-main);
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
-        .current-artist { font-size: 11px; color: var(--text-muted); }
-
-        .player-center-controls {
-            width: 45%;
+        .player-center {
+            width: 50%;
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 6px;
         }
-        .player-buttons {
+        .player-controls {
             display: flex;
             align-items: center;
             gap: 16px;
         }
         .ctrl-btn {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
+            background: transparent;
+            border: none;
+            color: var(--text-main);
+            font-size: 16px;
+            cursor: pointer;
+            padding: 4px 8px;
+        }
+        .play-pause-btn {
+            width: 36px;
+            height: 36px;
+            background: var(--accent);
             border-radius: 50%;
-            width: 38px;
-            height: 38px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--text-main);
-            cursor: pointer;
+            color: #000;
             font-size: 14px;
         }
-        .ctrl-btn:hover { border-color: var(--accent); }
-        .ctrl-btn.active-mode { border-color: var(--accent); color: var(--accent); }
-        .play-pause-btn {
-            width: 44px;
-            height: 44px;
-            background: var(--accent);
-            border: none;
-            border-radius: 50%;
-            font-size: 16px;
-            color: #000;
-        }
-
-        .progress-bar-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 10px;
+        .progress-container {
             width: 100%;
             max-width: 400px;
-        }
-        .time-text { font-size: 11px; color: var(--text-muted); min-width: 35px; text-align: center; }
-        .progress-container {
-            flex: 1;
             height: 4px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 2px;
@@ -344,118 +225,38 @@
             border-radius: 2px;
             width: 0%;
         }
-
-        .extra-controls {
-            width: 30%;
+        .volume-wrapper {
+            width: 25%;
             display: flex;
-            align-items: center;
             justify-content: flex-end;
-            gap: 14px;
+            align-items: center;
+            gap: 8px;
         }
         .volume-slider {
-            width: 90px;
+            width: 80px;
             height: 4px;
             accent-color: var(--accent);
             cursor: pointer;
         }
 
         @media (max-width: 768px) {
-            body { overflow-y: auto; }
-            .app-layout { display: flex; flex-direction: column; height: auto; min-height: 100vh; }
-            .sidebar { display: none; }
-            .spotify-player-bar {
-                position: fixed;
-                bottom: 0;
-                left: 0;
-                width: 100%;
-                height: auto;
-                flex-direction: column;
-                padding: 12px;
-                gap: 10px;
-            }
-            .current-info, .player-center-controls, .extra-controls { width: 100%; justify-content: center; }
-            .main-content { padding: 16px; padding-bottom: 140px; }
+            .player-bar { flex-direction: column; gap: 8px; }
+            .current-info, .player-center, .volume-wrapper { width: 100%; justify-content: center; }
+            .main-content { padding-bottom: 160px; }
         }
     </style>
 </head>
 <body>
 
 <div class="app-layout">
-    <div class="sidebar">
-        <div class="logo"><span>🔴</span> Spotisanya</div>
-        <div style="color: var(--text-muted); font-size: 13px;">1.8v Lite</div>
-
-        <div class="skin-selector">
-            <div class="skin-label">Тема</div>
-            <div class="skin-btns">
-                <button class="skin-btn" onclick="setTheme('cyberpunk')">Cyber</button>
-                <button class="skin-btn" onclick="setTheme('neon')">Neon</button>
-                <button class="skin-btn" onclick="setTheme('spotify')">Spotify</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="spotify-player-bar">
-        <div class="current-info">
-            <div style="width: 32px; height: 32px; background: var(--accent); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px;">🎵</div>
-            <div>
-                <div class="current-title" id="current-song-title">Нічого не вибрано</div>
-                <div class="current-artist">Player</div>
-            </div>
-        </div>
-
-        <div class="player-center-controls">
-            <div class="player-buttons">
-                <button class="ctrl-btn" id="shuffle-btn" title="Випадковий порядок">🔀</button>
-                <button class="ctrl-btn" id="loop-btn" title="Повтор">🔁</button>
-                <button class="ctrl-btn" id="prev-btn" title="Попередній">⏮</button>
-                <button class="ctrl-btn play-pause-btn" id="play-pause-btn">▶</button>
-                <button class="ctrl-btn" id="next-btn" title="Наступний">⏭</button>
-            </div>
-            <div class="progress-bar-wrapper">
-                <span class="time-text" id="current-time">0:00</span>
-                <div class="progress-container" id="progress-container">
-                    <div class="progress-bar" id="progress-bar"></div>
-                </div>
-                <span class="time-text" id="duration-time">0:00</span>
-            </div>
-        </div>
-
-        <div class="extra-controls">
-            <span style="font-size: 14px;">🔊</span>
-            <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.01" value="1">
-        </div>
-    </div>
-
     <div class="main-content">
-        <div class="section-title">Еквалайзер</div>
-        <div class="equalizer-card">
-            <div class="eq-group">
-                <label>Low</label>
-                <input type="range" id="eq-low" class="eq-slider" min="-20" max="20" step="1" value="0">
-            </div>
-            <div class="eq-group">
-                <label>Mid</label>
-                <input type="range" id="eq-mid" class="eq-slider" min="-20" max="20" step="1" value="0">
-            </div>
-            <div class="eq-group">
-                <label>High</label>
-                <input type="range" id="eq-high" class="eq-slider" min="-20" max="20" step="1" value="0">
-            </div>
-            <div class="eq-presets">
-                <button class="eq-preset-btn" onclick="setEqPreset(0, 0, 0)">Normal</button>
-                <button class="eq-preset-btn" onclick="setEqPreset(12, -2, 4)">Bass</button>
-                <button class="eq-preset-btn" onclick="setEqPreset(8, 4, 8)">Rock</button>
-            </div>
-        </div>
-
         <div class="section-title">Додати трек</div>
-        <div class="add-card" style="flex-wrap: wrap;">
+        <div class="add-card">
             <input type="text" id="title" placeholder="Назва треку">
             <input type="text" id="url" placeholder="Посилання на MP3">
             <button id="add-btn">Додати</button>
             <input type="file" id="folder-input" webkitdirectory directory multiple style="display: none;">
-            <button id="folder-btn" class="skin-btn" style="padding: 12px 20px; font-size: 13px; font-weight: 700; cursor: pointer;">📂 Папка</button>
+            <button id="folder-btn" class="secondary-btn">📂 Папка</button>
         </div>
 
         <div class="drop-zone" id="drop-zone">
@@ -465,7 +266,7 @@
         <div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                 <div class="section-title" style="margin-bottom: 0;">Плейлист</div>
-                <input type="text" id="search-input" placeholder="🔍 Пошук..." style="max-width: 250px; padding: 8px 12px; font-size: 13px;">
+                <input type="text" id="search-input" placeholder="🔍 Пошук..." style="max-width: 220px; padding: 6px 10px; font-size: 13px;">
             </div>
             <div class="playlist-header">
                 <div>#</div>
@@ -475,9 +276,29 @@
             <ul id="list"></ul>
         </div>
     </div>
+
+    <div class="player-bar">
+        <div class="current-info" id="current-song-title">Нічого не вибрано</div>
+        
+        <div class="player-center">
+            <div class="player-controls">
+                <button class="ctrl-btn" id="prev-btn">⏮</button>
+                <button class="ctrl-btn play-pause-btn" id="play-pause-btn">▶</button>
+                <button class="ctrl-btn" id="next-btn">⏭</button>
+            </div>
+            <div class="progress-container" id="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+        </div>
+
+        <div class="volume-wrapper">
+            <span>🔊</span>
+            <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.01" value="1">
+        </div>
+    </div>
 </div>
 
-<audio id="player" preload="auto" crossorigin="anonymous"></audio>
+<audio id="player" preload="auto"></audio>
 
 <script>
     const BIN_ID = '6a7c3536da38895dfed9948e'; 
@@ -485,10 +306,7 @@
     const urlAPI = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
 
     let currentSongs = [];
-    let queue = [];
     let currentIndex = 0;
-    let loopMode = 0; 
-    let shuffleMode = false;
     let searchQuery = '';
 
     const player = document.getElementById('player');
@@ -496,63 +314,8 @@
     const progressBar = document.getElementById('progress-bar');
     const progressContainer = document.getElementById('progress-container');
     const currentSongTitle = document.getElementById('current-song-title');
-    const currentTimeEl = document.getElementById('current-time');
-    const durationTimeEl = document.getElementById('duration-time');
     const volumeSlider = document.getElementById('volume-slider');
     const searchInput = document.getElementById('search-input');
-    const loopBtn = document.getElementById('loop-btn');
-    const shuffleBtn = document.getElementById('shuffle-btn');
-
-    window.setTheme = (themeName) => {
-        document.documentElement.setAttribute('data-theme', themeName);
-        localStorage.setItem('spotisanya_theme', themeName);
-    };
-    const savedTheme = localStorage.getItem('spotisanya_theme');
-    if (savedTheme) setTheme(savedTheme);
-
-    let audioCtx, sourceNode, lowFilter, midFilter, highFilter;
-    function initAudioContext() {
-        if (audioCtx) return;
-        try {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            sourceNode = audioCtx.createMediaElementSource(player);
-            
-            lowFilter = audioCtx.createBiquadFilter();
-            lowFilter.type = 'lowshelf';
-            lowFilter.frequency.value = 250;
-
-            midFilter = audioCtx.createBiquadFilter();
-            midFilter.type = 'peaking';
-            midFilter.frequency.value = 1500;
-            midFilter.Q.value = 1;
-
-            highFilter = audioCtx.createBiquadFilter();
-            highFilter.type = 'highshelf';
-            highFilter.frequency.value = 4000;
-
-            sourceNode.connect(lowFilter);
-            lowFilter.connect(midFilter);
-            midFilter.connect(highFilter);
-            highFilter.connect(audioCtx.destination);
-        } catch(e) {}
-    }
-
-    const eqLow = document.getElementById('eq-low');
-    const eqMid = document.getElementById('eq-mid');
-    const eqHigh = document.getElementById('eq-high');
-
-    eqLow.oninput = (e) => { if (lowFilter) lowFilter.gain.value = parseFloat(e.target.value); };
-    eqMid.oninput = (e) => { if (midFilter) midFilter.gain.value = parseFloat(e.target.value); };
-    eqHigh.oninput = (e) => { if (highFilter) highFilter.gain.value = parseFloat(e.target.value); };
-
-    window.setEqPreset = (low, mid, high) => {
-        eqLow.value = low;
-        eqMid.value = mid;
-        eqHigh.value = high;
-        if (lowFilter) lowFilter.gain.value = low;
-        if (midFilter) midFilter.gain.value = mid;
-        if (highFilter) highFilter.gain.value = high;
-    };
 
     volumeSlider.oninput = (e) => { 
         player.volume = e.target.value; 
@@ -565,13 +328,6 @@
         volumeSlider.value = savedVol;
     }
 
-    function formatTime(seconds) {
-        if (isNaN(seconds)) return "0:00";
-        const mins = Math.floor(seconds / 60);
-        const secs = Math.floor(seconds % 60);
-        return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
-    }
-
     async function loadSongs() {
         try {
             const response = await fetch(urlAPI, { headers: { 'X-Master-Key': API_KEY }});
@@ -582,19 +338,30 @@
                 currentSongs = cloudSongs;
                 localStorage.setItem('spotisanya_cache', JSON.stringify(currentSongs));
             } else {
-                const cached = localStorage.getItem('spotisanya_cache');
-                if (cached) currentSongs = JSON.parse(cached);
+                loadFromCache();
             }
-            renderList();
         } catch (err) {
-            const cached = localStorage.getItem('spotisanya_cache');
-            if (cached) {
-                currentSongs = JSON.parse(cached);
-                renderList();
-            }
+            loadFromCache();
         }
+        renderList();
+    }
+
+    function loadFromCache() {
+        const cached = localStorage.getItem('spotisanya_cache');
+        if (cached) currentSongs = JSON.parse(cached);
     }
     loadSongs();
+
+    async function syncCloud() {
+        try {
+            await fetch(urlAPI, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'X-Master-Key': API_KEY },
+                body: JSON.stringify({ songs: currentSongs })
+            });
+            localStorage.setItem('spotisanya_cache', JSON.stringify(currentSongs));
+        } catch(err) {}
+    }
 
     function renderList() {
         const list = document.getElementById('list');
@@ -604,7 +371,7 @@
             .filter(song => song.title.toLowerCase().includes(searchQuery.toLowerCase()));
 
         if (filteredSongs.length === 0) {
-            list.innerHTML = '<li style="color: var(--text-muted); justify-content: center; cursor: default; display: block; text-align: center; padding: 20px;">Нічого не знайдено</li>';
+            list.innerHTML = '<li style="color: var(--text-muted); justify-content: center; display: block; text-align: center; padding: 20px;">Нічого не знайдено</li>';
             return;
         }
 
@@ -616,8 +383,7 @@
                 <span class="song-index">${song.originalIndex + 1}</span>
                 <span class="song-name" title="${song.title}">${song.title}</span>
                 <div class="action-btns">
-                    <button class="action-btn" onclick="addToQueue(event, ${song.originalIndex})" title="Наступним">⏭+</button>
-                    <button class="action-btn" onclick="renameSong(event, ${song.originalIndex})" title="Змінити">✏️</button>
+                    <button class="action-btn" onclick="renameSong(event, ${song.originalIndex})" title="Редагувати">✏️</button>
                     <button class="action-btn del-btn" onclick="deleteSong(event, ${song.originalIndex})" title="Видалити">✕</button>
                 </div>
             `;
@@ -631,15 +397,8 @@
         renderList();
     };
 
-    function addToQueue(event, index) {
-        event.stopPropagation();
-        queue.push(index);
-    }
-
     function playSong(index) {
         if (index < 0 || index >= currentSongs.length) return;
-        initAudioContext();
-
         currentIndex = index;
         const song = currentSongs[currentIndex];
         
@@ -647,32 +406,14 @@
         player.load();
         player.play().then(() => {
             playPauseBtn.textContent = '❚❚';
-        }).catch(e => {});
+        }).catch(() => {});
         
         currentSongTitle.textContent = song.title;
         renderList();
     }
 
-    function playNext() {
-        if (queue.length > 0) {
-            playSong(queue.shift());
-            return;
-        }
-        if (shuffleMode && currentSongs.length > 1) {
-            let rnd;
-            do { rnd = Math.floor(Math.random() * currentSongs.length); } while (rnd === currentIndex);
-            playSong(rnd);
-            return;
-        }
-        if (currentSongs.length > 0) {
-            playSong((currentIndex + 1) % currentSongs.length);
-        }
-    }
-
     playPauseBtn.onclick = () => {
         if (currentSongs.length === 0) return;
-        initAudioContext();
-
         if (player.paused) {
             if (!player.src) playSong(0);
             else player.play().then(() => { playPauseBtn.textContent = '❚❚'; });
@@ -682,27 +423,16 @@
         }
     };
 
-    document.getElementById('next-btn').onclick = playNext;
+    document.getElementById('next-btn').onclick = () => {
+        if (currentSongs.length > 0) playSong((currentIndex + 1) % currentSongs.length);
+    };
     document.getElementById('prev-btn').onclick = () => {
         if (currentSongs.length > 0) playSong((currentIndex - 1 + currentSongs.length) % currentSongs.length);
-    };
-
-    shuffleBtn.onclick = () => {
-        shuffleMode = !shuffleMode;
-        shuffleBtn.classList.toggle('active-mode', shuffleMode);
-    };
-
-    loopBtn.onclick = () => {
-        loopMode = (loopMode + 1) % 3;
-        loopBtn.classList.toggle('active-mode', loopMode > 0);
-        loopBtn.textContent = loopMode === 2 ? '🂡' : '🔁';
     };
 
     player.ontimeupdate = () => {
         if (player.duration) {
             progressBar.style.width = ((player.currentTime / player.duration) * 100) + '%';
-            currentTimeEl.textContent = formatTime(player.currentTime);
-            durationTimeEl.textContent = formatTime(player.duration);
         }
     };
 
@@ -713,8 +443,7 @@
     };
 
     player.onended = () => {
-        if (loopMode === 2) player.play();
-        else playNext();
+        if (currentSongs.length > 0) playSong((currentIndex + 1) % currentSongs.length);
     };
 
     document.getElementById('add-btn').onclick = async () => {
@@ -726,29 +455,20 @@
         document.getElementById('title').value = '';
         document.getElementById('url').value = '';
         renderList();
-
-        try {
-            await fetch(urlAPI, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json', 'X-Master-Key': API_KEY },
-                body: JSON.stringify({ songs: currentSongs })
-            });
-            localStorage.setItem('spotisanya_cache', JSON.stringify(currentSongs));
-        } catch(err) {}
+        await syncCloud();
     };
 
     const dropZoneEl = document.getElementById('drop-zone');
-    dropZoneEl.ondragover = (e) => { e.preventDefault(); dropZoneEl.classList.add('dragover'); };
-    dropZoneEl.ondragleave = () => dropZoneEl.classList.remove('dragover');
-    dropZoneEl.ondrop = (e) => {
+    dropZoneEl.ondragover = (e) => { e.preventDefault(); };
+    dropZoneEl.ondrop = async (e) => {
         e.preventDefault();
-        dropZoneEl.classList.remove('dragover');
         if (e.dataTransfer.files.length > 0) {
             const file = e.dataTransfer.files[0];
             if (file.type.includes('audio') || file.name.endsWith('.mp3')) {
                 currentSongs.push({ title: file.name.replace(/\.[^/.]+$/, ""), url: URL.createObjectURL(file) });
                 renderList();
                 playSong(currentSongs.length - 1);
+                await syncCloud();
             }
         }
     };
@@ -756,7 +476,7 @@
     const folderBtn = document.getElementById('folder-btn');
     const folderInput = document.getElementById('folder-input');
     folderBtn.onclick = () => folderInput.click();
-    folderInput.onchange = (e) => {
+    folderInput.onchange = async (e) => {
         let added = 0;
         for (let file of e.target.files) {
             if (file.name.endsWith('.mp3') || file.name.endsWith('.wav')) {
@@ -767,6 +487,7 @@
         if (added > 0) {
             renderList();
             if (!player.src) playSong(currentSongs.length - added);
+            await syncCloud();
         }
         folderInput.value = '';
     };
@@ -778,29 +499,15 @@
         currentSongs[index].title = newTitle.trim();
         renderList();
         if (index === currentIndex) currentSongTitle.textContent = newTitle.trim();
-        try {
-            await fetch(urlAPI, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json', 'X-Master-Key': API_KEY },
-                body: JSON.stringify({ songs: currentSongs })
-            });
-            localStorage.setItem('spotisanya_cache', JSON.stringify(currentSongs));
-        } catch(err) {}
+        await syncCloud();
     }
 
     async function deleteSong(event, index) {
         event.stopPropagation();
-        if (!confirm("Видалити?")) return;
+        if (!confirm("Видалити трек?")) return;
         currentSongs.splice(index, 1);
         renderList();
-        try {
-            await fetch(urlAPI, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json', 'X-Master-Key': API_KEY },
-                body: JSON.stringify({ songs: currentSongs })
-            });
-            localStorage.setItem('spotisanya_cache', JSON.stringify(currentSongs));
-        } catch(err) {}
+        await syncCloud();
     }
 </script>
 </body>
