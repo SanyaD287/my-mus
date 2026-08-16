@@ -41,7 +41,7 @@
             display: flex;
             flex-direction: column;
             gap: 20px;
-            padding-bottom: 110px;
+            padding-bottom: 140px;
         }
 
         .section-title {
@@ -250,10 +250,10 @@
 
 <div class="app-layout">
     <div class="main-content">
-        <div class="section-title">Додати трек</div>
+        <div class="section-title">Додати трек або Плейлист (YouTube / SoundCloud)</div>
         <div class="add-card">
-            <input type="text" id="title" placeholder="Назва треку">
-            <input type="text" id="url" placeholder="Посилання на MP3">
+            <input type="text" id="title" placeholder="Назва (якщо додаєте одне посилання)">
+            <input type="text" id="url" placeholder="Посилання на MP3, YouTube або SoundCloud">
             <button id="add-btn">Додати</button>
             <input type="file" id="folder-input" webkitdirectory directory multiple style="display: none;">
             <button id="folder-btn" class="secondary-btn">📂 Папка</button>
@@ -298,7 +298,7 @@
     </div>
 </div>
 
-<audio id="player" preload="auto"></audio>
+<audio id="player" preload="auto" playsinline></audio>
 
 <script>
     const BIN_ID = '6a7c3536da38895dfed9948e'; 
@@ -406,7 +406,9 @@
         player.load();
         player.play().then(() => {
             playPauseBtn.textContent = '❚❚';
-        }).catch(() => {});
+        }).catch(() => {
+            playPauseBtn.textContent = '▶';
+        });
         
         currentSongTitle.textContent = song.title;
         renderList();
@@ -446,14 +448,87 @@
         if (currentSongs.length > 0) playSong((currentIndex + 1) % currentSongs.length);
     };
 
-    document.getElementById('add-btn').onclick = async () => {
-        const title = document.getElementById('title').value.trim();
-        const url = document.getElementById('url').value.trim();
-        if (!title || !url) return alert('Заповніть поля!');
+    function getPlaylistId(url) {
+        const match = url.match(/[&?]list=([^&]+)/);
+        return match ? match[1] : null;
+    }
 
+    document.getElementById('add-btn').onclick = async () => {
+        const titleInput = document.getElementById('title');
+        const urlInput = document.getElementById('url');
+        const title = titleInput.value.trim();
+        const url = urlInput.value.trim();
+
+        if (!url) return alert('Введіть посилання!');
+
+        if (url.includes('soundcloud.com')) {
+            try {
+                const res = await fetch(`https://soundcloud.com/oembed?format=json&url=${encodeURIComponent(url)}`);
+                const data = await res.json();
+                if (data && data.title) {
+                    currentSongs.push({ title: data.title, url: url });
+                    titleInput.value = '';
+                    urlInput.value = '';
+                    renderList();
+                    await syncCloud();
+                    return;
+                }
+            } catch(e) {}
+            
+            if (!title) return alert('Введіть назву треку SoundCloud!');
+            currentSongs.push({ title, url });
+            titleInput.value = '';
+            urlInput.value = '';
+            renderList();
+            await syncCloud();
+            return;
+        }
+
+        const playlistId = getPlaylistId(url);
+        if (playlistId || url.includes('list=')) {
+            try {
+                const apiLink = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
+                const res = await fetch(apiLink);
+                const data = await res.json();
+                if (data && data.contents) {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(data.contents, 'text/html');
+                    const scripts = doc.querySelectorAll('script');
+                    let foundTracks = 0;
+                    
+                    for (let script of scripts) {
+                        const text = script.textContent;
+                        if (text && text.includes('playlistPanelVideoRenderer')) {
+                            const matches = text.matchAll(/"videoId":"([^"]+)","title":\{"runs":\[\{"text":"([^"]+)"\}/g);
+                            for (const match of matches) {
+                                const vId = match[1];
+                                const vTitle = match[2];
+                                if (vId && vTitle) {
+                                    currentSongs.push({
+                                        title: vTitle,
+                                        url: `https://www.youtube.com/watch?v=${vId}`
+                                    });
+                                    foundTracks++;
+                                }
+                            }
+                        }
+                    }
+
+                    if (foundTracks > 0) {
+                        titleInput.value = '';
+                        urlInput.value = '';
+                        renderList();
+                        await syncCloud();
+                        return;
+                    }
+                }
+            } catch (err) {}
+        }
+
+        if (!title) return alert('Введіть назву треку!');
         currentSongs.push({ title, url });
-        document.getElementById('title').value = '';
-        document.getElementById('url').value = '';
+        titleInput.value = '';
+        urlInput.value = '';
         renderList();
         await syncCloud();
     };
