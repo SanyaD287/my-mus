@@ -461,7 +461,6 @@
 
         if (!url) return alert('Введіть посилання!');
 
-        // SoundCloud
         if (url.includes('soundcloud.com')) {
             try {
                 const res = await fetch(`https://soundcloud.com/oembed?format=json&url=${encodeURIComponent(url)}`);
@@ -482,7 +481,6 @@
             return;
         }
 
-        // YouTube плейлист
         const playlistId = getPlaylistId(url);
         if (playlistId || url.includes('list=')) {
             try {
@@ -518,7 +516,6 @@
             } catch (err) {}
         }
 
-        // Якщо це посилання на вебсторінку з папкою (наприклад, GitHub Pages) — автоматично витягуємо всі .mp3 файли
         if (url.startsWith('http') && !url.endsWith('.mp3')) {
             try {
                 const apiLink = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
@@ -550,7 +547,6 @@
             } catch(e) {}
         }
 
-        // Окремий MP3 файл за прямим посиланням
         if (!title) return alert('Введіть назву треку!');
         currentSongs.push({ title, url });
         titleInput.value = ''; urlInput.value = '';
