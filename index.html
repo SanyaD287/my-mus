@@ -3,25 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SpotiSanya — Ваша музика</title>
+    <title>SpotiSanya • Ultimate Edition</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
         :root {
-            --accent: #1ed760;
-            --accent-hover: #1faa50;
-            --bg-main: #0a0a0a;
-            --bg-card: #121212;
-            --bg-card-hover: #1a1a1a;
-            --border-color: rgba(255, 255, 255, 0.08);
-            --text-main: #ffffff;
-            --text-muted: #a7a7a7;
+            --accent: #00ff88;
+            --accent-glow: rgba(0, 255, 136, 0.25);
+            --accent-gradient: linear-gradient(135deg, #00ff88 0%, #00b8ff 100%);
+            
+            --bg-main: #070709;
+            --bg-surface: rgba(18, 18, 24, 0.7);
+            --bg-surface-hover: rgba(28, 28, 38, 0.85);
+            --bg-card: #111116;
+            
+            --border-color: rgba(255, 255, 255, 0.06);
+            --border-hover: rgba(0, 255, 136, 0.3);
+            
+            --text-main: #f3f4f6;
+            --text-muted: #8b8d98;
+            
+            --blur-glass: blur(20px);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
             background-color: var(--bg-main);
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(0, 184, 255, 0.08) 0%, transparent 40%),
+                radial-gradient(circle at 85% 85%, rgba(0, 255, 136, 0.06) 0%, transparent 40%);
             color: var(--text-main);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             height: 100vh;
             display: flex;
             flex-direction: column;
@@ -36,98 +49,125 @@
         }
 
         .main-content {
-            padding: 32px 40px;
+            padding: 40px 48px;
             overflow-y: auto;
             flex: 1;
             display: flex;
             flex-direction: column;
-            gap: 24px;
-            padding-bottom: 140px;
+            gap: 28px;
+            padding-bottom: 160px;
         }
+
+        /* Scrollbar */
+        .main-content::-webkit-scrollbar { width: 8px; }
+        .main-content::-webkit-scrollbar-track { background: transparent; }
+        .main-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+        .main-content::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
 
         .header-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 20px;
         }
 
         .app-title {
-            font-size: 24px;
+            font-size: 28px;
             font-weight: 800;
             letter-spacing: -0.5px;
-            background: linear-gradient(45deg, #1ed760, #1db954);
+            background: var(--accent-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            filter: drop-shadow(0 0 25px rgba(0, 255, 136, 0.2));
         }
 
         .section-title {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
-            color: var(--text-main);
-            margin-bottom: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-bottom: 12px;
         }
 
         .add-card {
-            background: var(--bg-card);
-            padding: 20px;
-            border-radius: 16px;
+            background: var(--bg-surface);
+            backdrop-filter: var(--blur-glass);
+            -webkit-backdrop-filter: var(--blur-glass);
+            padding: 24px;
+            border-radius: 20px;
             display: flex;
-            gap: 12px;
+            gap: 14px;
             align-items: center;
             border: 1px solid var(--border-color);
-            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
             flex-wrap: wrap;
+            transition: border-color 0.3s;
+        }
+        .add-card:focus-within {
+            border-color: var(--border-hover);
         }
 
         input[type="text"] {
-            padding: 12px 16px;
-            border-radius: 10px;
+            padding: 14px 18px;
+            border-radius: 12px;
             border: 1px solid var(--border-color);
-            background: #181818;
+            background: rgba(0, 0, 0, 0.3);
             color: var(--text-main);
             font-size: 14px;
+            font-family: inherit;
             outline: none;
             flex: 1;
-            transition: border-color 0.2s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        input[type="text"]:focus { border-color: var(--accent); }
+        input[type="text"]:focus { 
+            border-color: var(--accent); 
+            background: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 15px var(--accent-glow);
+        }
 
         button {
-            background: var(--accent);
-            color: #000;
+            background: var(--accent-gradient);
+            color: #070709;
             border: none;
-            padding: 12px 24px;
-            border-radius: 500px;
+            padding: 14px 28px;
+            border-radius: 14px;
             font-weight: 700;
             font-size: 14px;
+            font-family: inherit;
             cursor: pointer;
-            transition: transform 0.1s, background 0.2s;
+            box-shadow: 0 4px 20px var(--accent-glow);
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), filter 0.2s;
         }
-        button:hover { background: var(--accent-hover); transform: scale(1.02); }
-        button:active { transform: scale(0.98); }
+        button:hover { filter: brightness(1.15); transform: translateY(-2px); }
+        button:active { transform: translateY(0); }
 
         .secondary-btn {
-            background: #242424;
+            background: rgba(255, 255, 255, 0.05);
             color: var(--text-main);
             border: 1px solid var(--border-color);
+            box-shadow: none;
         }
-        .secondary-btn:hover { background: #2a2a2a; }
+        .secondary-btn:hover { background: rgba(255, 255, 255, 0.1); border-color: rgba(255,255,255,0.15); }
 
         .drop-zone {
-            border: 2px dashed var(--border-color);
-            border-radius: 16px;
-            padding: 20px;
+            border: 2px dashed rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            padding: 24px;
             text-align: center;
             color: var(--text-muted);
-            font-size: 13px;
-            background: rgba(255,255,255,0.01);
-            transition: border-color 0.2s, background 0.2s;
+            font-size: 14px;
+            background: rgba(255, 255, 255, 0.01);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
         }
         .drop-zone:hover {
             border-color: var(--accent);
-            background: rgba(30, 215, 96, 0.02);
+            background: rgba(0, 255, 136, 0.02);
+            color: var(--text-main);
+            box-shadow: inset 0 0 20px var(--accent-glow);
         }
 
         .playlist-header {
@@ -137,10 +177,10 @@
             font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            padding: 0 20px 10px 20px;
+            letter-spacing: 1.5px;
+            padding: 0 20px 12px 20px;
             border-bottom: 1px solid var(--border-color);
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
 
         ul {
@@ -154,24 +194,27 @@
             display: grid;
             grid-template-columns: 48px 1fr 120px;
             align-items: center;
-            padding: 12px 20px;
-            border-radius: 12px;
-            background: var(--bg-card);
+            padding: 14px 20px;
+            border-radius: 14px;
+            background: var(--bg-surface);
+            backdrop-filter: var(--blur-glass);
             cursor: pointer;
             border: 1px solid var(--border-color);
-            transition: background 0.2s, border-color 0.2s;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
         li:hover { 
-            background: var(--bg-card-hover); 
-            border-color: rgba(255,255,255,0.15);
+            background: var(--bg-surface-hover); 
+            border-color: rgba(255, 255, 255, 0.12);
+            transform: translateX(4px);
         }
         li.active {
-            background: rgba(30, 215, 96, 0.08);
-            border-color: rgba(30, 215, 96, 0.3);
+            background: rgba(0, 255, 136, 0.07);
+            border-color: var(--accent);
+            box-shadow: 0 0 25px rgba(0, 255, 136, 0.1);
         }
-        li.active .song-name { color: var(--accent); font-weight: 700; }
+        li.active .song-name { color: var(--accent); font-weight: 700; text-shadow: 0 0 10px var(--accent-glow); }
         
-        .song-index { color: var(--text-muted); font-size: 14px; font-weight: 500; }
+        .song-index { color: var(--text-muted); font-size: 14px; font-weight: 600; }
         .song-name {
             font-size: 14px;
             font-weight: 500;
@@ -179,13 +222,14 @@
             overflow: hidden;
             text-overflow: ellipsis;
             padding-right: 15px;
+            transition: color 0.2s;
         }
         
         .action-btns {
             display: flex;
             gap: 6px;
             justify-content: flex-end;
-            opacity: 0.6;
+            opacity: 0.4;
             transition: opacity 0.2s;
         }
         li:hover .action-btns { opacity: 1; }
@@ -196,27 +240,30 @@
             color: var(--text-muted);
             cursor: pointer;
             font-size: 13px;
-            padding: 6px 8px;
-            border-radius: 6px;
-            transform: none !important;
+            padding: 8px;
+            border-radius: 8px;
+            transition: background 0.2s, color 0.2s;
         }
-        .action-btn:hover { background: rgba(255,255,255,0.1); color: var(--text-main); }
-        .del-btn:hover { color: #ff5555 !important; }
+        .action-btn:hover { background: rgba(255, 255, 255, 0.1); color: var(--text-main); }
+        .del-btn:hover { color: #ff4757 !important; background: rgba(255, 71, 87, 0.1) !important; }
 
+        /* Player Bar */
         .player-bar {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            background: #080808;
+            background: rgba(10, 10, 13, 0.85);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
             border-top: 1px solid var(--border-color);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 16px 32px;
-            gap: 20px;
+            padding: 18px 48px;
+            gap: 24px;
             z-index: 10;
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 -20px 40px rgba(0,0,0,0.6);
         }
 
         .current-info {
@@ -226,6 +273,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            letter-spacing: -0.2px;
         }
 
         .player-center {
@@ -233,13 +281,13 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
         }
 
         .player-controls {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 24px;
         }
 
         .ctrl-btn {
@@ -248,31 +296,33 @@
             color: var(--text-muted);
             font-size: 16px;
             cursor: pointer;
-            padding: 4px;
-            transition: color 0.2s, transform 0.1s;
+            padding: 6px;
+            box-shadow: none;
+            transition: color 0.2s, transform 0.2s;
         }
-        .ctrl-btn:hover { color: var(--text-main); transform: scale(1.1); }
+        .ctrl-btn:hover { color: var(--text-main); transform: scale(1.15); filter: none; }
 
         .play-pause-btn {
-            width: 40px;
-            height: 40px;
-            background: var(--text-main);
+            width: 44px;
+            height: 44px;
+            background: var(--accent-gradient);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #000;
+            color: #070709;
             font-size: 14px;
-            font-weight: bold;
-            transition: transform 0.1s, background 0.2s;
+            font-weight: 800;
+            box-shadow: 0 4px 20px var(--accent-glow);
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), filter 0.2s;
         }
-        .play-pause-btn:hover { background: var(--accent); transform: scale(1.05); }
+        .play-pause-btn:hover { filter: brightness(1.15); transform: scale(1.08); }
 
         .progress-container {
             width: 100%;
-            max-width: 500px;
+            max-width: 550px;
             height: 6px;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.08);
             border-radius: 3px;
             cursor: pointer;
             position: relative;
@@ -280,32 +330,32 @@
         }
         .progress-bar {
             height: 100%;
-            background: var(--text-main);
+            background: var(--accent-gradient);
             border-radius: 3px;
             width: 0%;
-            transition: background 0.2s;
+            box-shadow: 0 0 10px var(--accent-glow);
+            transition: width 0.1s linear;
         }
-        .progress-container:hover .progress-bar { background: var(--accent); }
 
         .volume-wrapper {
             width: 25%;
             display: flex;
             justify-content: flex-end;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             color: var(--text-muted);
         }
         .volume-slider {
-            width: 100px;
+            width: 110px;
             height: 4px;
             accent-color: var(--accent);
             cursor: pointer;
         }
 
         @media (max-width: 768px) {
-            .player-bar { flex-direction: column; gap: 12px; padding: 16px; }
+            .player-bar { flex-direction: column; gap: 14px; padding: 18px 24px; }
             .current-info, .player-center, .volume-wrapper { width: 100%; justify-content: center; text-align: center; }
-            .main-content { padding: 16px; padding-bottom: 200px; }
+            .main-content { padding: 24px; padding-bottom: 220px; }
         }
     </style>
 </head>
@@ -314,32 +364,32 @@
 <div class="app-layout">
     <div class="main-content">
         <div class="header-top">
-            <div class="app-title">🎵 SpotiSanya</div>
+            <div class="app-title">⚡ SpotiSanya</div>
         </div>
 
         <div>
-            <div class="section-title">Додати трек або посилання</div>
+            <div class="section-title">Додати трек або джерело</div>
             <div class="add-card">
-                <input type="text" id="title" placeholder="Назва треку">
-                <input type="text" id="url" placeholder="Посилання на MP3, SoundCloud або YouTube плейлист">
+                <input type="text" id="title" placeholder="Введіть назву треку...">
+                <input type="text" id="url" placeholder="Посилання на MP3, SoundCloud або YouTube плейлист...">
                 <button id="add-btn">Додати</button>
                 <input type="file" id="folder-input" webkitdirectory directory multiple style="display: none;">
-                <button id="folder-btn" class="secondary-btn">📂 Папка</button>
+                <button id="folder-btn" class="secondary-btn">📂 Обрати папку</button>
             </div>
         </div>
 
         <div class="drop-zone" id="drop-zone">
-            📥 Перетягніть MP3 файли сюди для швидкого додавання
+            📥 Перетягніть ваші MP3 файли сюди
         </div>
 
         <div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <div class="section-title" style="margin-bottom: 0;">Плейлист</div>
-                <input type="text" id="search-input" placeholder="🔍 Пошук..." style="max-width: 240px; padding: 8px 12px; font-size: 13px;">
+                <div class="section-title" style="margin-bottom: 0;">Ваш Плейлист</div>
+                <input type="text" id="search-input" placeholder="🔍 Швидкий пошук..." style="max-width: 240px; padding: 10px 16px; font-size: 13px;">
             </div>
             <div class="playlist-header">
                 <div>#</div>
-                <div>Назва</div>
+                <div>Назва треку</div>
                 <div style="text-align: right;">Дії</div>
             </div>
             <ul id="list"></ul>
@@ -347,7 +397,7 @@
     </div>
 
     <div class="player-bar">
-        <div class="current-info" id="current-song-title">Нічого не вибрано</div>
+        <div class="current-info" id="current-song-title">Нічого не грає</div>
         
         <div class="player-center">
             <div class="player-controls">
@@ -444,7 +494,7 @@
             .filter(song => song.title.toLowerCase().includes(searchQuery.toLowerCase()));
 
         if (filteredSongs.length === 0) {
-            list.innerHTML = '<li style="color: var(--text-muted); justify-content: center; display: flex; text-align: center; padding: 20px; background: transparent; border: none;">Список порожній або нічого не знайдено</li>';
+            list.innerHTML = '<li style="color: var(--text-muted); justify-content: center; display: flex; text-align: center; padding: 24px; background: transparent; border: none;">Список порожній або нічого не знайдено</li>';
             return;
         }
 
