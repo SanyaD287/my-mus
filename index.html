@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SpotiSanya • 5.0V</title>
+    <title>SpotiSanya • Ultimate Edition</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
@@ -58,7 +58,6 @@
             padding-bottom: 160px;
         }
 
-        /* Scrollbar */
         .main-content::-webkit-scrollbar { width: 8px; }
         .main-content::-webkit-scrollbar-track { background: transparent; }
         .main-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
@@ -106,9 +105,7 @@
             flex-wrap: wrap;
             transition: border-color 0.3s;
         }
-        .add-card:focus-within {
-            border-color: var(--border-hover);
-        }
+        .add-card:focus-within { border-color: var(--border-hover); }
 
         input[type="text"] {
             padding: 14px 18px;
@@ -301,6 +298,7 @@
             transition: color 0.2s, transform 0.2s;
         }
         .ctrl-btn:hover { color: var(--text-main); transform: scale(1.15); filter: none; }
+        .ctrl-btn.active-mode { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
 
         .play-pause-btn {
             width: 44px;
@@ -368,10 +366,10 @@
         </div>
 
         <div>
-            <div class="section-title">Додати трек</div>
+            <div class="section-title">Додати трек або джерело</div>
             <div class="add-card">
                 <input type="text" id="title" placeholder="Введіть назву треку...">
-                <input type="text" id="url" placeholder="Посилання на MP3">
+                <input type="text" id="url" placeholder="Посилання на MP3, SoundCloud або YouTube плейлист...">
                 <button id="add-btn">Додати</button>
                 <input type="file" id="folder-input" webkitdirectory directory multiple style="display: none;">
                 <button id="folder-btn" class="secondary-btn">📂 Обрати папку</button>
@@ -384,7 +382,7 @@
 
         <div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <div class="section-title" style="margin-bottom: 0;">Мій плейлист</div>
+                <div class="section-title" style="margin-bottom: 0;">Ваш Плейлист</div>
                 <input type="text" id="search-input" placeholder="🔍 Швидкий пошук..." style="max-width: 240px; padding: 10px 16px; font-size: 13px;">
             </div>
             <div class="playlist-header">
@@ -401,6 +399,7 @@
         
         <div class="player-center">
             <div class="player-controls">
+                <button class="ctrl-btn" id="repeat-btn" title="Повтор треку">🔁</button>
                 <button class="ctrl-btn" id="prev-btn" title="Попередній">⏮</button>
                 <button class="ctrl-btn play-pause-btn" id="play-pause-btn" title="Грати / Пауза">▶</button>
                 <button class="ctrl-btn" id="next-btn" title="Наступний">⏭</button>
@@ -427,6 +426,7 @@
     let currentSongs = [];
     let currentIndex = 0;
     let searchQuery = '';
+    let isRepeat = false;
 
     const player = document.getElementById('player');
     const playPauseBtn = document.getElementById('play-pause-btn');
@@ -435,6 +435,7 @@
     const currentSongTitle = document.getElementById('current-song-title');
     const volumeSlider = document.getElementById('volume-slider');
     const searchInput = document.getElementById('search-input');
+    const repeatBtn = document.getElementById('repeat-btn');
 
     volumeSlider.oninput = (e) => { 
         player.volume = e.target.value; 
@@ -525,11 +526,14 @@
         currentIndex = index;
         const song = currentSongs[currentIndex];
         
+        player.pause();
         player.src = song.url;
-        player.load();
+        player.load(); // Примусовий скид буфера і перезавантаження потоку
+        
         player.play().then(() => {
             playPauseBtn.textContent = '❚❚';
-        }).catch(() => {
+        }).catch((err) => {
+            console.warn("Автоматичне відтворення заблоковано або сталася помилка потоку:", err);
             playPauseBtn.textContent = '▶';
         });
         
@@ -541,7 +545,9 @@
         if (currentSongs.length === 0) return;
         if (player.paused) {
             if (!player.src) playSong(0);
-            else player.play().then(() => { playPauseBtn.textContent = '❚❚'; });
+            else {
+                player.play().then(() => { playPauseBtn.textContent = '❚❚'; }).catch(() => {});
+            }
         } else {
             player.pause();
             playPauseBtn.textContent = '▶';
@@ -553,6 +559,11 @@
     };
     document.getElementById('prev-btn').onclick = () => {
         if (currentSongs.length > 0) playSong((currentIndex - 1 + currentSongs.length) % currentSongs.length);
+    };
+
+    repeatBtn.onclick = () => {
+        isRepeat = !isRepeat;
+        repeatBtn.classList.toggle('active-mode', isRepeat);
     };
 
     player.ontimeupdate = () => {
@@ -568,7 +579,12 @@
     };
 
     player.onended = () => {
-        if (currentSongs.length > 0) playSong((currentIndex + 1) % currentSongs.length);
+        if (currentSongs.length === 0) return;
+        if (isRepeat) {
+            playSong(currentIndex);
+        } else {
+            playSong((currentIndex + 1) % currentSongs.length);
+        }
     };
 
     document.getElementById('add-btn').onclick = async () => {
