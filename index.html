@@ -284,7 +284,7 @@
         .player-controls {
             display: flex;
             align-items: center;
-            gap: 24px;
+            gap: 20px;
         }
 
         .ctrl-btn {
@@ -399,6 +399,7 @@
         
         <div class="player-center">
             <div class="player-controls">
+                <button class="ctrl-btn" id="shuffle-btn" title="Випадковий порядок">🔀</button>
                 <button class="ctrl-btn" id="repeat-btn" title="Повтор треку">🔁</button>
                 <button class="ctrl-btn" id="prev-btn" title="Попередній">⏮</button>
                 <button class="ctrl-btn play-pause-btn" id="play-pause-btn" title="Грати / Пауза">▶</button>
@@ -427,6 +428,7 @@
     let currentIndex = 0;
     let searchQuery = '';
     let isRepeat = false;
+    let isShuffle = false;
 
     const player = document.getElementById('player');
     const playPauseBtn = document.getElementById('play-pause-btn');
@@ -436,6 +438,7 @@
     const volumeSlider = document.getElementById('volume-slider');
     const searchInput = document.getElementById('search-input');
     const repeatBtn = document.getElementById('repeat-btn');
+    const shuffleBtn = document.getElementById('shuffle-btn');
 
     volumeSlider.oninput = (e) => { 
         player.volume = e.target.value; 
@@ -521,6 +524,36 @@
         renderList();
     };
 
+    function updateMediaSession() {
+        if ('mediaSession' in navigator && currentSongs.length > 0) {
+            const song = currentSongs[currentIndex];
+            
+            navigator.mediaSession.metadata = new MediaMetadata({
+                title: song.title,
+                artist: 'SpotiSanya',
+                album: 'My Playlist',
+                artwork: [
+                    { src: 'https://images.unsplash.com/photo-1614680376593-902f749f7ffc?w=512&h=512&fit=crop', sizes: '512x512', type: 'image/png' }
+                ]
+            });
+
+            navigator.mediaSession.setActionHandler('play', () => { 
+                player.play(); 
+                playPauseBtn.textContent = '❚❚'; 
+            });
+            navigator.mediaSession.setActionHandler('pause', () => { 
+                player.pause(); 
+                playPauseBtn.textContent = '▶'; 
+            });
+            navigator.mediaSession.setActionHandler('previoustrack', () => { 
+                document.getElementById('prev-btn').click(); 
+            });
+            navigator.mediaSession.setActionHandler('nexttrack', () => { 
+                document.getElementById('next-btn').click(); 
+            });
+        }
+    }
+
     function playSong(index) {
         if (index < 0 || index >= currentSongs.length) return;
         currentIndex = index;
@@ -528,16 +561,17 @@
         
         player.pause();
         player.src = song.url;
-        player.load(); // Примусовий скид буфера і перезавантаження потоку
+        player.load(); 
         
         player.play().then(() => {
             playPauseBtn.textContent = '❚❚';
         }).catch((err) => {
-            console.warn("Автоматичне відтворення заблоковано або сталася помилка потоку:", err);
+            console.warn("Автоматичне відтворення заблоковано:", err);
             playPauseBtn.textContent = '▶';
         });
         
         currentSongTitle.textContent = song.title;
+        updateMediaSession();
         renderList();
     }
 
@@ -554,16 +588,37 @@
         }
     };
 
+    function getNextIndex() {
+        if (currentSongs.length === 0) return 0;
+        if (isShuffle) {
+            let randomIndex;
+            do {
+                randomIndex = Math.floor(Math.random() * currentSongs.length);
+            } while (randomIndex === currentIndex && currentSongs.length > 1);
+            return randomIndex;
+        } else {
+            return (currentIndex + 1) % currentSongs.length;
+        }
+    }
+
     document.getElementById('next-btn').onclick = () => {
-        if (currentSongs.length > 0) playSong((currentIndex + 1) % currentSongs.length);
+        if (currentSongs.length > 0) playSong(getNextIndex());
     };
+
     document.getElementById('prev-btn').onclick = () => {
-        if (currentSongs.length > 0) playSong((currentIndex - 1 + currentSongs.length) % currentSongs.length);
+        if (currentSongs.length > 0) {
+            playSong((currentIndex - 1 + currentSongs.length) % currentSongs.length);
+        }
     };
 
     repeatBtn.onclick = () => {
         isRepeat = !isRepeat;
         repeatBtn.classList.toggle('active-mode', isRepeat);
+    };
+
+    shuffleBtn.onclick = () => {
+        isShuffle = !isShuffle;
+        shuffleBtn.classList.toggle('active-mode', isShuffle);
     };
 
     player.ontimeupdate = () => {
@@ -583,7 +638,7 @@
         if (isRepeat) {
             playSong(currentIndex);
         } else {
-            playSong((currentIndex + 1) % currentSongs.length);
+            playSong(getNextIndex());
         }
     };
 
