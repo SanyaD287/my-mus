@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SpotiSanya • Ultimate Edition</title>
+    <title>SpotiSanya • Clean Edition</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
@@ -244,72 +244,6 @@
         .action-btn:hover { background: rgba(255, 255, 255, 0.1); color: var(--text-main); }
         .del-btn:hover { color: #ff4757 !important; background: rgba(255, 71, 87, 0.1) !important; }
 
-        /* Еквалайзер панель */
-        .eq-panel {
-            position: absolute;
-            bottom: 95px;
-            left: 50%;
-            transform: translateX(-50%) translateY(20px);
-            background: rgba(14, 14, 18, 0.95);
-            backdrop-filter: blur(30px);
-            border: 1px solid var(--border-color);
-            padding: 20px 24px;
-            border-radius: 18px;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
-            z-index: 20;
-            opacity: 0;
-            pointer-events: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .eq-panel.open {
-            opacity: 1;
-            pointer-events: auto;
-            transform: translateX(-50%) translateY(0);
-        }
-        .eq-sliders-container {
-            display: flex;
-            gap: 24px;
-            justify-content: center;
-        }
-        .eq-slider-group {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            font-size: 12px;
-            color: var(--text-muted);
-        }
-        .eq-slider-group input {
-            writing-mode: bt-lr;
-            -webkit-appearance: slider-vertical;
-            width: 8px;
-            height: 90px;
-            accent-color: var(--accent);
-            cursor: pointer;
-        }
-        .eq-reset-btn {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-muted);
-            border: 1px solid var(--border-color);
-            padding: 8px 12px;
-            border-radius: 10px;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: none;
-            transition: all 0.2s;
-        }
-        .eq-reset-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            color: var(--text-main);
-            border-color: rgba(255, 255, 255, 0.15);
-            transform: none;
-            filter: none;
-        }
-
         /* Player Bar */
         .player-bar {
             position: fixed;
@@ -460,25 +394,6 @@
         </div>
     </div>
 
-    <!-- Еквалайзер панель -->
-    <div class="eq-panel" id="eq-panel">
-        <div class="eq-sliders-container">
-            <div class="eq-slider-group">
-                <span>Bass</span>
-                <input type="range" id="eq-bass" min="-20" max="20" step="1" value="0">
-            </div>
-            <div class="eq-slider-group">
-                <span>Mid</span>
-                <input type="range" id="eq-mid" min="-20" max="20" step="1" value="0">
-            </div>
-            <div class="eq-slider-group">
-                <span>Treble</span>
-                <input type="range" id="eq-treble" min="-20" max="20" step="1" value="0">
-            </div>
-        </div>
-        <button class="eq-reset-btn" id="eq-reset-btn">🔄 Скинути</button>
-    </div>
-
     <div class="player-bar">
         <div class="current-info" id="current-song-title">Нічого не грає</div>
         
@@ -486,8 +401,6 @@
             <div class="player-controls">
                 <button class="ctrl-btn" id="shuffle-btn" title="Випадковий порядок">🔀</button>
                 <button class="ctrl-btn" id="repeat-btn" title="Повтор треку">🔁</button>
-                <button class="ctrl-btn" id="eq-btn" title="Еквалайзер">🎚️</button>
-                <button class="ctrl-btn" id="timer-btn" title="Таймер сну">⏱️</button>
                 <button class="ctrl-btn" id="prev-btn" title="Попередній">⏮</button>
                 <button class="ctrl-btn play-pause-btn" id="play-pause-btn" title="Грати / Пауза">▶</button>
                 <button class="ctrl-btn" id="next-btn" title="Наступний">⏭</button>
@@ -504,7 +417,7 @@
     </div>
 </div>
 
-<audio id="player" crossorigin="anonymous" preload="auto" playsinline></audio>
+<audio id="player" preload="auto" playsinline></audio>
 
 <script>
     const BIN_ID = '6a7c3536da38895dfed9948e'; 
@@ -516,14 +429,6 @@
     let searchQuery = '';
     let isRepeat = false;
     let isShuffle = false;
-    let sleepTimer = null;
-
-    // Web Audio API Elements
-    let audioCtx = null;
-    let audioSource = null;
-    let bassFilter = null;
-    let midFilter = null;
-    let trebleFilter = null;
 
     const player = document.getElementById('player');
     const playPauseBtn = document.getElementById('play-pause-btn');
@@ -534,60 +439,6 @@
     const searchInput = document.getElementById('search-input');
     const repeatBtn = document.getElementById('repeat-btn');
     const shuffleBtn = document.getElementById('shuffle-btn');
-    const timerBtn = document.getElementById('timer-btn');
-    const eqBtn = document.getElementById('eq-btn');
-    const eqPanel = document.getElementById('eq-panel');
-
-    const eqBass = document.getElementById('eq-bass');
-    const eqMid = document.getElementById('eq-mid');
-    const eqTreble = document.getElementById('eq-treble');
-    const eqResetBtn = document.getElementById('eq-reset-btn');
-
-    function initAudioContext() {
-        if (audioCtx) return;
-        try {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            audioSource = audioCtx.createMediaElementSource(player);
-
-            bassFilter = audioCtx.createBiquadFilter();
-            bassFilter.type = 'lowshelf';
-            bassFilter.frequency.value = 250;
-
-            midFilter = audioCtx.createBiquadFilter();
-            midFilter.type = 'peaking';
-            midFilter.frequency.value = 1500;
-            midFilter.Q.value = 1;
-
-            trebleFilter = audioCtx.createBiquadFilter();
-            trebleFilter.type = 'highshelf';
-            trebleFilter.frequency.value = 4000;
-
-            audioSource.connect(bassFilter);
-            bassFilter.connect(midFilter);
-            midFilter.connect(trebleFilter);
-            trebleFilter.connect(audioCtx.destination);
-        } catch (e) {
-            console.error('Web Audio API не підтримується:', e);
-        }
-    }
-
-    eqBass.oninput = (e) => { if (bassFilter) bassFilter.gain.value = parseFloat(e.target.value); };
-    eqMid.oninput = (e) => { if (midFilter) midFilter.gain.value = parseFloat(e.target.value); };
-    eqTreble.oninput = (e) => { if (trebleFilter) trebleFilter.gain.value = parseFloat(e.target.value); };
-
-    eqResetBtn.onclick = () => {
-        eqBass.value = 0;
-        eqMid.value = 0;
-        eqTreble.value = 0;
-        if (bassFilter) bassFilter.gain.value = 0;
-        if (midFilter) midFilter.gain.value = 0;
-        if (trebleFilter) trebleFilter.gain.value = 0;
-    };
-
-    eqBtn.onclick = () => {
-        eqPanel.classList.toggle('open');
-        eqBtn.classList.toggle('active-mode', eqPanel.classList.contains('open'));
-    };
 
     volumeSlider.oninput = (e) => { 
         player.volume = e.target.value; 
@@ -705,11 +556,6 @@
 
     function playSong(index) {
         if (index < 0 || index >= currentSongs.length) return;
-        
-        initAudioContext();
-        if (audioCtx && audioCtx.state === 'suspended') {
-            audioCtx.resume();
-        }
 
         currentIndex = index;
         const song = currentSongs[currentIndex];
@@ -732,10 +578,6 @@
 
     playPauseBtn.onclick = () => {
         if (currentSongs.length === 0) return;
-        initAudioContext();
-        if (audioCtx && audioCtx.state === 'suspended') {
-            audioCtx.resume();
-        }
 
         if (player.paused) {
             if (!player.src) playSong(0);
@@ -779,31 +621,6 @@
     shuffleBtn.onclick = () => {
         isShuffle = !isShuffle;
         shuffleBtn.classList.toggle('active-mode', isShuffle);
-    };
-
-    timerBtn.onclick = () => {
-        if (sleepTimer) {
-            clearTimeout(sleepTimer);
-            sleepTimer = null;
-            timerBtn.classList.remove('active-mode');
-            alert('Таймер сну вимкнено');
-            return;
-        }
-
-        const minutes = prompt("Введіть час до зупинки музики (у хвилинах):", "30");
-        if (!minutes || isNaN(minutes)) return;
-
-        const ms = parseInt(minutes) * 60 * 1000;
-        timerBtn.classList.add('active-mode');
-        
-        sleepTimer = setTimeout(() => {
-            player.pause();
-            playPauseBtn.textContent = '▶';
-            timerBtn.classList.remove('active-mode');
-            sleepTimer = null;
-        }, ms);
-
-        alert(`Музика зупиниться через ${minutes} хв.`);
     };
 
     player.ontimeupdate = () => {
