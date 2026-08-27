@@ -503,7 +503,7 @@
     </div>
 </div>
 
-<audio id="player" crossorigin="anonymous" preload="auto" playsinline></audio>
+<audio id="player" crossorigin="anonymous" preload="auto"></audio>
 
 <script>
     const BIN_ID = '6a7c3536da38895dfed9948e'; 
@@ -670,26 +670,6 @@
         renderList();
     };
 
-    function updateMediaSession() {
-        if ('mediaSession' in navigator && currentSongs.length > 0) {
-            const song = currentSongs[currentIndex];
-            
-            navigator.mediaSession.metadata = new MediaMetadata({
-                title: song.title,
-                artist: 'SpotiSanya',
-                album: 'My Playlist',
-                artwork: [
-                    { src: 'https://images.unsplash.com/photo-1614680376593-902f749f7ffc?w=512&h=512&fit=crop', sizes: '512x512', type: 'image/png' }
-                ]
-            });
-
-            navigator.mediaSession.setActionHandler('play', () => { player.play(); playPauseBtn.textContent = '❚❚'; });
-            navigator.mediaSession.setActionHandler('pause', () => { player.pause(); playPauseBtn.textContent = '▶'; });
-            navigator.mediaSession.setActionHandler('previoustrack', () => { document.getElementById('prev-btn').click(); });
-            navigator.mediaSession.setActionHandler('nexttrack', () => { document.getElementById('next-btn').click(); });
-        }
-    }
-
     function playSong(index) {
         if (index < 0 || index >= currentSongs.length) return;
         
@@ -713,7 +693,6 @@
         });
         
         currentSongTitle.textContent = song.title;
-        updateMediaSession();
         renderList();
     }
 
