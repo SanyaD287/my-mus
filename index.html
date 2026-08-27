@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SpotiSanya • Session Edition</title>
+    <title>SpotiSanya • Persistent Edition</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
@@ -15,7 +15,6 @@
             --bg-main: #070709;
             --bg-surface: rgba(18, 18, 24, 0.7);
             --bg-surface-hover: rgba(28, 28, 38, 0.85);
-            --bg-card: #111116;
             
             --border-color: rgba(255, 255, 255, 0.06);
             --border-hover: rgba(0, 255, 136, 0.3);
@@ -61,7 +60,6 @@
         .main-content::-webkit-scrollbar { width: 8px; }
         .main-content::-webkit-scrollbar-track { background: transparent; }
         .main-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
-        .main-content::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
 
         .header-top {
             display: flex;
@@ -94,7 +92,6 @@
         .add-card {
             background: var(--bg-surface);
             backdrop-filter: var(--blur-glass);
-            -webkit-backdrop-filter: var(--blur-glass);
             padding: 24px;
             border-radius: 20px;
             display: flex;
@@ -117,7 +114,7 @@
             font-family: inherit;
             outline: none;
             flex: 1;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s;
         }
         input[type="text"]:focus { 
             border-color: var(--accent); 
@@ -136,7 +133,7 @@
             font-family: inherit;
             cursor: pointer;
             box-shadow: 0 4px 20px var(--accent-glow);
-            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), filter 0.2s;
+            transition: transform 0.2s, filter 0.2s;
         }
         button:hover { filter: brightness(1.15); transform: translateY(-2px); }
         button:active { transform: translateY(0); }
@@ -157,14 +154,13 @@
             color: var(--text-muted);
             font-size: 14px;
             background: rgba(255, 255, 255, 0.01);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s;
             cursor: pointer;
         }
         .drop-zone:hover {
             border-color: var(--accent);
             background: rgba(0, 255, 136, 0.02);
             color: var(--text-main);
-            box-shadow: inset 0 0 20px var(--accent-glow);
         }
 
         .playlist-header {
@@ -197,7 +193,7 @@
             backdrop-filter: var(--blur-glass);
             cursor: pointer;
             border: 1px solid var(--border-color);
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.25s;
         }
         li:hover { 
             background: var(--bg-surface-hover); 
@@ -209,7 +205,7 @@
             border-color: var(--accent);
             box-shadow: 0 0 25px rgba(0, 255, 136, 0.1);
         }
-        li.active .song-name { color: var(--accent); font-weight: 700; text-shadow: 0 0 10px var(--accent-glow); }
+        li.active .song-name { color: var(--accent); font-weight: 700; }
         
         .song-index { color: var(--text-muted); font-size: 14px; font-weight: 600; }
         .song-name {
@@ -219,7 +215,6 @@
             overflow: hidden;
             text-overflow: ellipsis;
             padding-right: 15px;
-            transition: color 0.2s;
         }
         
         .action-btns {
@@ -251,7 +246,6 @@
             width: 100%;
             background: rgba(10, 10, 13, 0.85);
             backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
             border-top: 1px solid var(--border-color);
             display: flex;
             align-items: center;
@@ -259,7 +253,6 @@
             padding: 18px 48px;
             gap: 24px;
             z-index: 10;
-            box-shadow: 0 -20px 40px rgba(0,0,0,0.6);
         }
 
         .current-info {
@@ -269,7 +262,6 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            letter-spacing: -0.2px;
         }
 
         .player-center {
@@ -296,8 +288,8 @@
             box-shadow: none;
             transition: color 0.2s, transform 0.2s;
         }
-        .ctrl-btn:hover { color: var(--text-main); transform: scale(1.15); filter: none; }
-        .ctrl-btn.active-mode { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
+        .ctrl-btn:hover { color: var(--text-main); transform: scale(1.15); }
+        .ctrl-btn.active-mode { color: var(--accent); }
 
         .play-pause-btn {
             width: 44px;
@@ -311,7 +303,7 @@
             font-size: 14px;
             font-weight: 800;
             box-shadow: 0 4px 20px var(--accent-glow);
-            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), filter 0.2s;
+            transition: transform 0.2s, filter 0.2s;
         }
         .play-pause-btn:hover { filter: brightness(1.15); transform: scale(1.08); }
 
@@ -323,15 +315,12 @@
             border-radius: 3px;
             cursor: pointer;
             position: relative;
-            overflow: hidden;
         }
         .progress-bar {
             height: 100%;
             background: var(--accent-gradient);
             border-radius: 3px;
             width: 0%;
-            box-shadow: 0 0 10px var(--accent-glow);
-            transition: width 0.1s linear;
         }
 
         .volume-wrapper {
@@ -348,12 +337,6 @@
             accent-color: var(--accent);
             cursor: pointer;
         }
-
-        @media (max-width: 768px) {
-            .player-bar { flex-direction: column; gap: 14px; padding: 18px 24px; }
-            .current-info, .player-center, .volume-wrapper { width: 100%; justify-content: center; text-align: center; }
-            .main-content { padding: 24px; padding-bottom: 220px; }
-        }
     </style>
 </head>
 <body>
@@ -361,27 +344,25 @@
 <div class="app-layout">
     <div class="main-content">
         <div class="header-top">
-            <div class="app-title">⚡ SpotiSanya <span style="font-size: 12px; font-weight: 500; color: var(--text-muted);">(Session Only)</span></div>
+            <div class="app-title">⚡ SpotiSanya <span style="font-size: 12px; font-weight: 500; color: var(--text-muted);">(Persistent Edition)</span></div>
         </div>
 
         <div>
-            <div class="section-title">Додати трек або джерело</div>
+            <div class="section-title">Додати трек</div>
             <div class="add-card">
-                <input type="text" id="title" placeholder="Введіть назву треку...">
-                <input type="text" id="url" placeholder="Посилання на MP3...">
+                <input type="text" id="title" placeholder="Назва треку...">
+                <input type="text" id="url" placeholder="Шлях до файлу (наприклад, file:///D:/Music/song.mp3 або URL)...">
                 <button id="add-btn">Додати</button>
-                <input type="file" id="folder-input" webkitdirectory directory multiple style="display: none;">
-                <button id="folder-btn" class="secondary-btn">📂 Обрати папку</button>
             </div>
         </div>
 
         <div class="drop-zone" id="drop-zone">
-            📥 Перетягніть ваші MP3 файли сюди (існують лише у цій вкладці)
+            📥 Або перетягніть ваші MP3 файли сюди (збережуться в браузері для оффлайн доступу)
         </div>
 
         <div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <div class="section-title" style="margin-bottom: 0;">Тимчасовий Плейлист</div>
+                <div class="section-title" style="margin-bottom: 0;">Мій Плейлист</div>
                 <input type="text" id="search-input" placeholder="🔍 Швидкий пошук..." style="max-width: 240px; padding: 10px 16px; font-size: 13px;">
             </div>
             <div class="playlist-header">
@@ -416,10 +397,11 @@
     </div>
 </div>
 
-<audio id="player" preload="auto" playsinline></audio>
+<audio id="player" preload="auto"></audio>
 
 <script>
-    let currentSongs = [];
+    // Завантаження плейлиста з локальної пам'яті браузера
+    let currentSongs = JSON.parse(localStorage.getItem('spotisanya_songs')) || [];
     let currentIndex = 0;
     let searchQuery = '';
     let isRepeat = false;
@@ -435,10 +417,12 @@
     const repeatBtn = document.getElementById('repeat-btn');
     const shuffleBtn = document.getElementById('shuffle-btn');
 
-    // Гучність керується суто в рамках сесії в пам'яті
-    volumeSlider.oninput = (e) => { 
-        player.volume = e.target.value; 
-    };
+    // Зберігаємо плейлист у localStorage
+    function saveToStorage() {
+        localStorage.setItem('spotisanya_songs', JSON.stringify(currentSongs));
+    }
+
+    volumeSlider.oninput = (e) => { player.volume = e.target.value; };
 
     renderList();
 
@@ -450,7 +434,7 @@
             .filter(song => song.title.toLowerCase().includes(searchQuery.toLowerCase()));
 
         if (filteredSongs.length === 0) {
-            list.innerHTML = '<li style="color: var(--text-muted); justify-content: center; display: flex; text-align: center; padding: 24px; background: transparent; border: none;">Сесія порожня. Додайте треки, після закриття вкладки вони зникнуть.</li>';
+            list.innerHTML = '<li style="color: var(--text-muted); justify-content: center; display: flex; text-align: center; padding: 24px; background: transparent; border: none;">Плейлист порожній. Додайте треки, і вони залишаться тут навіть без інтернету.</li>';
             return;
         }
 
@@ -476,26 +460,6 @@
         renderList();
     };
 
-    function updateMediaSession() {
-        if ('mediaSession' in navigator && currentSongs.length > 0) {
-            const song = currentSongs[currentIndex];
-            
-            navigator.mediaSession.metadata = new MediaMetadata({
-                title: song.title,
-                artist: 'SpotiSanya (Session)',
-                album: 'Temporary',
-                artwork: [
-                    { src: 'https://images.unsplash.com/photo-1614680376593-902f749f7ffc?w=512&h=512&fit=crop', sizes: '512x512', type: 'image/png' }
-                ]
-            });
-
-            navigator.mediaSession.setActionHandler('play', () => { player.play(); playPauseBtn.textContent = '❚❚'; });
-            navigator.mediaSession.setActionHandler('pause', () => { player.pause(); playPauseBtn.textContent = '▶'; });
-            navigator.mediaSession.setActionHandler('previoustrack', () => { document.getElementById('prev-btn').click(); });
-            navigator.mediaSession.setActionHandler('nexttrack', () => { document.getElementById('next-btn').click(); });
-        }
-    }
-
     function playSong(index) {
         if (index < 0 || index >= currentSongs.length) return;
 
@@ -509,12 +473,11 @@
         player.play().then(() => {
             playPauseBtn.textContent = '❚❚';
         }).catch((err) => {
-            console.warn("Автоматичне відтворення заблоковано:", err);
+            console.warn("Помилка відтворення:", err);
             playPauseBtn.textContent = '▶';
         });
         
         currentSongTitle.textContent = song.title;
-        updateMediaSession();
         renderList();
     }
 
@@ -523,9 +486,7 @@
 
         if (player.paused) {
             if (!player.src) playSong(0);
-            else {
-                player.play().then(() => { playPauseBtn.textContent = '❚❚'; }).catch(() => {});
-            }
+            else player.play().then(() => { playPauseBtn.textContent = '❚❚'; }).catch(() => {});
         } else {
             player.pause();
             playPauseBtn.textContent = '▶';
@@ -579,11 +540,8 @@
 
     player.onended = () => {
         if (currentSongs.length === 0) return;
-        if (isRepeat) {
-            playSong(currentIndex);
-        } else {
-            playSong(getNextIndex());
-        }
+        if (isRepeat) playSong(currentIndex);
+        else playSong(getNextIndex());
     };
 
     document.getElementById('add-btn').onclick = () => {
@@ -592,14 +550,14 @@
         const title = titleInput.value.trim();
         const url = urlInput.value.trim();
 
-        if (!url) return alert('Введіть посилання!');
+        if (!url) return alert('Введіть посилання або шлях до файлу!');
 
-        if (!title) {
-            currentSongs.push({ title: url.split('/').pop() || 'Трек', url });
-        } else {
-            currentSongs.push({ title, url });
-        }
+        currentSongs.push({
+            title: title || url.split('/').pop() || 'Трек',
+            url: url
+        });
 
+        saveToStorage();
         titleInput.value = ''; 
         urlInput.value = '';
         renderList();
@@ -610,31 +568,17 @@
     dropZoneEl.ondrop = (e) => {
         e.preventDefault();
         if (e.dataTransfer.files.length > 0) {
-            const file = e.dataTransfer.files[0];
-            if (file.type.includes('audio') || file.name.endsWith('.mp3')) {
-                currentSongs.push({ title: file.name.replace(/\.[^/.]+$/, ""), url: URL.createObjectURL(file) });
-                renderList();
-                playSong(currentSongs.length - 1);
+            for (let file of e.dataTransfer.files) {
+                if (file.name.endsWith('.mp3') || file.type.includes('audio')) {
+                    // Для локальних файлів створюємо локальне посилання
+                    const objectUrl = URL.createObjectURL(file);
+                    currentSongs.push({ title: file.name.replace(/\.[^/.]+$/, ""), url: objectUrl });
+                }
             }
-        }
-    };
-
-    const folderBtn = document.getElementById('folder-btn');
-    const folderInput = document.getElementById('folder-input');
-    folderBtn.onclick = () => folderInput.click();
-    folderInput.onchange = (e) => {
-        let added = 0;
-        for (let file of e.target.files) {
-            if (file.name.endsWith('.mp3') || file.name.endsWith('.wav')) {
-                currentSongs.push({ title: file.name.replace(/\.[^/.]+$/, ""), url: URL.createObjectURL(file) });
-                added++;
-            }
-        }
-        if (added > 0) {
+            saveToStorage();
             renderList();
-            if (!player.src) playSong(currentSongs.length - added);
+            if (currentSongs.length > 0 && !player.src) playSong(0);
         }
-        folderInput.value = '';
     };
 
     function renameSong(event, index) {
@@ -642,6 +586,7 @@
         const newTitle = prompt("Нова назва:", currentSongs[index].title);
         if (!newTitle || !newTitle.trim()) return;
         currentSongs[index].title = newTitle.trim();
+        saveToStorage();
         renderList();
         if (index === currentIndex) currentSongTitle.textContent = newTitle.trim();
     }
@@ -650,6 +595,7 @@
         event.stopPropagation();
         if (!confirm("Видалити трек?")) return;
         currentSongs.splice(index, 1);
+        saveToStorage();
         renderList();
     }
 </script>
