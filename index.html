@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SpotiSanya • Clean Edition</title>
+    <title>SpotiSanya • Session Edition</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
@@ -244,7 +244,6 @@
         .action-btn:hover { background: rgba(255, 255, 255, 0.1); color: var(--text-main); }
         .del-btn:hover { color: #ff4757 !important; background: rgba(255, 71, 87, 0.1) !important; }
 
-        /* Player Bar */
         .player-bar {
             position: fixed;
             bottom: 0;
@@ -362,14 +361,14 @@
 <div class="app-layout">
     <div class="main-content">
         <div class="header-top">
-            <div class="app-title">⚡ SpotiSanya</div>
+            <div class="app-title">⚡ SpotiSanya <span style="font-size: 12px; font-weight: 500; color: var(--text-muted);">(Session Only)</span></div>
         </div>
 
         <div>
             <div class="section-title">Додати трек або джерело</div>
             <div class="add-card">
                 <input type="text" id="title" placeholder="Введіть назву треку...">
-                <input type="text" id="url" placeholder="Посилання на MP3, SoundCloud або YouTube плейлист...">
+                <input type="text" id="url" placeholder="Посилання на MP3...">
                 <button id="add-btn">Додати</button>
                 <input type="file" id="folder-input" webkitdirectory directory multiple style="display: none;">
                 <button id="folder-btn" class="secondary-btn">📂 Обрати папку</button>
@@ -377,12 +376,12 @@
         </div>
 
         <div class="drop-zone" id="drop-zone">
-            📥 Перетягніть ваші MP3 файли сюди
+            📥 Перетягніть ваші MP3 файли сюди (існують лише у цій вкладці)
         </div>
 
         <div>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <div class="section-title" style="margin-bottom: 0;">Ваш Плейлист</div>
+                <div class="section-title" style="margin-bottom: 0;">Тимчасовий Плейлист</div>
                 <input type="text" id="search-input" placeholder="🔍 Швидкий пошук..." style="max-width: 240px; padding: 10px 16px; font-size: 13px;">
             </div>
             <div class="playlist-header">
@@ -420,10 +419,6 @@
 <audio id="player" preload="auto" playsinline></audio>
 
 <script>
-    const BIN_ID = '6a7c3536da38895dfed9948e'; 
-    const API_KEY = '$2a$10$RZSWlrF3nSMRAsv5Jlk1MOHs4qBWJ6ItuOqlU9rE1KSeii4Ck2XFu'; 
-    const urlAPI = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
-
     let currentSongs = [];
     let currentIndex = 0;
     let searchQuery = '';
@@ -440,55 +435,12 @@
     const repeatBtn = document.getElementById('repeat-btn');
     const shuffleBtn = document.getElementById('shuffle-btn');
 
+    // Гучність керується суто в рамках сесії в пам'яті
     volumeSlider.oninput = (e) => { 
         player.volume = e.target.value; 
-        localStorage.setItem('spotisanya_volume', player.volume);
     };
 
-    const savedVol = localStorage.getItem('spotisanya_volume');
-    if (savedVol !== null) {
-        player.volume = parseFloat(savedVol);
-        volumeSlider.value = savedVol;
-    }
-
-    async function loadSongs() {
-        loadFromCache();
-        try {
-            const response = await fetch(urlAPI, { headers: { 'X-Master-Key': API_KEY }});
-            if (!response.ok) throw new Error('Помилка завантаження з хмари');
-            const result = await response.json();
-            const cloudSongs = result.record.songs;
-
-            if (Array.isArray(cloudSongs)) {
-                currentSongs = cloudSongs;
-                localStorage.setItem('spotisanya_cache', JSON.stringify(currentSongs));
-            }
-        } catch (err) {
-            console.warn('Використовуємо локальний кеш через помилку мережі:', err);
-        }
-        renderList();
-    }
-
-    function loadFromCache() {
-        const cached = localStorage.getItem('spotisanya_cache');
-        if (cached) {
-            try { currentSongs = JSON.parse(cached); } catch(e) {}
-        }
-    }
-    loadSongs();
-
-    async function syncCloud() {
-        localStorage.setItem('spotisanya_cache', JSON.stringify(currentSongs));
-        try {
-            await fetch(urlAPI, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json', 'X-Master-Key': API_KEY },
-                body: JSON.stringify({ songs: currentSongs })
-            });
-        } catch(err) {
-            console.error('Не вдалося синхронізувати з хмарою:', err);
-        }
-    }
+    renderList();
 
     function renderList() {
         const list = document.getElementById('list');
@@ -498,7 +450,7 @@
             .filter(song => song.title.toLowerCase().includes(searchQuery.toLowerCase()));
 
         if (filteredSongs.length === 0) {
-            list.innerHTML = '<li style="color: var(--text-muted); justify-content: center; display: flex; text-align: center; padding: 24px; background: transparent; border: none;">Список порожній або нічого не знайдено</li>';
+            list.innerHTML = '<li style="color: var(--text-muted); justify-content: center; display: flex; text-align: center; padding: 24px; background: transparent; border: none;">Сесія порожня. Додайте треки, після закриття вкладки вони зникнуть.</li>';
             return;
         }
 
@@ -530,27 +482,17 @@
             
             navigator.mediaSession.metadata = new MediaMetadata({
                 title: song.title,
-                artist: 'SpotiSanya',
-                album: 'My Playlist',
+                artist: 'SpotiSanya (Session)',
+                album: 'Temporary',
                 artwork: [
                     { src: 'https://images.unsplash.com/photo-1614680376593-902f749f7ffc?w=512&h=512&fit=crop', sizes: '512x512', type: 'image/png' }
                 ]
             });
 
-            navigator.mediaSession.setActionHandler('play', () => { 
-                player.play(); 
-                playPauseBtn.textContent = '❚❚'; 
-            });
-            navigator.mediaSession.setActionHandler('pause', () => { 
-                player.pause(); 
-                playPauseBtn.textContent = '▶'; 
-            });
-            navigator.mediaSession.setActionHandler('previoustrack', () => { 
-                document.getElementById('prev-btn').click(); 
-            });
-            navigator.mediaSession.setActionHandler('nexttrack', () => { 
-                document.getElementById('next-btn').click(); 
-            });
+            navigator.mediaSession.setActionHandler('play', () => { player.play(); playPauseBtn.textContent = '❚❚'; });
+            navigator.mediaSession.setActionHandler('pause', () => { player.pause(); playPauseBtn.textContent = '▶'; });
+            navigator.mediaSession.setActionHandler('previoustrack', () => { document.getElementById('prev-btn').click(); });
+            navigator.mediaSession.setActionHandler('nexttrack', () => { document.getElementById('next-btn').click(); });
         }
     }
 
@@ -644,7 +586,7 @@
         }
     };
 
-    document.getElementById('add-btn').onclick = async () => {
+    document.getElementById('add-btn').onclick = () => {
         const titleInput = document.getElementById('title');
         const urlInput = document.getElementById('url');
         const title = titleInput.value.trim();
@@ -661,12 +603,11 @@
         titleInput.value = ''; 
         urlInput.value = '';
         renderList();
-        await syncCloud();
     };
 
     const dropZoneEl = document.getElementById('drop-zone');
     dropZoneEl.ondragover = (e) => { e.preventDefault(); };
-    dropZoneEl.ondrop = async (e) => {
+    dropZoneEl.ondrop = (e) => {
         e.preventDefault();
         if (e.dataTransfer.files.length > 0) {
             const file = e.dataTransfer.files[0];
@@ -674,7 +615,6 @@
                 currentSongs.push({ title: file.name.replace(/\.[^/.]+$/, ""), url: URL.createObjectURL(file) });
                 renderList();
                 playSong(currentSongs.length - 1);
-                await syncCloud();
             }
         }
     };
@@ -682,7 +622,7 @@
     const folderBtn = document.getElementById('folder-btn');
     const folderInput = document.getElementById('folder-input');
     folderBtn.onclick = () => folderInput.click();
-    folderInput.onchange = async (e) => {
+    folderInput.onchange = (e) => {
         let added = 0;
         for (let file of e.target.files) {
             if (file.name.endsWith('.mp3') || file.name.endsWith('.wav')) {
@@ -693,27 +633,24 @@
         if (added > 0) {
             renderList();
             if (!player.src) playSong(currentSongs.length - added);
-            await syncCloud();
         }
         folderInput.value = '';
     };
 
-    async function renameSong(event, index) {
+    function renameSong(event, index) {
         event.stopPropagation();
         const newTitle = prompt("Нова назва:", currentSongs[index].title);
         if (!newTitle || !newTitle.trim()) return;
         currentSongs[index].title = newTitle.trim();
         renderList();
         if (index === currentIndex) currentSongTitle.textContent = newTitle.trim();
-        await syncCloud();
     }
 
-    async function deleteSong(event, index) {
+    function deleteSong(event, index) {
         event.stopPropagation();
         if (!confirm("Видалити трек?")) return;
         currentSongs.splice(index, 1);
         renderList();
-        await syncCloud();
     }
 </script>
 </body>
