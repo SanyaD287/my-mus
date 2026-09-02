@@ -91,10 +91,6 @@
             margin-bottom: 12px;
         }
 
-        .add-section-wrapper {
-            transition: all 0.3s ease;
-        }
-
         .add-card {
             background: var(--bg-surface);
             backdrop-filter: var(--blur-glass);
@@ -254,16 +250,16 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            margin: 20px 0;
+            margin: 10px 0;
             user-select: none;
         }
         .vinyl-disc {
-            width: 220px;
-            height: 220px;
+            width: 180px;
+            height: 180px;
             background: #111;
             border-radius: 50%;
             position: relative;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6), inset 0 0 0 15px #1a1a1a, inset 0 0 0 20px #111, inset 0 0 0 35px #1c1c1c, inset 0 0 0 40px #111;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6), inset 0 0 0 12px #1a1a1a, inset 0 0 0 16px #111, inset 0 0 0 28px #1c1c1c, inset 0 0 0 32px #111;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -277,8 +273,8 @@
         }
         .vinyl-disc:active { cursor: grabbing; }
         .vinyl-label {
-            width: 80px;
-            height: 80px;
+            width: 64px;
+            height: 64px;
             background: var(--accent-gradient);
             border-radius: 50%;
             display: flex;
@@ -288,8 +284,8 @@
             position: relative;
         }
         .vinyl-hole {
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             background: var(--bg-main);
             border-radius: 50%;
         }
@@ -431,7 +427,6 @@
                 display: block;
             }
 
-            /* Compact Player Bar at bottom for Mobile */
             .player-bar {
                 position: fixed;
                 bottom: 0;
@@ -441,4 +436,504 @@
                 backdrop-filter: blur(20px);
                 flex-direction: column;
                 padding: 12px 16px;
-                gap
+                gap: 8px;
+                z-index: 100;
+            }
+
+            .player-bar.expanded {
+                height: 75vh;
+                justify-content: space-evenly;
+                border-top-left-radius: 24px;
+                border-top-right-radius: 24px;
+            }
+
+            .player-bar.expanded .volume-wrapper {
+                display: flex !important;
+                width: 100%;
+                justify-content: center;
+            }
+            .player-bar.expanded .volume-slider {
+                width: 200px;
+            }
+            .player-bar.expanded .expand-mobile-btn {
+                transform: rotate(180deg);
+            }
+
+            .current-info {
+                width: 100%;
+                text-align: left;
+                font-size: 15px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .player-center {
+                width: 100%;
+                gap: 6px;
+            }
+
+            .player-controls {
+                gap: 20px;
+            }
+            .ctrl-btn { font-size: 18px; }
+            .play-pause-btn { width: 42px; height: 42px; font-size: 14px; }
+            .progress-container { max-width: 100%; height: 5px; }
+
+            ul { margin-top: 5px; }
+            li {
+                grid-template-columns: 36px 1fr 90px;
+                padding: 12px 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-layout">
+    <div class="main-content">
+        <div class="header-top">
+            <div class="app-title">⚡ SpotiSanya</div>
+        </div>
+
+        <!-- PC Vinyl Record & Scratch feature -->
+        <div class="vinyl-container">
+            <div class="vinyl-disc" id="vinyl-disc" title="Затисніть і крутіть для скретчу">
+                <div class="vinyl-label">
+                    <div class="vinyl-hole"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="add-section-wrapper">
+            <div class="section-title">Додати трек або джерело</div>
+            <div class="add-card">
+                <input type="text" id="title" placeholder="Введіть назву треку...">
+                <input type="text" id="url" placeholder="Посилання на MP3, SoundCloud або YouTube плейлист...">
+                <button id="add-btn">Додати</button>
+                <input type="file" id="folder-input" webkitdirectory directory multiple style="display: none;">
+                <button id="folder-btn" class="secondary-btn">📂 Обрати папку</button>
+            </div>
+        </div>
+
+        <div class="drop-zone" id="drop-zone">
+            📥 Перетягніть ваші MP3 файли сюди
+        </div>
+
+        <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <div class="section-title" style="margin-bottom: 0;">Ваш Плейлист</div>
+                <input type="text" id="search-input" placeholder="🔍 Швидкий пошук..." style="max-width: 240px; padding: 10px 16px; font-size: 13px;">
+            </div>
+            <div class="playlist-header">
+                <div>#</div>
+                <div>Назва треку</div>
+                <div style="text-align: right;">Дії</div>
+            </div>
+            <ul id="list"></ul>
+        </div>
+    </div>
+
+    <div class="player-bar" id="player-bar">
+        <div class="current-info" id="current-song-title">
+            <span>Нічого не грає</span>
+            <button class="expand-mobile-btn" id="expand-btn">▲</button>
+        </div>
+        
+        <div class="player-center">
+            <div class="player-controls">
+                <button class="ctrl-btn" id="shuffle-btn" title="Випадковий порядок">🔀</button>
+                <button class="ctrl-btn" id="repeat-btn" title="Повтор треку">🔁</button>
+                <button class="ctrl-btn" id="prev-btn" title="Попередній">⏮</button>
+                <button class="ctrl-btn play-pause-btn" id="play-pause-btn" title="Грати / Пауза">▶</button>
+                <button class="ctrl-btn" id="next-btn" title="Наступний">⏭</button>
+            </div>
+            <div class="progress-container" id="progress-container">
+                <div class="progress-bar" id="progress-bar"></div>
+            </div>
+        </div>
+
+        <div class="volume-wrapper">
+            <span>🔊</span>
+            <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.01" value="1">
+        </div>
+    </div>
+</div>
+
+<audio id="player" preload="auto" crossorigin="anonymous" playsinline></audio>
+
+<script>
+    const BIN_ID = '6a7c3536da38895dfed9948e'; 
+    const API_KEY = '$2a$10$RZSWlrF3nSMRAsv5Jlk1MOHs4qBWJ6ItuOqlU9rE1KSeii4Ck2XFu'; 
+    const urlAPI = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+
+    let currentSongs = [];
+    let currentIndex = 0;
+    let searchQuery = '';
+    let isRepeat = false;
+    let isShuffle = false;
+
+    const player = document.getElementById('player');
+    const playPauseBtn = document.getElementById('play-pause-btn');
+    const progressBar = document.getElementById('progress-bar');
+    const progressContainer = document.getElementById('progress-container');
+    const currentSongTitle = document.getElementById('current-song-title');
+    const volumeSlider = document.getElementById('volume-slider');
+    const searchInput = document.getElementById('search-input');
+    const repeatBtn = document.getElementById('repeat-btn');
+    const shuffleBtn = document.getElementById('shuffle-btn');
+    const vinylDisc = document.getElementById('vinyl-disc');
+    const playerBar = document.getElementById('player-bar');
+    const expandBtn = document.getElementById('expand-btn');
+
+    expandBtn.onclick = (e) => {
+        e.stopPropagation();
+        playerBar.classList.toggle('expanded');
+    };
+
+    let isDraggingVinyl = false;
+    let startAngle = 0;
+    let lastRotation = 0;
+
+    vinylDisc.onmousedown = (e) => {
+        isDraggingVinyl = true;
+        const rect = vinylDisc.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        startAngle = Math.atan2(e.clientY - cy, e.clientX - cx) * (180 / Math.PI);
+        player.playbackRate = 0;
+    };
+
+    window.onmousemove = (e) => {
+        if (!isDraggingVinyl) return;
+        const rect = vinylDisc.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const currentAngle = Math.atan2(e.clientY - cy, e.clientX - cx) * (180 / Math.PI);
+        let diff = currentAngle - startAngle;
+        lastRotation += diff;
+        vinylDisc.style.transform = `rotate(${lastRotation}deg)`;
+        startAngle = currentAngle;
+
+        player.playbackRate = Math.max(-2, Math.min(2, diff / 5));
+    };
+
+    window.onmouseup = () => {
+        if (isDraggingVinyl) {
+            isDraggingVinyl = false;
+            player.playbackRate = 1.0;
+            if (!player.paused) {
+                vinylDisc.classList.add('playing');
+            }
+        }
+    };
+
+    volumeSlider.oninput = (e) => { 
+        player.volume = e.target.value; 
+        localStorage.setItem('spotisanya_volume', player.volume);
+    };
+
+    const savedVol = localStorage.getItem('spotisanya_volume');
+    if (savedVol !== null) {
+        player.volume = parseFloat(savedVol);
+        volumeSlider.value = savedVol;
+    }
+
+    async function loadSongs() {
+        loadFromCache();
+        try {
+            const response = await fetch(urlAPI, { headers: { 'X-Master-Key': API_KEY }});
+            if (!response.ok) throw new Error('Помилка завантаження з хмари');
+            const result = await response.json();
+            const cloudSongs = result.record.songs;
+
+            if (Array.isArray(cloudSongs)) {
+                currentSongs = cloudSongs;
+                localStorage.setItem('spotisanya_cache', JSON.stringify(currentSongs));
+            }
+        } catch (err) {
+            console.warn('Використовуємо локальний кеш через помилку мережі:', err);
+        }
+        renderList();
+        
+        const savedIndex = localStorage.getItem('spotisanya_index');
+        const savedTime = localStorage.getItem('spotisanya_time');
+        if (savedIndex !== null && currentSongs[savedIndex]) {
+            currentIndex = parseInt(savedIndex);
+            const song = currentSongs[currentIndex];
+            player.src = song.url;
+            
+            const titleSpan = currentSongTitle.querySelector('span') || currentSongTitle;
+            titleSpan.textContent = song.title;
+
+            renderList();
+            if (savedTime !== null) {
+                player.currentTime = parseFloat(savedTime);
+            }
+        }
+    }
+
+    function loadFromCache() {
+        const cached = localStorage.getItem('spotisanya_cache');
+        if (cached) {
+            try { currentSongs = JSON.parse(cached); } catch(e) {}
+        }
+    }
+    loadSongs();
+
+    async function syncCloud() {
+        localStorage.setItem('spotisanya_cache', JSON.stringify(currentSongs));
+        try {
+            await fetch(urlAPI, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'X-Master-Key': API_KEY },
+                body: JSON.stringify({ songs: currentSongs })
+            });
+        } catch(err) {
+            console.error('Не вдалося синхронізувати з хмарою:', err);
+        }
+    }
+
+    function renderList() {
+        const list = document.getElementById('list');
+        list.innerHTML = '';
+        
+        const filteredSongs = currentSongs.map((song, originalIndex) => ({ ...song, originalIndex }))
+            .filter(song => song.title.toLowerCase().includes(searchQuery.toLowerCase()));
+
+        if (filteredSongs.length === 0) {
+            list.innerHTML = '<li style="color: var(--text-muted); justify-content: center; display: flex; text-align: center; padding: 24px; background: transparent; border: none;">Список порожній або нічого не знайдено</li>';
+            return;
+        }
+
+        filteredSongs.forEach((song) => {
+            const li = document.createElement('li');
+            if (song.originalIndex === currentIndex) li.classList.add('active');
+
+            li.innerHTML = `
+                <span class="song-index">${song.originalIndex + 1}</span>
+                <span class="song-name" title="${song.title}">${song.title}</span>
+                <div class="action-btns">
+                    <button class="action-btn" onclick="renameSong(event, ${song.originalIndex})" title="Редагувати">✏️</button>
+                    <button class="action-btn del-btn" onclick="deleteSong(event, ${song.originalIndex})" title="Видалити">✕</button>
+                </div>
+            `;
+            li.onclick = () => playSong(song.originalIndex);
+            list.appendChild(li);
+        });
+    }
+
+    searchInput.oninput = (e) => {
+        searchQuery = e.target.value;
+        renderList();
+    };
+
+    function updateMediaSession() {
+        if ('mediaSession' in navigator && currentSongs.length > 0) {
+            const song = currentSongs[currentIndex];
+            
+            navigator.mediaSession.metadata = new MediaMetadata({
+                title: song.title,
+                artist: 'SpotiSanya',
+                album: 'My Playlist',
+                artwork: [
+                    { src: 'https://images.unsplash.com/photo-1614680376593-902f749f7ffc?w=512&h=512&fit=crop', sizes: '512x512', type: 'image/png' }
+                ]
+            });
+
+            navigator.mediaSession.setActionHandler('play', () => { 
+                player.play(); 
+                playPauseBtn.textContent = '❚❚'; 
+                vinylDisc.classList.add('playing');
+            });
+            navigator.mediaSession.setActionHandler('pause', () => { 
+                player.pause(); 
+                playPauseBtn.textContent = '▶'; 
+                vinylDisc.classList.remove('playing');
+            });
+            navigator.mediaSession.setActionHandler('previoustrack', () => { 
+                document.getElementById('prev-btn').click(); 
+            });
+            navigator.mediaSession.setActionHandler('nexttrack', () => { 
+                document.getElementById('next-btn').click(); 
+            });
+        }
+    }
+
+    function playSong(index) {
+        if (index < 0 || index >= currentSongs.length) return;
+
+        currentIndex = index;
+        const song = currentSongs[currentIndex];
+        
+        player.pause();
+        player.src = song.url;
+        player.load(); 
+
+        player.play().then(() => {
+            playPauseBtn.textContent = '❚❚';
+            vinylDisc.classList.add('playing');
+        }).catch((err) => {
+            console.warn("Автоматичне відтворення заблоковано:", err);
+            playPauseBtn.textContent = '▶';
+            vinylDisc.classList.remove('playing');
+        });
+        
+        const titleSpan = currentSongTitle.querySelector('span') || currentSongTitle;
+        titleSpan.textContent = song.title;
+
+        localStorage.setItem('spotisanya_index', currentIndex);
+        updateMediaSession();
+        renderList();
+    }
+
+    playPauseBtn.onclick = () => {
+        if (currentSongs.length === 0) return;
+
+        if (player.paused) {
+            if (!player.src) playSong(0);
+            else {
+                player.play().then(() => { 
+                    playPauseBtn.textContent = '❚❚'; 
+                    vinylDisc.classList.add('playing');
+                }).catch(() => {});
+            }
+        } else {
+            player.pause();
+            playPauseBtn.textContent = '▶';
+            vinylDisc.classList.remove('playing');
+        }
+    };
+
+    function getNextIndex() {
+        if (currentSongs.length === 0) return 0;
+        if (isShuffle) {
+            let randomIndex;
+            do {
+                randomIndex = Math.floor(Math.random() * currentSongs.length);
+            } while (randomIndex === currentIndex && currentSongs.length > 1);
+            return randomIndex;
+        } else {
+            return (currentIndex + 1) % currentSongs.length;
+        }
+    }
+
+    document.getElementById('next-btn').onclick = () => {
+        if (currentSongs.length > 0) playSong(getNextIndex());
+    };
+
+    document.getElementById('prev-btn').onclick = () => {
+        if (currentSongs.length > 0) {
+            playSong((currentIndex - 1 + currentSongs.length) % currentSongs.length);
+        }
+    };
+
+    repeatBtn.onclick = () => {
+        isRepeat = !isRepeat;
+        repeatBtn.classList.toggle('active-mode', isRepeat);
+    };
+
+    shuffleBtn.onclick = () => {
+        isShuffle = !isShuffle;
+        shuffleBtn.classList.toggle('active-mode', isShuffle);
+    };
+
+    player.ontimeupdate = () => {
+        if (player.duration) {
+            progressBar.style.width = ((player.currentTime / player.duration) * 100) + '%';
+            localStorage.setItem('spotisanya_time', player.currentTime);
+        }
+    };
+
+    progressContainer.onclick = (e) => {
+        if (player.duration) {
+            player.currentTime = (e.offsetX / progressContainer.clientWidth) * player.duration;
+        }
+    };
+
+    player.onended = () => {
+        if (currentSongs.length === 0) return;
+        if (isRepeat) {
+            playSong(currentIndex);
+        } else {
+            playSong(getNextIndex());
+        }
+    };
+
+    document.getElementById('add-btn').onclick = async () => {
+        const titleInput = document.getElementById('title');
+        const urlInput = document.getElementById('url');
+        const title = titleInput.value.trim();
+        const url = urlInput.value.trim();
+
+        if (!url) return alert('Введіть посилання!');
+
+        if (!title) {
+            currentSongs.push({ title: url.split('/').pop() || 'Трек', url });
+        } else {
+            currentSongs.push({ title, url });
+        }
+
+        titleInput.value = ''; 
+        urlInput.value = '';
+        renderList();
+        await syncCloud();
+    };
+
+    const dropZoneEl = document.getElementById('drop-zone');
+    dropZoneEl.ondragover = (e) => { e.preventDefault(); };
+    dropZoneEl.ondrop = async (e) => {
+        e.preventDefault();
+        if (e.dataTransfer.files.length > 0) {
+            const file = e.dataTransfer.files[0];
+            if (file.type.includes('audio') || file.name.endsWith('.mp3')) {
+                currentSongs.push({ title: file.name.replace(/\.[^/.]+$/, ""), url: URL.createObjectURL(file) });
+                renderList();
+                playSong(currentSongs.length - 1);
+                await syncCloud();
+            }
+        }
+    };
+
+    const folderBtn = document.getElementById('folder-btn');
+    const folderInput = document.getElementById('folder-input');
+    folderBtn.onclick = () => folderInput.click();
+    folderInput.onchange = async (e) => {
+        let added = 0;
+        for (let file of e.target.files) {
+            if (file.name.endsWith('.mp3') || file.name.endsWith('.wav')) {
+                currentSongs.push({ title: file.name.replace(/\.[^/.]+$/, ""), url: URL.createObjectURL(file) });
+                added++;
+            }
+        }
+        if (added > 0) {
+            renderList();
+            if (!player.src) playSong(currentSongs.length - added);
+            await syncCloud();
+        }
+        folderInput.value = '';
+    };
+
+    async function renameSong(event, index) {
+        event.stopPropagation();
+        const newTitle = prompt("Нова назва:", currentSongs[index].title);
+        if (!newTitle || !newTitle.trim()) return;
+        currentSongs[index].title = newTitle.trim();
+        renderList();
+        if (index === currentIndex) {
+            const titleSpan = currentSongTitle.querySelector('span') || currentSongTitle;
+            titleSpan.textContent = newTitle.trim();
+        }
+        await syncCloud();
+    }
+
+    async function deleteSong(event, index) {
+        event.stopPropagation();
+        if (!confirm("Видалити трек?")) return;
+        currentSongs.splice(index, 1);
+        renderList();
+        await syncCloud();
+    }
+</script>
+</body>
+</html>
