@@ -3,12 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SpotiSanya • Custom Edition</title>
+    <title>SpotiSanya • Clean Edition</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap'); /* для ретро-вайбу */
 
-        /* Тема за замовчуванням (Кіберпанк / Неон) */
         :root {
             --accent: #00ff88;
             --accent-glow: rgba(0, 255, 136, 0.25);
@@ -17,7 +15,6 @@
             --bg-main: #070709;
             --bg-surface: rgba(18, 18, 24, 0.7);
             --bg-surface-hover: rgba(28, 28, 38, 0.85);
-            --bg-card: #111116;
             
             --border-color: rgba(255, 255, 255, 0.06);
             --border-hover: rgba(0, 255, 136, 0.3);
@@ -29,46 +26,16 @@
             --font-family: 'Plus Jakarta Sans', sans-serif;
         }
 
-        /* Ретро Вініл 70-х тема */
-        body.theme-vinyl {
-            --accent: #d4a373;
-            --accent-glow: rgba(212, 163, 115, 0.3);
-            --accent-gradient: linear-gradient(135deg, #dda15e 0%, #bc6c25 100%);
-            
-            --bg-main: #1c140d;
-            --bg-surface: rgba(43, 30, 21, 0.8);
-            --bg-surface-hover: rgba(61, 43, 31, 0.9);
-            --bg-card: #261b13;
-            
-            --border-color: rgba(212, 163, 115, 0.15);
-            --border-hover: rgba(212, 163, 115, 0.4);
-            
-            --text-main: #fefae0;
-            --text-muted: #dda15e;
-            --blur-glass: blur(10px);
-            --font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
         body {
             background-color: var(--bg-main);
-            background-image: 
-                radial-gradient(circle at 15% 15%, rgba(0, 184, 255, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 85% 85%, rgba(0, 255, 136, 0.06) 0%, transparent 40%);
             color: var(--text-main);
             font-family: var(--font-family);
             height: 100vh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            transition: background 0.5s ease;
-        }
-
-        body.theme-vinyl {
-            background-image: 
-                radial-gradient(circle at 50% 50%, rgba(188, 108, 37, 0.12) 0%, transparent 70%),
-                repeating-linear-gradient(45deg, rgba(0,0,0,0.03) 0, rgba(0,0,0,0.03) 2px, transparent 0, transparent 4px);
         }
 
         .app-layout {
@@ -109,38 +76,6 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            filter: drop-shadow(0 0 25px var(--accent-glow));
-        }
-
-        /* Панель перемикання тем */
-        .theme-switcher {
-            display: flex;
-            background: var(--bg-surface);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 4px;
-            gap: 4px;
-            backdrop-filter: var(--blur-glass);
-        }
-
-        .theme-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            padding: 8px 14px;
-            border-radius: 10px;
-            font-size: 12px;
-            font-weight: 700;
-            cursor: pointer;
-            box-shadow: none;
-            transition: all 0.3s;
-        }
-
-        .theme-btn.active {
-            background: var(--accent-gradient);
-            color: #070709;
-            box-shadow: 0 0 15px var(--accent-glow);
-            transform: none;
         }
 
         .section-title {
@@ -164,7 +99,6 @@
             border: 1px solid var(--border-color);
             box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
             flex-wrap: wrap;
-            transition: border-color 0.3s;
         }
         .add-card:focus-within { border-color: var(--border-hover); }
 
@@ -178,7 +112,7 @@
             font-family: inherit;
             outline: none;
             flex: 1;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s;
         }
         input[type="text"]:focus { 
             border-color: var(--accent); 
@@ -197,7 +131,7 @@
             font-family: inherit;
             cursor: pointer;
             box-shadow: 0 4px 20px var(--accent-glow);
-            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), filter 0.2s;
+            transition: transform 0.2s, filter 0.2s;
         }
         button:hover { filter: brightness(1.15); transform: translateY(-2px); }
         button:active { transform: translateY(0); }
@@ -218,14 +152,13 @@
             color: var(--text-muted);
             font-size: 14px;
             background: rgba(255, 255, 255, 0.01);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.3s;
             cursor: pointer;
         }
         .drop-zone:hover {
             border-color: var(--accent);
             background: var(--accent-glow);
             color: var(--text-main);
-            box-shadow: inset 0 0 20px var(--accent-glow);
         }
 
         .playlist-header {
@@ -258,7 +191,7 @@
             backdrop-filter: var(--blur-glass);
             cursor: pointer;
             border: 1px solid var(--border-color);
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.25s;
         }
         li:hover { 
             background: var(--bg-surface-hover); 
@@ -270,7 +203,7 @@
             border-color: var(--accent);
             box-shadow: 0 0 25px var(--accent-glow);
         }
-        li.active .song-name { color: var(--accent); font-weight: 700; text-shadow: 0 0 10px var(--accent-glow); }
+        li.active .song-name { color: var(--accent); font-weight: 700; }
         
         .song-index { color: var(--text-muted); font-size: 14px; font-weight: 600; }
         .song-name {
@@ -280,7 +213,6 @@
             overflow: hidden;
             text-overflow: ellipsis;
             padding-right: 15px;
-            transition: color 0.2s;
         }
         
         .action-btns {
@@ -306,144 +238,6 @@
         .action-btn:hover { background: rgba(255, 255, 255, 0.1); color: var(--text-main); transform: none; }
         .del-btn:hover { color: #ff4757 !important; background: rgba(255, 71, 87, 0.1) !important; }
 
-        /* --- СТИЛІ ВІНІЛУ ТА ТОНАРМА (РЕЖИМ 70-Х) --- */
-        .vinyl-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            margin: 10px 0;
-            position: relative;
-            user-select: none;
-        }
-
-        .vinyl-disc {
-            width: 200px;
-            height: 200px;
-            background: #111;
-            border-radius: 50%;
-            position: relative;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.7), inset 0 0 0 15px #1a1a1a, inset 0 0 0 20px #111, inset 0 0 0 35px #1c1c1c, inset 0 0 0 40px #111;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: grab;
-            animation: spin 8s linear infinite;
-            animation-play-state: paused;
-            transition: transform 0.1s ease-out;
-        }
-        .vinyl-disc.playing {
-            animation-play-state: running;
-        }
-        .vinyl-disc:active { cursor: grabbing; }
-
-        /* Ефект пилу та подряпин на вінілі */
-        .vinyl-disc::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
-            border-radius: 50%;
-            background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 0);
-            background-size: 24px 24px;
-            pointer-events: none;
-            opacity: 0;
-            transition: opacity 0.3s;
-        }
-        body.theme-vinyl .vinyl-disc::after { opacity: 1; }
-
-        .vinyl-label {
-            width: 75px;
-            height: 75px;
-            background: var(--accent-gradient);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: inset 0 0 12px rgba(0,0,0,0.6);
-            position: relative;
-        }
-        .vinyl-hole {
-            width: 14px;
-            height: 14px;
-            background: var(--bg-main);
-            border-radius: 50%;
-        }
-
-        /* Тонарм (голка вінілу) */
-        .tonearm {
-            position: absolute;
-            top: -10px;
-            right: calc(50% - 130px);
-            width: 14px;
-            height: 140px;
-            transform-origin: 50% 10px;
-            transform: rotate(-35deg);
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            pointer-events: none;
-            z-index: 5;
-            display: none;
-        }
-        body.theme-vinyl .tonearm { display: block; }
-        .vinyl-disc.playing ~ .tonearm, .vinyl-container:hover .tonearm {
-            transform: rotate(-8deg);
-        }
-
-        .tonearm-base {
-            width: 30px;
-            height: 30px;
-            background: #333;
-            border-radius: 50%;
-            position: absolute;
-            top: 0; left: -8px;
-            border: 3px solid #555;
-            box-shadow: 0 5px 10px rgba(0,0,0,0.5);
-        }
-        .tonearm-rod {
-            width: 4px;
-            height: 120px;
-            background: linear-gradient(90deg, #ccc, #777, #ccc);
-            position: absolute;
-            top: 15px; left: 5px;
-            border-radius: 2px;
-        }
-        .tonearm-head {
-            width: 12px;
-            height: 25px;
-            background: #222;
-            position: absolute;
-            bottom: 0; left: 1px;
-            border-radius: 2px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* --- НЕОНОВІ СМУГИ РЕАКЦІЇ НА ЗВУК ( КІБЕРПАНК РЕЖИМ ) --- */
-        .sound-waves {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            pointer-events: none;
-            z-index: 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            opacity: 0.15;
-            padding: 0 20px;
-        }
-        body.theme-vinyl .sound-waves { display: none; }
-        .sound-wave-bar {
-            width: 4px;
-            background: var(--accent);
-            border-radius: 2px;
-            height: 10%;
-            transition: height 0.08s ease;
-            box-shadow: 0 0 10px var(--accent);
-        }
-
-        /* Player Bar */
         .player-bar {
             position: fixed;
             bottom: 0;
@@ -460,9 +254,7 @@
             gap: 24px;
             z-index: 10;
             box-shadow: 0 -20px 40px rgba(0,0,0,0.6);
-            transition: transform 0.3s ease, background 0.5s;
         }
-        body.theme-vinyl .player-bar { background: rgba(30, 20, 13, 0.92); }
 
         .current-info {
             width: 25%;
@@ -471,8 +263,6 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            letter-spacing: -0.2px;
-            cursor: pointer;
         }
 
         .player-center {
@@ -500,7 +290,7 @@
             transition: color 0.2s, transform 0.2s;
         }
         .ctrl-btn:hover { color: var(--text-main); transform: scale(1.15); filter: none; }
-        .ctrl-btn.active-mode { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
+        .ctrl-btn.active-mode { color: var(--accent); }
 
         .play-pause-btn {
             width: 44px;
@@ -514,7 +304,7 @@
             font-size: 14px;
             font-weight: 800;
             box-shadow: 0 4px 20px var(--accent-glow);
-            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), filter 0.2s;
+            transition: transform 0.2s, filter 0.2s;
         }
         .play-pause-btn:hover { filter: brightness(1.15); transform: scale(1.08); }
 
@@ -533,7 +323,6 @@
             background: var(--accent-gradient);
             border-radius: 3px;
             width: 0%;
-            box-shadow: 0 0 10px var(--accent-glow);
             transition: width 0.1s linear;
         }
 
@@ -560,19 +349,13 @@
             font-size: 18px;
             cursor: pointer;
             padding: 4px;
-            box-shadow: none;
         }
 
-        /* Mobile Layout Adjustments */
         @media (max-width: 768px) {
-            body { background: var(--bg-main); overflow-y: auto; }
-            .app-layout { height: 100vh; }
+            body { overflow-y: auto; }
             .main-content { padding: 20px; padding-bottom: 120px; gap: 20px; }
-            .add-section-wrapper, .drop-zone, .playlist-header, .vinyl-container, .volume-wrapper {
-                display: none !important;
-            }
-            .header-top { justify-content: space-between; margin-bottom: 5px; flex-direction: column; gap: 12px; align-items: flex-start; }
-            
+            .drop-zone, .playlist-header, .volume-wrapper { display: none !important; }
+            .header-top { justify-content: space-between; margin-bottom: 5px; }
             .expand-mobile-btn { display: block; }
 
             .player-bar {
@@ -586,7 +369,7 @@
                 z-index: 100;
             }
             .player-bar.expanded {
-                height: 75vh;
+                height: 65vh;
                 justify-content: space-evenly;
                 border-top-left-radius: 24px;
                 border-top-right-radius: 24px;
@@ -601,7 +384,6 @@
 
             .current-info {
                 width: 100%;
-                text-align: left;
                 font-size: 15px;
                 display: flex;
                 justify-content: space-between;
@@ -610,60 +392,25 @@
             .player-center { width: 100%; gap: 6px; }
             .player-controls { gap: 20px; }
             .ctrl-btn { font-size: 18px; }
-            .play-pause-btn { width: 42px; height: 42px; font-size: 14px; }
+            .play-pause-btn { width: 42px; height: 42px; }
             .progress-container { max-width: 100%; height: 5px; }
-
-            ul { margin-top: 5px; }
             li { grid-template-columns: 36px 1fr 90px; padding: 12px 14px; }
         }
     </style>
 </head>
-<body class="theme-cyberpunk">
-
-<!-- Фонові неонові смуги для кіберпанк-режиму (реагують на звук) -->
-<div class="sound-waves" id="sound-waves">
-    <div class="sound-wave-bar"></div>
-    <div class="sound-wave-bar"></div>
-    <div class="sound-wave-bar"></div>
-    <div class="sound-wave-bar"></div>
-    <div class="sound-wave-bar"></div>
-    <div class="sound-wave-bar"></div>
-    <div class="sound-wave-bar"></div>
-    <div class="sound-wave-bar"></div>
-    <div class="sound-wave-bar"></div>
-    <div class="sound-wave-bar"></div>
-</div>
+<body>
 
 <div class="app-layout">
     <div class="main-content">
         <div class="header-top">
             <div class="app-title">⚡ SpotiSanya</div>
-            <!-- Панель перемикання дизайну -->
-            <div class="theme-switcher">
-                <button class="theme-btn active" id="btn-cyberpunk" onclick="setTheme('cyberpunk')">🌃 Кіберпанк</button>
-                <button class="theme-btn" id="btn-vinyl" onclick="setTheme('vinyl')">🄲 Ретро Вініл</button>
-            </div>
         </div>
 
-        <!-- Вінілова платівка та тонарм (ефективно працює в обох режимах, особливо гарно в ретро) -->
-        <div class="vinyl-container">
-            <div class="vinyl-disc" id="vinyl-disc" title="Затисніть і крутіть для скретчу">
-                <div class="vinyl-label">
-                    <div class="vinyl-hole"></div>
-                </div>
-            </div>
-            <div class="tonearm">
-                <div class="tonearm-base"></div>
-                <div class="tonearm-rod"></div>
-                <div class="tonearm-head"></div>
-            </div>
-        </div>
-
-        <div class="add-section-wrapper">
+        <div>
             <div class="section-title">Додати трек або джерело</div>
             <div class="add-card">
                 <input type="text" id="title" placeholder="Введіть назву треку...">
-                <input type="text" id="url" placeholder="Посилання на MP3, SoundCloud або YouTube плейлист...">
+                <input type="text" id="url" placeholder="Посилання на MP3 або потік...">
                 <button id="add-btn">Додати</button>
                 <input type="file" id="folder-input" webkitdirectory directory multiple style="display: none;">
                 <button id="folder-btn" class="secondary-btn">📂 Обрати папку</button>
@@ -714,7 +461,7 @@
     </div>
 </div>
 
-<audio id="player" preload="auto" crossorigin="anonymous" playsinline></audio>
+<audio id="player" preload="auto" playsinline></audio>
 
 <script>
     const BIN_ID = '6a7c3536da38895dfed9948e'; 
@@ -736,95 +483,12 @@
     const searchInput = document.getElementById('search-input');
     const repeatBtn = document.getElementById('repeat-btn');
     const shuffleBtn = document.getElementById('shuffle-btn');
-    const vinylDisc = document.getElementById('vinyl-disc');
     const playerBar = document.getElementById('player-bar');
     const expandBtn = document.getElementById('expand-btn');
-
-    // Логіка перемикання тем дизайну
-    function setTheme(theme) {
-        document.body.className = theme === 'vinyl' ? 'theme-vinyl' : 'theme-cyberpunk';
-        document.getElementById('btn-cyberpunk').classList.toggle('active', theme === 'cyberpunk');
-        document.getElementById('btn-vinyl').classList.toggle('active', theme === 'vinyl');
-        localStorage.setItem('spotisanya_theme', theme);
-    }
-
-    const savedTheme = localStorage.getItem('spotisanya_theme');
-    if (savedTheme) setTheme(savedTheme);
-
-    // Веб-аудіо аналізатор для реагування неонових смуг на музику
-    let audioCtx, analyser, dataArray, sourceNode;
-    let isAudioInitialized = false;
-
-    function initAudioAnalyzer() {
-        if (isAudioInitialized) return;
-        try {
-            const AudioContext = window.AudioContext || window.webkitAudioContext;
-            audioCtx = new AudioContext();
-            analyser = audioCtx.createAnalyser();
-            sourceNode = audioCtx.createMediaElementSource(player);
-            sourceNode.connect(analyser);
-            analyser.connect(audioCtx.destination);
-            analyser.fftSize = 64;
-            dataArray = new Uint8Array(analyser.frequencyBinCount);
-            isAudioInitialized = true;
-            updateVisualizer();
-        } catch(e) {
-            console.log("Audio API init error:", e);
-        }
-    }
-
-    function updateVisualizer() {
-        if (!player.paused && analyser) {
-            analyser.getByteFrequencyData(dataArray);
-            const waveBars = document.querySelectorAll('.sound-wave-bar');
-            waveBars.forEach((bar, i) => {
-                const val = dataArray[i * 2] || 10;
-                bar.style.height = `${Math.max(10, (val / 255) * 100)}%`;
-            });
-        }
-        requestAnimationFrame(updateVisualizer);
-    }
 
     expandBtn.onclick = (e) => {
         e.stopPropagation();
         playerBar.classList.toggle('expanded');
-    };
-
-    let isDraggingVinyl = false;
-    let startAngle = 0;
-    let lastRotation = 0;
-
-    vinylDisc.onmousedown = (e) => {
-        isDraggingVinyl = true;
-        const rect = vinylDisc.getBoundingClientRect();
-        const cx = rect.left + rect.width / 2;
-        const cy = rect.top + rect.height / 2;
-        startAngle = Math.atan2(e.clientY - cy, e.clientX - cx) * (180 / Math.PI);
-        player.playbackRate = 0;
-    };
-
-    window.onmousemove = (e) => {
-        if (!isDraggingVinyl) return;
-        const rect = vinylDisc.getBoundingClientRect();
-        const cx = rect.left + rect.width / 2;
-        const cy = rect.top + rect.height / 2;
-        const currentAngle = Math.atan2(e.clientY - cy, e.clientX - cx) * (180 / Math.PI);
-        let diff = currentAngle - startAngle;
-        lastRotation += diff;
-        vinylDisc.style.transform = `rotate(${lastRotation}deg)`;
-        startAngle = currentAngle;
-
-        player.playbackRate = Math.max(-2, Math.min(2, diff / 5));
-    };
-
-    window.onmouseup = () => {
-        if (isDraggingVinyl) {
-            isDraggingVinyl = false;
-            player.playbackRate = 1.0;
-            if (!player.paused) {
-                vinylDisc.classList.add('playing');
-            }
-        }
     };
 
     volumeSlider.oninput = (e) => { 
@@ -851,7 +515,7 @@
                 localStorage.setItem('spotisanya_cache', JSON.stringify(currentSongs));
             }
         } catch (err) {
-            console.warn('Використовуємо локальний кеш через помилку мережі:', err);
+            console.warn('Використовуємо локальний кеш:', err);
         }
         renderList();
         
@@ -889,7 +553,7 @@
                 body: JSON.stringify({ songs: currentSongs })
             });
         } catch(err) {
-            console.error('Не вдалося синхронізувати з хмарою:', err);
+            console.error('Помилка синхронізації з хмарою:', err);
         }
     }
 
@@ -934,28 +598,13 @@
             navigator.mediaSession.metadata = new MediaMetadata({
                 title: song.title,
                 artist: 'SpotiSanya',
-                album: 'My Playlist',
-                artwork: [
-                    { src: 'https://images.unsplash.com/photo-1614680376593-902f749f7ffc?w=512&h=512&fit=crop', sizes: '512x512', type: 'image/png' }
-                ]
+                album: 'My Playlist'
             });
 
-            navigator.mediaSession.setActionHandler('play', () => { 
-                player.play(); 
-                playPauseBtn.textContent = '❚❚'; 
-                vinylDisc.classList.add('playing');
-            });
-            navigator.mediaSession.setActionHandler('pause', () => { 
-                player.pause(); 
-                playPauseBtn.textContent = '▶'; 
-                vinylDisc.classList.remove('playing');
-            });
-            navigator.mediaSession.setActionHandler('previoustrack', () => { 
-                document.getElementById('prev-btn').click(); 
-            });
-            navigator.mediaSession.setActionHandler('nexttrack', () => { 
-                document.getElementById('next-btn').click(); 
-            });
+            navigator.mediaSession.setActionHandler('play', () => { player.play(); playPauseBtn.textContent = '❚❚'; });
+            navigator.mediaSession.setActionHandler('pause', () => { player.pause(); playPauseBtn.textContent = '▶'; });
+            navigator.mediaSession.setActionHandler('previoustrack', () => { document.getElementById('prev-btn').click(); });
+            navigator.mediaSession.setActionHandler('nexttrack', () => { document.getElementById('next-btn').click(); });
         }
     }
 
@@ -965,22 +614,12 @@
         currentIndex = index;
         const song = currentSongs[currentIndex];
         
-        player.pause();
         player.src = song.url;
-        player.load(); 
-
-        initAudioAnalyzer();
-        if (audioCtx && audioCtx.state === 'suspended') {
-            audioCtx.resume();
-        }
-
         player.play().then(() => {
             playPauseBtn.textContent = '❚❚';
-            vinylDisc.classList.add('playing');
         }).catch((err) => {
             console.warn("Автоматичне відтворення заблоковано:", err);
             playPauseBtn.textContent = '▶';
-            vinylDisc.classList.remove('playing');
         });
         
         const titleSpan = currentSongTitle.querySelector('span') || currentSongTitle;
@@ -993,24 +632,12 @@
 
     playPauseBtn.onclick = () => {
         if (currentSongs.length === 0) return;
-
-        initAudioAnalyzer();
-        if (audioCtx && audioCtx.state === 'suspended') {
-            audioCtx.resume();
-        }
-
         if (player.paused) {
             if (!player.src) playSong(0);
-            else {
-                player.play().then(() => { 
-                    playPauseBtn.textContent = '❚❚'; 
-                    vinylDisc.classList.add('playing');
-                }).catch(() => {});
-            }
+            else player.play().then(() => { playPauseBtn.textContent = '❚❚'; }).catch(() => {});
         } else {
             player.pause();
             playPauseBtn.textContent = '▶';
-            vinylDisc.classList.remove('playing');
         }
     };
 
@@ -1145,7 +772,6 @@
                 player.pause();
                 player.src = '';
                 currentSongTitle.querySelector('span').textContent = 'Нічого не грає';
-                vinylDisc.classList.remove('playing');
                 currentIndex = 0;
             } else if (index === currentIndex) {
                 currentIndex = Math.min(index, currentSongs.length - 1);
