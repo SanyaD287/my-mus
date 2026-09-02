@@ -341,7 +341,7 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            background: rgba(10, 10, 13, 0.85);
+            background: rgba(10, 10, 13, 0.9);
             backdrop-filter: blur(30px);
             -webkit-backdrop-filter: blur(30px);
             border-top: 1px solid var(--border-color);
@@ -352,6 +352,7 @@
             gap: 24px;
             z-index: 10;
             box-shadow: 0 -20px 40px rgba(0,0,0,0.6);
+            transition: transform 0.3s ease;
         }
 
         .current-info {
@@ -362,6 +363,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
             letter-spacing: -0.2px;
+            cursor: pointer;
         }
 
         .player-center {
@@ -441,59 +443,87 @@
             cursor: pointer;
         }
 
-        /* Mobile Spotify-style Fullscreen Layout Overrides */
+        .expand-mobile-btn {
+            display: none;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-size: 18px;
+            cursor: pointer;
+            padding: 4px;
+            box-shadow: none;
+        }
+
+        /* Mobile Layout Adjustments */
         @media (max-width: 768px) {
             body { background: var(--bg-main); overflow-y: auto; }
-            .app-layout { height: auto; min-height: 100vh; }
-            .main-content { padding: 20px; padding-bottom: 140px; gap: 20px; }
-            .add-section-wrapper, .drop-zone, .playlist-header, .equalizer-panel, .vinyl-container {
+            .app-layout { height: 100vh; }
+            .main-content { padding: 20px; padding-bottom: 120px; gap: 20px; }
+            .add-section-wrapper, .drop-zone, .playlist-header, .equalizer-panel, .vinyl-container, .volume-wrapper {
                 display: none !important;
             }
-            .header-top { justify-content: center; margin-bottom: 10px; }
+            .header-top { justify-content: space-between; margin-bottom: 5px; }
             
-            /* Fullscreen Mobile Player Bar */
+            .expand-mobile-btn {
+                display: block;
+            }
+
+            /* Compact Player Bar at bottom for Mobile */
             .player-bar {
                 position: fixed;
                 bottom: 0;
                 left: 0;
                 width: 100%;
-                height: 100vh;
-                background: linear-gradient(180deg, rgba(13,13,18,0.95) 0%, #070709 100%);
-                backdrop-filter: none;
+                background: rgba(13, 13, 18, 0.95);
+                backdrop-filter: blur(20px);
                 flex-direction: column;
-                justify-content: space-evenly;
-                padding: 40px 24px;
+                padding: 12px 16px;
+                gap: 8px;
                 z-index: 100;
-                box-shadow: none;
-                border-top: none;
             }
-            .current-info {
+
+            .player-bar.expanded {
+                height: 75vh;
+                justify-content: space-evenly;
+                border-top-left-radius: 24px;
+                border-top-right-radius: 24px;
+            }
+
+            .player-bar.expanded .volume-wrapper {
+                display: flex !important;
                 width: 100%;
-                text-align: center;
-                font-size: 20px;
-                font-weight: 700;
-                order: 1;
-            }
-            .player-center {
-                width: 100%;
-                order: 2;
-                gap: 24px;
-            }
-            .player-controls {
-                gap: 28px;
-            }
-            .ctrl-btn { font-size: 22px; }
-            .play-pause-btn { width: 64px; height: 64px; font-size: 20px; }
-            .progress-container { max-width: 100%; height: 8px; }
-            .volume-wrapper {
-                width: 100%;
-                order: 3;
                 justify-content: center;
             }
-            .volume-slider { width: 180px; }
-            
+            .player-bar.expanded .volume-slider {
+                width: 200px;
+            }
+            .player-bar.expanded .expand-mobile-btn {
+                transform: rotate(180deg);
+            }
+
+            .current-info {
+                width: 100%;
+                text-align: left;
+                font-size: 15px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .player-center {
+                width: 100%;
+                gap: 6px;
+            }
+
+            .player-controls {
+                gap: 20px;
+            }
+            .ctrl-btn { font-size: 18px; }
+            .play-pause-btn { width: 42px; height: 42px; font-size: 14px; }
+            .progress-container { max-width: 100%; height: 5px; }
+
             /* List adaptation for mobile */
-            ul { margin-top: 10px; }
+            ul { margin-top: 5px; }
             li {
                 grid-template-columns: 36px 1fr 90px;
                 padding: 12px 14px;
@@ -574,8 +604,11 @@
         </div>
     </div>
 
-    <div class="player-bar">
-        <div class="current-info" id="current-song-title">Нічого не грає</div>
+    <div class="player-bar" id="player-bar">
+        <div class="current-info" id="current-song-title">
+            <span>Нічого не грає</span>
+            <button class="expand-mobile-btn" id="expand-btn">▲</button>
+        </div>
         
         <div class="player-center">
             <div class="player-controls">
@@ -620,6 +653,14 @@
     const repeatBtn = document.getElementById('repeat-btn');
     const shuffleBtn = document.getElementById('shuffle-btn');
     const vinylDisc = document.getElementById('vinyl-disc');
+    const playerBar = document.getElementById('player-bar');
+    const expandBtn = document.getElementById('expand-btn');
+
+    // Expand/Collapse mobile player bar toggle
+    expandBtn.onclick = (e) => {
+        e.stopPropagation();
+        playerBar.classList.toggle('expanded');
+    };
 
     // Web Audio API & Equalizer Setup (PC Only)
     let audioCtx, sourceNode, filters = [];
@@ -671,7 +712,7 @@
         const cx = rect.left + rect.width / 2;
         const cy = rect.top + rect.height / 2;
         startAngle = Math.atan2(e.clientY - cy, e.clientX - cx) * (180 / Math.PI);
-        player.playbackRate = 0; // scratch pause effect
+        player.playbackRate = 0;
     };
 
     window.onmousemove = (e) => {
@@ -685,7 +726,6 @@
         vinylDisc.style.transform = `rotate(${lastRotation}deg)`;
         startAngle = currentAngle;
 
-        // Dynamic scratch playback rate based on movement speed
         player.playbackRate = Math.max(-2, Math.min(2, diff / 5));
     };
 
@@ -727,14 +767,17 @@
         }
         renderList();
         
-        // Restore last playback position
         const savedIndex = localStorage.getItem('spotisanya_index');
         const savedTime = localStorage.getItem('spotisanya_time');
         if (savedIndex !== null && currentSongs[savedIndex]) {
             currentIndex = parseInt(savedIndex);
             const song = currentSongs[currentIndex];
             player.src = song.url;
-            currentSongTitle.textContent = song.title;
+            
+            // Safe title update for mobile
+            const titleSpan = currentSongTitle.querySelector('span') || currentSongTitle;
+            titleSpan.textContent = song.title;
+
             renderList();
             if (savedTime !== null) {
                 player.currentTime = parseFloat(savedTime);
@@ -851,7 +894,9 @@
             vinylDisc.classList.remove('playing');
         });
         
-        currentSongTitle.textContent = song.title;
+        const titleSpan = currentSongTitle.querySelector('span') || currentSongTitle;
+        titleSpan.textContent = song.title;
+
         localStorage.setItem('spotisanya_index', currentIndex);
         updateMediaSession();
         renderList();
@@ -993,7 +1038,10 @@
         if (!newTitle || !newTitle.trim()) return;
         currentSongs[index].title = newTitle.trim();
         renderList();
-        if (index === currentIndex) currentSongTitle.textContent = newTitle.trim();
+        if (index === currentIndex) {
+            const titleSpan = currentSongTitle.querySelector('span') || currentSongTitle;
+            titleSpan.textContent = newTitle.trim();
+        }
         await syncCloud();
     }
 
