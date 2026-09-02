@@ -91,6 +91,10 @@
             margin-bottom: 12px;
         }
 
+        .add-section-wrapper {
+            transition: all 0.3s ease;
+        }
+
         .add-card {
             background: var(--bg-surface);
             backdrop-filter: var(--blur-glass);
@@ -244,6 +248,93 @@
         .action-btn:hover { background: rgba(255, 255, 255, 0.1); color: var(--text-main); }
         .del-btn:hover { color: #ff4757 !important; background: rgba(255, 71, 87, 0.1) !important; }
 
+        /* Vinyl Record Styles (PC) */
+        .vinyl-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+            user-select: none;
+        }
+        .vinyl-disc {
+            width: 220px;
+            height: 220px;
+            background: #111;
+            border-radius: 50%;
+            position: relative;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6), inset 0 0 0 15px #1a1a1a, inset 0 0 0 20px #111, inset 0 0 0 35px #1c1c1c, inset 0 0 0 40px #111;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+            animation: spin 10s linear infinite;
+            animation-play-state: paused;
+            transition: transform 0.1s ease-out;
+        }
+        .vinyl-disc.playing {
+            animation-play-state: running;
+        }
+        .vinyl-disc:active { cursor: grabbing; }
+        .vinyl-label {
+            width: 80px;
+            height: 80px;
+            background: var(--accent-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5);
+            position: relative;
+        }
+        .vinyl-hole {
+            width: 16px;
+            height: 16px;
+            background: var(--bg-main);
+            border-radius: 50%;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* PC Equalizer Panel */
+        .equalizer-panel {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            padding: 16px 24px;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .eq-sliders {
+            display: flex;
+            gap: 20px;
+            justify-content: space-between;
+        }
+        .eq-band {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            flex: 1;
+        }
+        .eq-band label {
+            font-size: 11px;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+        .eq-band input[type="range"] {
+            writing-mode: bt-lr;
+            -webkit-appearance: slider-vertical;
+            width: 8px;
+            height: 80px;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+
         /* Player Bar */
         .player-bar {
             position: fixed;
@@ -350,10 +441,63 @@
             cursor: pointer;
         }
 
+        /* Mobile Spotify-style Fullscreen Layout Overrides */
         @media (max-width: 768px) {
-            .player-bar { flex-direction: column; gap: 14px; padding: 18px 24px; }
-            .current-info, .player-center, .volume-wrapper { width: 100%; justify-content: center; text-align: center; }
-            .main-content { padding: 24px; padding-bottom: 220px; }
+            body { background: var(--bg-main); overflow-y: auto; }
+            .app-layout { height: auto; min-height: 100vh; }
+            .main-content { padding: 20px; padding-bottom: 140px; gap: 20px; }
+            .add-section-wrapper, .drop-zone, .playlist-header, .equalizer-panel, .vinyl-container {
+                display: none !important;
+            }
+            .header-top { justify-content: center; margin-bottom: 10px; }
+            
+            /* Fullscreen Mobile Player Bar */
+            .player-bar {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                height: 100vh;
+                background: linear-gradient(180deg, rgba(13,13,18,0.95) 0%, #070709 100%);
+                backdrop-filter: none;
+                flex-direction: column;
+                justify-content: space-evenly;
+                padding: 40px 24px;
+                z-index: 100;
+                box-shadow: none;
+                border-top: none;
+            }
+            .current-info {
+                width: 100%;
+                text-align: center;
+                font-size: 20px;
+                font-weight: 700;
+                order: 1;
+            }
+            .player-center {
+                width: 100%;
+                order: 2;
+                gap: 24px;
+            }
+            .player-controls {
+                gap: 28px;
+            }
+            .ctrl-btn { font-size: 22px; }
+            .play-pause-btn { width: 64px; height: 64px; font-size: 20px; }
+            .progress-container { max-width: 100%; height: 8px; }
+            .volume-wrapper {
+                width: 100%;
+                order: 3;
+                justify-content: center;
+            }
+            .volume-slider { width: 180px; }
+            
+            /* List adaptation for mobile */
+            ul { margin-top: 10px; }
+            li {
+                grid-template-columns: 36px 1fr 90px;
+                padding: 12px 14px;
+            }
         }
     </style>
 </head>
@@ -365,7 +509,16 @@
             <div class="app-title">⚡ SpotiSanya</div>
         </div>
 
-        <div>
+        <!-- PC Vinyl Record & Scratch feature -->
+        <div class="vinyl-container">
+            <div class="vinyl-disc" id="vinyl-disc" title="Затисніть і крутіть для скретчу">
+                <div class="vinyl-label">
+                    <div class="vinyl-hole"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="add-section-wrapper">
             <div class="section-title">Додати трек або джерело</div>
             <div class="add-card">
                 <input type="text" id="title" placeholder="Введіть назву треку...">
@@ -378,6 +531,33 @@
 
         <div class="drop-zone" id="drop-zone">
             📥 Перетягніть ваші MP3 файли сюди
+        </div>
+
+        <!-- PC Equalizer Panel -->
+        <div class="equalizer-panel" id="equalizer-panel">
+            <div class="section-title" style="margin-bottom: 0; font-size: 13px;">Еквалайзер (ПК)</div>
+            <div class="eq-sliders">
+                <div class="eq-band">
+                    <label>60Hz</label>
+                    <input type="range" min="-20" max="20" value="0" step="1" data-band="0">
+                </div>
+                <div class="eq-band">
+                    <label>230Hz</label>
+                    <input type="range" min="-20" max="20" value="0" step="1" data-band="1">
+                </div>
+                <div class="eq-band">
+                    <label>910Hz</label>
+                    <input type="range" min="-20" max="20" value="0" step="1" data-band="2">
+                </div>
+                <div class="eq-band">
+                    <label>4kHz</label>
+                    <input type="range" min="-20" max="20" value="0" step="1" data-band="3">
+                </div>
+                <div class="eq-band">
+                    <label>14kHz</label>
+                    <input type="range" min="-20" max="20" value="0" step="1" data-band="4">
+                </div>
+            </div>
         </div>
 
         <div>
@@ -417,7 +597,7 @@
     </div>
 </div>
 
-<audio id="player" preload="auto" playsinline></audio>
+<audio id="player" preload="auto" crossorigin="anonymous" playsinline></audio>
 
 <script>
     const BIN_ID = '6a7c3536da38895dfed9948e'; 
@@ -439,6 +619,85 @@
     const searchInput = document.getElementById('search-input');
     const repeatBtn = document.getElementById('repeat-btn');
     const shuffleBtn = document.getElementById('shuffle-btn');
+    const vinylDisc = document.getElementById('vinyl-disc');
+
+    // Web Audio API & Equalizer Setup (PC Only)
+    let audioCtx, sourceNode, filters = [];
+    function initAudioContext() {
+        if (audioCtx) return;
+        try {
+            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            sourceNode = audioCtx.createMediaElementSource(player);
+
+            const frequencies = [60, 230, 910, 4000, 14000];
+            let lastNode = sourceNode;
+
+            filters = frequencies.map(freq => {
+                let filter = audioCtx.createBiquadFilter();
+                filter.type = 'peaking';
+                filter.frequency.value = freq;
+                filter.gain.value = 0;
+                lastNode.connect(filter);
+                lastNode = filter;
+                return filter;
+            });
+
+            lastNode.connect(audioCtx.destination);
+        } catch(e) {
+            console.warn("Web Audio API error:", e);
+        }
+    }
+
+    document.querySelectorAll('.eq-band input').forEach(input => {
+        input.oninput = (e) => {
+            initAudioContext();
+            const bandIdx = e.target.getAttribute('data-band');
+            if (filters[bandIdx]) {
+                filters[bandIdx].gain.value = parseFloat(e.target.value);
+            }
+        };
+    });
+
+    // Vinyl Scratch Mechanics
+    let isDraggingVinyl = false;
+    let startAngle = 0;
+    let lastRotation = 0;
+
+    vinylDisc.onmousedown = (e) => {
+        isDraggingVinyl = true;
+        initAudioContext();
+        if(audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+        const rect = vinylDisc.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        startAngle = Math.atan2(e.clientY - cy, e.clientX - cx) * (180 / Math.PI);
+        player.playbackRate = 0; // scratch pause effect
+    };
+
+    window.onmousemove = (e) => {
+        if (!isDraggingVinyl) return;
+        const rect = vinylDisc.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const currentAngle = Math.atan2(e.clientY - cy, e.clientX - cx) * (180 / Math.PI);
+        let diff = currentAngle - startAngle;
+        lastRotation += diff;
+        vinylDisc.style.transform = `rotate(${lastRotation}deg)`;
+        startAngle = currentAngle;
+
+        // Dynamic scratch playback rate based on movement speed
+        player.playbackRate = Math.max(-2, Math.min(2, diff / 5));
+    };
+
+    window.onmouseup = () => {
+        if (isDraggingVinyl) {
+            isDraggingVinyl = false;
+            player.playbackRate = 1.0;
+            if (!player.paused) {
+                vinylDisc.classList.add('playing');
+            }
+        }
+    };
 
     volumeSlider.oninput = (e) => { 
         player.volume = e.target.value; 
@@ -467,6 +726,20 @@
             console.warn('Використовуємо локальний кеш через помилку мережі:', err);
         }
         renderList();
+        
+        // Restore last playback position
+        const savedIndex = localStorage.getItem('spotisanya_index');
+        const savedTime = localStorage.getItem('spotisanya_time');
+        if (savedIndex !== null && currentSongs[savedIndex]) {
+            currentIndex = parseInt(savedIndex);
+            const song = currentSongs[currentIndex];
+            player.src = song.url;
+            currentSongTitle.textContent = song.title;
+            renderList();
+            if (savedTime !== null) {
+                player.currentTime = parseFloat(savedTime);
+            }
+        }
     }
 
     function loadFromCache() {
@@ -540,10 +813,12 @@
             navigator.mediaSession.setActionHandler('play', () => { 
                 player.play(); 
                 playPauseBtn.textContent = '❚❚'; 
+                vinylDisc.classList.add('playing');
             });
             navigator.mediaSession.setActionHandler('pause', () => { 
                 player.pause(); 
                 playPauseBtn.textContent = '▶'; 
+                vinylDisc.classList.remove('playing');
             });
             navigator.mediaSession.setActionHandler('previoustrack', () => { 
                 document.getElementById('prev-btn').click(); 
@@ -564,14 +839,20 @@
         player.src = song.url;
         player.load(); 
         
+        initAudioContext();
+        if(audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+
         player.play().then(() => {
             playPauseBtn.textContent = '❚❚';
+            vinylDisc.classList.add('playing');
         }).catch((err) => {
             console.warn("Автоматичне відтворення заблоковано:", err);
             playPauseBtn.textContent = '▶';
+            vinylDisc.classList.remove('playing');
         });
         
         currentSongTitle.textContent = song.title;
+        localStorage.setItem('spotisanya_index', currentIndex);
         updateMediaSession();
         renderList();
     }
@@ -579,14 +860,21 @@
     playPauseBtn.onclick = () => {
         if (currentSongs.length === 0) return;
 
+        initAudioContext();
+        if(audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+
         if (player.paused) {
             if (!player.src) playSong(0);
             else {
-                player.play().then(() => { playPauseBtn.textContent = '❚❚'; }).catch(() => {});
+                player.play().then(() => { 
+                    playPauseBtn.textContent = '❚❚'; 
+                    vinylDisc.classList.add('playing');
+                }).catch(() => {});
             }
         } else {
             player.pause();
             playPauseBtn.textContent = '▶';
+            vinylDisc.classList.remove('playing');
         }
     };
 
@@ -626,6 +914,7 @@
     player.ontimeupdate = () => {
         if (player.duration) {
             progressBar.style.width = ((player.currentTime / player.duration) * 100) + '%';
+            localStorage.setItem('spotisanya_time', player.currentTime);
         }
     };
 
