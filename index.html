@@ -1,720 +1,1391 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SpotiSanya • Clean Edition</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SpotiSanya • v2</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
-        :root {
-            --accent: #00ff88;
-            --accent-glow: rgba(0, 255, 136, 0.25);
-            --accent-gradient: linear-gradient(135deg, #00ff88 0%, #00b8ff 100%);
-            
-            --bg-main: #070709;
-            --bg-surface: rgba(18, 18, 24, 0.7);
-            --bg-surface-hover: rgba(28, 28, 38, 0.85);
-            --bg-card: #111116;
-            
-            --border-color: rgba(255, 255, 255, 0.06);
-            --border-hover: rgba(0, 255, 136, 0.3);
-            
-            --text-main: #f3f4f6;
-            --text-muted: #8b8d98;
-            
-            --blur-glass: blur(20px);
-        }
+:root{
+  --accent:#00ff88;
+  --accent-2:#00b8ff;
+  --accent-glow:rgba(0,255,136,.25);
+  --accent-gradient:linear-gradient(135deg,#00ff88 0%,#00b8ff 100%);
+  --bg-main:#070709;
+  --bg-surface:rgba(18,18,24,.7);
+  --bg-surface-hover:rgba(28,28,38,.85);
+  --border-color:rgba(255,255,255,.06);
+  --border-hover:rgba(0,255,136,.3);
+  --text-main:#f3f4f6;
+  --text-muted:#8b8d98;
+  --danger:#ff4757;
+  --blur-glass:blur(20px);
+  --player-h:96px;
+}
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        body {
-            background-color: var(--bg-main);
-            background-image: 
-                radial-gradient(circle at 15% 15%, rgba(0, 184, 255, 0.08) 0%, transparent 40%),
-                radial-gradient(circle at 85% 85%, rgba(0, 255, 136, 0.06) 0%, transparent 40%);
-            color: var(--text-main);
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
+*{box-sizing:border-box;margin:0;padding:0}
 
-        .app-layout {
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            width: 100vw;
-        }
+body{
+  background-color:var(--bg-main);
+  background-image:
+    radial-gradient(circle at 15% 15%,rgba(0,184,255,.08) 0%,transparent 40%),
+    radial-gradient(circle at 85% 85%,rgba(0,255,136,.06) 0%,transparent 40%);
+  color:var(--text-main);
+  font-family:'Plus Jakarta Sans',sans-serif;
+  height:100vh;
+  overflow:hidden;
+}
 
-        .main-content {
-            padding: 40px 48px;
-            overflow-y: auto;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            gap: 28px;
-            padding-bottom: 180px;
-        }
+.app-layout{display:flex;flex-direction:column;height:100vh;width:100vw}
+.body-row{display:flex;flex:1;min-height:0;padding-bottom:var(--player-h)}
 
-        .main-content::-webkit-scrollbar { width: 8px; }
-        .main-content::-webkit-scrollbar-track { background: transparent; }
-        .main-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
-        .main-content::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+/* ---------- Sidebar ---------- */
+.sidebar{
+  width:264px;flex-shrink:0;
+  border-right:1px solid var(--border-color);
+  background:rgba(12,12,16,.5);
+  backdrop-filter:var(--blur-glass);
+  display:flex;flex-direction:column;
+  padding:28px 16px;gap:20px;overflow-y:auto;
+}
+.app-title{
+  font-size:24px;font-weight:800;letter-spacing:-.5px;
+  background:var(--accent-gradient);-webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  display:flex;align-items:center;gap:10px;padding:0 8px;
+  filter:drop-shadow(0 0 25px rgba(0,255,136,.2));
+}
+.nav-group{display:flex;flex-direction:column;gap:4px}
+.nav-label{
+  font-size:10px;font-weight:800;color:var(--text-muted);
+  text-transform:uppercase;letter-spacing:1.4px;padding:0 8px;margin-bottom:6px;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 12px;border-radius:10px;cursor:pointer;
+  font-size:14px;font-weight:600;color:var(--text-muted);
+  border:1px solid transparent;transition:all .2s;
+  white-space:nowrap;overflow:hidden;
+}
+.nav-item:hover{background:rgba(255,255,255,.05);color:var(--text-main)}
+.nav-item.active{background:rgba(0,255,136,.08);border-color:var(--border-hover);color:var(--accent)}
+.nav-item .nav-name{flex:1;overflow:hidden;text-overflow:ellipsis}
+.nav-item .nav-count{font-size:11px;opacity:.6;font-weight:700}
+.nav-item .nav-edit{opacity:0;font-size:11px;padding:2px 4px;border-radius:5px}
+.nav-item:hover .nav-edit{opacity:.55}
+.nav-item .nav-edit:hover{opacity:1;background:rgba(255,255,255,.12)}
+.nav-item.drag-over{border-color:var(--accent);background:rgba(0,255,136,.12)}
 
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+/* ---------- Main ---------- */
+.main-content{
+  flex:1;min-width:0;overflow-y:auto;
+  padding:36px 44px;display:flex;flex-direction:column;gap:26px;
+}
+.main-content::-webkit-scrollbar,.sidebar::-webkit-scrollbar{width:8px}
+.main-content::-webkit-scrollbar-track,.sidebar::-webkit-scrollbar-track{background:transparent}
+.main-content::-webkit-scrollbar-thumb,.sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.1);border-radius:4px}
+.main-content::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.2)}
 
-        .app-title {
-            font-size: 28px;
-            font-weight: 800;
-            letter-spacing: -0.5px;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            filter: drop-shadow(0 0 25px rgba(0, 255, 136, 0.2));
-        }
+.section-title{
+  font-size:13px;font-weight:800;color:var(--text-muted);
+  text-transform:uppercase;letter-spacing:1.2px;margin-bottom:10px;
+}
+.view-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.view-title{font-size:30px;font-weight:800;letter-spacing:-.8px}
+.view-sub{font-size:13px;color:var(--text-muted);font-weight:600;margin-top:4px}
 
-        .section-title {
-            font-size: 15px;
-            font-weight: 700;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1.2px;
-            margin-bottom: 12px;
-        }
+.add-card{
+  background:var(--bg-surface);backdrop-filter:var(--blur-glass);
+  padding:20px;border-radius:18px;display:flex;gap:12px;align-items:center;
+  border:1px solid var(--border-color);box-shadow:0 16px 40px rgba(0,0,0,.5);flex-wrap:wrap;
+  transition:border-color .3s;
+}
+.add-card:focus-within{border-color:var(--border-hover)}
 
-        .add-card {
-            background: var(--bg-surface);
-            backdrop-filter: var(--blur-glass);
-            -webkit-backdrop-filter: var(--blur-glass);
-            padding: 24px;
-            border-radius: 20px;
-            display: flex;
-            gap: 14px;
-            align-items: center;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.5);
-            flex-wrap: wrap;
-            transition: border-color 0.3s;
-        }
-        .add-card:focus-within { border-color: var(--border-hover); }
+input[type=text]{
+  padding:13px 16px;border-radius:11px;border:1px solid var(--border-color);
+  background:rgba(0,0,0,.3);color:var(--text-main);font-size:14px;font-family:inherit;
+  outline:none;flex:1;min-width:150px;transition:all .25s cubic-bezier(.4,0,.2,1);
+}
+input[type=text]:focus{border-color:var(--accent);background:rgba(0,0,0,.5);box-shadow:0 0 15px var(--accent-glow)}
+input[type=text]::placeholder{color:#5c5e69}
 
-        input[type="text"] {
-            padding: 14px 18px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            background: rgba(0, 0, 0, 0.3);
-            color: var(--text-main);
-            font-size: 14px;
-            font-family: inherit;
-            outline: none;
-            flex: 1;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        input[type="text"]:focus { 
-            border-color: var(--accent); 
-            background: rgba(0, 0, 0, 0.5);
-            box-shadow: 0 0 15px var(--accent-glow);
-        }
+button{
+  background:var(--accent-gradient);color:#070709;border:none;
+  padding:13px 24px;border-radius:12px;font-weight:700;font-size:14px;font-family:inherit;
+  cursor:pointer;box-shadow:0 4px 20px var(--accent-glow);
+  transition:transform .2s cubic-bezier(.4,0,.2,1),filter .2s;
+}
+button:hover{filter:brightness(1.15);transform:translateY(-2px)}
+button:active{transform:translateY(0)}
+.secondary-btn{background:rgba(255,255,255,.05);color:var(--text-main);border:1px solid var(--border-color);box-shadow:none}
+.secondary-btn:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.15)}
 
-        button {
-            background: var(--accent-gradient);
-            color: #070709;
-            border: none;
-            padding: 14px 28px;
-            border-radius: 14px;
-            font-weight: 700;
-            font-size: 14px;
-            font-family: inherit;
-            cursor: pointer;
-            box-shadow: 0 4px 20px var(--accent-glow);
-            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), filter 0.2s;
-        }
-        button:hover { filter: brightness(1.15); transform: translateY(-2px); }
-        button:active { transform: translateY(0); }
+.drop-zone{
+  border:2px dashed rgba(255,255,255,.08);border-radius:18px;padding:20px;
+  text-align:center;color:var(--text-muted);font-size:14px;font-weight:600;
+  background:rgba(255,255,255,.01);transition:all .3s cubic-bezier(.4,0,.2,1);cursor:pointer;
+}
+.drop-zone:hover,.drop-zone.hot{
+  border-color:var(--accent);background:rgba(0,255,136,.03);
+  color:var(--text-main);box-shadow:inset 0 0 20px var(--accent-glow);
+}
 
-        .secondary-btn {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-            box-shadow: none;
-        }
-        .secondary-btn:hover { background: rgba(255, 255, 255, 0.1); border-color: rgba(255,255,255,0.15); }
+/* ---------- Track list ---------- */
+.playlist-header{
+  display:grid;grid-template-columns:44px 1fr 64px 132px;
+  color:var(--text-muted);font-size:10px;font-weight:800;
+  text-transform:uppercase;letter-spacing:1.5px;
+  padding:0 18px 10px;border-bottom:1px solid var(--border-color);margin-bottom:8px;
+}
+ul{list-style:none;display:flex;flex-direction:column;gap:6px}
+li.track{
+  display:grid;grid-template-columns:44px 1fr 64px 132px;align-items:center;
+  padding:12px 18px;border-radius:13px;background:var(--bg-surface);
+  backdrop-filter:var(--blur-glass);cursor:pointer;
+  border:1px solid var(--border-color);transition:all .22s cubic-bezier(.4,0,.2,1);
+}
+li.track:hover{background:var(--bg-surface-hover);border-color:rgba(255,255,255,.12);transform:translateX(4px)}
+li.track.active{background:rgba(0,255,136,.07);border-color:var(--accent);box-shadow:0 0 25px rgba(0,255,136,.1)}
+li.track.active .song-name{color:var(--accent);font-weight:700;text-shadow:0 0 10px var(--accent-glow)}
+li.track.missing{opacity:.45}
+li.track.missing .song-name{text-decoration:line-through}
+li.empty{
+  color:var(--text-muted);display:flex;justify-content:center;text-align:center;
+  padding:34px;background:transparent;border:none;font-weight:600;
+}
+.song-index{color:var(--text-muted);font-size:13px;font-weight:700}
+.song-name{
+  font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis;padding-right:14px;transition:color .2s;
+}
+.song-meta{font-size:11px;color:var(--text-muted);font-weight:600;margin-top:2px}
+.song-kind{font-size:11px;color:var(--text-muted);font-weight:700;text-align:center}
+.action-btns{display:flex;gap:4px;justify-content:flex-end;opacity:.35;transition:opacity .2s}
+li.track:hover .action-btns,li.track.active .action-btns{opacity:1}
+.action-btn{
+  background:transparent;border:none;color:var(--text-muted);cursor:pointer;
+  font-size:13px;padding:7px;border-radius:8px;box-shadow:none;
+  transition:background .2s,color .2s,transform .2s;
+}
+.action-btn:hover{background:rgba(255,255,255,.1);color:var(--text-main);transform:none;filter:none}
+.del-btn:hover{color:var(--danger)!important;background:rgba(255,71,87,.12)!important}
 
-        .drop-zone {
-            border: 2px dashed rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            padding: 24px;
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 14px;
-            background: rgba(255, 255, 255, 0.01);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            cursor: pointer;
-        }
-        .drop-zone:hover {
-            border-color: var(--accent);
-            background: rgba(0, 255, 136, 0.02);
-            color: var(--text-main);
-            box-shadow: inset 0 0 20px var(--accent-glow);
-        }
+/* ---------- Player bar ---------- */
+.player-bar{
+  position:fixed;bottom:0;left:0;width:100%;height:var(--player-h);
+  background:rgba(10,10,13,.85);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);
+  border-top:1px solid var(--border-color);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 40px;gap:22px;z-index:10;box-shadow:0 -20px 40px rgba(0,0,0,.6);
+}
+.current-info{width:24%;min-width:0}
+.current-title{
+  font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;
+  text-overflow:ellipsis;letter-spacing:-.2px;
+}
+.current-sub{font-size:11px;color:var(--text-muted);font-weight:600;margin-top:3px}
+.player-center{width:52%;display:flex;flex-direction:column;align-items:center;gap:8px}
+.player-controls{display:flex;align-items:center;gap:18px}
+.ctrl-btn{
+  background:transparent;border:none;color:var(--text-muted);font-size:16px;
+  cursor:pointer;padding:6px;box-shadow:none;transition:color .2s,transform .2s;
+  position:relative;
+}
+.ctrl-btn:hover{color:var(--text-main);transform:scale(1.15);filter:none}
+.ctrl-btn.active-mode{color:var(--accent);text-shadow:0 0 10px var(--accent-glow)}
+.ctrl-btn .badge{
+  position:absolute;bottom:-1px;right:0;font-size:8px;font-weight:900;
+  background:var(--accent);color:#070709;border-radius:4px;padding:0 3px;line-height:1.4;
+}
+.play-pause-btn{
+  width:44px;height:44px;background:var(--accent-gradient);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;color:#070709;
+  font-size:14px;font-weight:800;box-shadow:0 4px 20px var(--accent-glow);
+  transition:transform .2s cubic-bezier(.4,0,.2,1),filter .2s;
+}
+.play-pause-btn:hover{filter:brightness(1.15);transform:scale(1.08)}
 
-        .playlist-header {
-            display: grid;
-            grid-template-columns: 48px 1fr 120px;
-            color: var(--text-muted);
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            padding: 0 20px 12px 20px;
-            border-bottom: 1px solid var(--border-color);
-            margin-bottom: 8px;
-        }
+.progress-row{display:flex;align-items:center;gap:12px;width:100%;max-width:600px}
+.time-label{font-size:11px;color:var(--text-muted);font-weight:700;font-variant-numeric:tabular-nums;min-width:38px}
+.time-label.right{text-align:right}
+.progress-container{
+  flex:1;height:16px;display:flex;align-items:center;cursor:pointer;touch-action:none;
+}
+.progress-track{
+  width:100%;height:6px;background:rgba(255,255,255,.08);border-radius:3px;
+  position:relative;transition:height .15s;
+}
+.progress-container:hover .progress-track{height:8px}
+.progress-bar{
+  height:100%;background:var(--accent-gradient);border-radius:3px;width:0%;
+  box-shadow:0 0 10px var(--accent-glow);position:relative;
+}
+.progress-knob{
+  position:absolute;right:-6px;top:50%;transform:translateY(-50%);
+  width:12px;height:12px;border-radius:50%;background:#fff;
+  opacity:0;transition:opacity .15s;box-shadow:0 0 8px rgba(0,0,0,.6);
+}
+.progress-container:hover .progress-knob{opacity:1}
 
-        ul {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
+.volume-wrapper{width:24%;display:flex;justify-content:flex-end;align-items:center;gap:10px;color:var(--text-muted)}
+.vol-icon{background:transparent;border:none;box-shadow:none;color:var(--text-muted);cursor:pointer;font-size:15px;padding:4px}
+.vol-icon:hover{color:var(--text-main);transform:none;filter:none}
+.volume-slider{width:104px;height:4px;accent-color:var(--accent);cursor:pointer}
 
-        li {
-            display: grid;
-            grid-template-columns: 48px 1fr 120px;
-            align-items: center;
-            padding: 14px 20px;
-            border-radius: 14px;
-            background: var(--bg-surface);
-            backdrop-filter: var(--blur-glass);
-            cursor: pointer;
-            border: 1px solid var(--border-color);
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        li:hover { 
-            background: var(--bg-surface-hover); 
-            border-color: rgba(255, 255, 255, 0.12);
-            transform: translateX(4px);
-        }
-        li.active {
-            background: rgba(0, 255, 136, 0.07);
-            border-color: var(--accent);
-            box-shadow: 0 0 25px rgba(0, 255, 136, 0.1);
-        }
-        li.active .song-name { color: var(--accent); font-weight: 700; text-shadow: 0 0 10px var(--accent-glow); }
-        
-        .song-index { color: var(--text-muted); font-size: 14px; font-weight: 600; }
-        .song-name {
-            font-size: 14px;
-            font-weight: 500;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            padding-right: 15px;
-            transition: color 0.2s;
-        }
-        
-        .action-btns {
-            display: flex;
-            gap: 6px;
-            justify-content: flex-end;
-            opacity: 0.4;
-            transition: opacity 0.2s;
-        }
-        li:hover .action-btns { opacity: 1; }
+/* ---------- Modal ---------- */
+.modal-back{
+  position:fixed;inset:0;background:rgba(0,0,0,.65);backdrop-filter:blur(6px);
+  z-index:100;display:none;align-items:center;justify-content:center;padding:20px;
+}
+.modal-back.open{display:flex}
+.modal{
+  background:#111116;border:1px solid var(--border-color);border-radius:20px;
+  padding:26px;width:100%;max-width:420px;box-shadow:0 30px 80px rgba(0,0,0,.7);
+  display:flex;flex-direction:column;gap:16px;max-height:80vh;
+}
+.modal h3{font-size:18px;font-weight:800;letter-spacing:-.3px}
+.modal .sub{font-size:12px;color:var(--text-muted);font-weight:600;margin-top:-8px}
+.modal-list{display:flex;flex-direction:column;gap:6px;overflow-y:auto;max-height:38vh}
+.modal-row{
+  display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:11px;
+  background:rgba(255,255,255,.03);border:1px solid var(--border-color);
+  cursor:pointer;font-size:14px;font-weight:600;transition:all .2s;
+}
+.modal-row:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.15)}
+.modal-row.in{border-color:var(--border-hover);color:var(--accent)}
+.modal-row .rname{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end}
+.modal-actions button{padding:11px 20px;font-size:13px}
+.danger-btn{background:rgba(255,71,87,.15);color:#ff8a94;border:1px solid rgba(255,71,87,.3);box-shadow:none}
+.danger-btn:hover{background:rgba(255,71,87,.25)}
 
-        .action-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 13px;
-            padding: 8px;
-            border-radius: 8px;
-            transition: background 0.2s, color 0.2s;
-        }
-        .action-btn:hover { background: rgba(255, 255, 255, 0.1); color: var(--text-main); }
-        .del-btn:hover { color: #ff4757 !important; background: rgba(255, 71, 87, 0.1) !important; }
+/* ---------- Toast ---------- */
+.toast-wrap{position:fixed;bottom:calc(var(--player-h) + 20px);left:50%;transform:translateX(-50%);z-index:200;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
+.toast{
+  background:rgba(20,20,26,.95);border:1px solid var(--border-color);
+  padding:12px 20px;border-radius:12px;font-size:13px;font-weight:600;
+  box-shadow:0 12px 30px rgba(0,0,0,.6);animation:pop .25s cubic-bezier(.4,0,.2,1);
+  max-width:min(90vw,460px);
+}
+.toast.err{border-color:rgba(255,71,87,.4);color:#ff8a94}
+.toast.ok{border-color:var(--border-hover);color:var(--accent)}
+@keyframes pop{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
 
-        /* Player Bar */
-        .player-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(10, 10, 13, 0.85);
-            backdrop-filter: blur(30px);
-            -webkit-backdrop-filter: blur(30px);
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 18px 48px;
-            gap: 24px;
-            z-index: 10;
-            box-shadow: 0 -20px 40px rgba(0,0,0,0.6);
-        }
+.cloud-dot{width:7px;height:7px;border-radius:50%;background:#4b4d57;flex-shrink:0;transition:background .3s}
+.cloud-dot.ok{background:var(--accent);box-shadow:0 0 8px var(--accent-glow)}
+.cloud-dot.err{background:var(--danger)}
+.cloud-dot.sync{background:#ffc048}
 
-        .current-info {
-            width: 25%;
-            font-size: 14px;
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            letter-spacing: -0.2px;
-        }
+.menu-toggle{display:none}
 
-        .player-center {
-            width: 50%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .player-controls {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .ctrl-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            font-size: 16px;
-            cursor: pointer;
-            padding: 6px;
-            box-shadow: none;
-            transition: color 0.2s, transform 0.2s;
-        }
-        .ctrl-btn:hover { color: var(--text-main); transform: scale(1.15); filter: none; }
-        .ctrl-btn.active-mode { color: var(--accent); text-shadow: 0 0 10px var(--accent-glow); }
-
-        .play-pause-btn {
-            width: 44px;
-            height: 44px;
-            background: var(--accent-gradient);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #070709;
-            font-size: 14px;
-            font-weight: 800;
-            box-shadow: 0 4px 20px var(--accent-glow);
-            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), filter 0.2s;
-        }
-        .play-pause-btn:hover { filter: brightness(1.15); transform: scale(1.08); }
-
-        .progress-container {
-            width: 100%;
-            max-width: 550px;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 3px;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
-        }
-        .progress-bar {
-            height: 100%;
-            background: var(--accent-gradient);
-            border-radius: 3px;
-            width: 0%;
-            box-shadow: 0 0 10px var(--accent-glow);
-            transition: width 0.1s linear;
-        }
-
-        .volume-wrapper {
-            width: 25%;
-            display: flex;
-            justify-content: flex-end;
-            align-items: center;
-            gap: 12px;
-            color: var(--text-muted);
-        }
-        .volume-slider {
-            width: 110px;
-            height: 4px;
-            accent-color: var(--accent);
-            cursor: pointer;
-        }
-
-        @media (max-width: 768px) {
-            .player-bar { flex-direction: column; gap: 14px; padding: 18px 24px; }
-            .current-info, .player-center, .volume-wrapper { width: 100%; justify-content: center; text-align: center; }
-            .main-content { padding: 24px; padding-bottom: 220px; }
-        }
-    </style>
+@media (max-width:900px){
+  :root{--player-h:150px}
+  .menu-toggle{display:flex;position:fixed;top:14px;left:14px;z-index:60;padding:10px 14px;font-size:16px}
+  .sidebar{
+    position:fixed;top:0;left:0;bottom:0;z-index:50;width:270px;
+    transform:translateX(-100%);transition:transform .3s cubic-bezier(.4,0,.2,1);
+    background:#0b0b0f;
+  }
+  .sidebar.open{transform:none;box-shadow:30px 0 60px rgba(0,0,0,.7)}
+  .main-content{padding:70px 20px 20px}
+  .player-bar{flex-direction:column;gap:10px;padding:14px 20px;height:auto}
+  .current-info,.player-center,.volume-wrapper{width:100%;justify-content:center;text-align:center}
+  .playlist-header,li.track{grid-template-columns:32px 1fr 108px}
+  .song-kind{display:none}
+}
+</style>
 </head>
 <body>
 
+<button class="menu-toggle secondary-btn" id="menu-toggle" aria-label="Меню">☰</button>
+
 <div class="app-layout">
-    <div class="main-content">
-        <div class="header-top">
-            <div class="app-title">⚡ SpotiSanya</div>
-        </div>
+  <div class="body-row">
 
+    <aside class="sidebar" id="sidebar">
+      <div class="app-title">⚡ SpotiSanya</div>
+
+      <div class="nav-group">
+        <div class="nav-label">Бібліотека</div>
+        <div class="nav-item" data-view="all">
+          <span>🎵</span>
+          <span class="nav-name">Усі треки</span>
+          <span class="nav-count" id="count-all">0</span>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-label">
+          <span>Плейлисти</span>
+          <span class="cloud-dot" id="cloud-dot" title="Стан синхронізації"></span>
+        </div>
+        <div id="playlist-nav"></div>
+        <div class="nav-item" id="new-playlist-btn" style="margin-top:6px">
+          <span>＋</span><span class="nav-name">Новий плейлист</span>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main-content">
+      <div class="view-head">
         <div>
-            <div class="section-title">Додати трек або джерело</div>
-            <div class="add-card">
-                <input type="text" id="title" placeholder="Введіть назву треку...">
-                <input type="text" id="url" placeholder="Посилання на MP3, SoundCloud або YouTube плейлист...">
-                <button id="add-btn">Додати</button>
-                <input type="file" id="folder-input" webkitdirectory directory multiple style="display: none;">
-                <button id="folder-btn" class="secondary-btn">📂 Обрати папку</button>
-            </div>
+          <div class="view-title" id="view-title">Усі треки</div>
+          <div class="view-sub" id="view-sub">0 треків</div>
         </div>
+        <div style="display:flex;gap:10px;align-items:center">
+          <input type="text" id="search-input" placeholder="🔍 Пошук..." style="max-width:220px;padding:10px 15px;font-size:13px">
+          <button class="secondary-btn" id="play-view-btn" style="padding:10px 18px;font-size:13px">▶ Грати все</button>
+        </div>
+      </div>
 
-        <div class="drop-zone" id="drop-zone">
-            📥 Перетягніть ваші MP3 файли сюди
+      <div>
+        <div class="section-title">Додати трек</div>
+        <div class="add-card">
+          <input type="text" id="title" placeholder="Назва треку (необов'язково)">
+          <input type="text" id="url" placeholder="Пряме посилання на MP3 / WAV / OGG...">
+          <button id="add-btn">Додати</button>
+          <input type="file" id="folder-input" webkitdirectory directory multiple accept="audio/*" style="display:none">
+          <input type="file" id="file-input" multiple accept="audio/*" style="display:none">
+          <button id="file-btn" class="secondary-btn">🎧 Файли</button>
+          <button id="folder-btn" class="secondary-btn">📂 Папка</button>
         </div>
+      </div>
 
-        <div>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                <div class="section-title" style="margin-bottom: 0;">Ваш Плейлист</div>
-                <input type="text" id="search-input" placeholder="🔍 Швидкий пошук..." style="max-width: 240px; padding: 10px 16px; font-size: 13px;">
-            </div>
-            <div class="playlist-header">
-                <div>#</div>
-                <div>Назва треку</div>
-                <div style="text-align: right;">Дії</div>
-            </div>
-            <ul id="list"></ul>
+      <div class="drop-zone" id="drop-zone">
+        📥 Перетягніть аудіофайли сюди (зберігаються у браузері й працюють офлайн)
+      </div>
+
+      <div>
+        <div class="playlist-header">
+          <div>#</div>
+          <div>Назва треку</div>
+          <div style="text-align:center" class="song-kind">Тип</div>
+          <div style="text-align:right">Дії</div>
         </div>
+        <ul id="list"></ul>
+      </div>
+    </main>
+  </div>
+
+  <div class="player-bar">
+    <div class="current-info">
+      <div class="current-title" id="current-song-title">Нічого не грає</div>
+      <div class="current-sub" id="current-song-sub">Оберіть трек зі списку</div>
     </div>
 
-    <div class="player-bar">
-        <div class="current-info" id="current-song-title">Нічого не грає</div>
-        
-        <div class="player-center">
-            <div class="player-controls">
-                <button class="ctrl-btn" id="shuffle-btn" title="Випадковий порядок">🔀</button>
-                <button class="ctrl-btn" id="repeat-btn" title="Повтор треку">🔁</button>
-                <button class="ctrl-btn" id="prev-btn" title="Попередній">⏮</button>
-                <button class="ctrl-btn play-pause-btn" id="play-pause-btn" title="Грати / Пауза">▶</button>
-                <button class="ctrl-btn" id="next-btn" title="Наступний">⏭</button>
-            </div>
-            <div class="progress-container" id="progress-container">
-                <div class="progress-bar" id="progress-bar"></div>
-            </div>
+    <div class="player-center">
+      <div class="player-controls">
+        <button class="ctrl-btn" id="shuffle-btn" title="Випадковий порядок (S)">🔀</button>
+        <button class="ctrl-btn" id="prev-btn" title="Попередній (←)">⏮</button>
+        <button class="ctrl-btn play-pause-btn" id="play-pause-btn" title="Грати / Пауза (Space)">▶</button>
+        <button class="ctrl-btn" id="next-btn" title="Наступний (→)">⏭</button>
+        <button class="ctrl-btn" id="repeat-btn" title="Повтор (R)">🔁</button>
+      </div>
+      <div class="progress-row">
+        <span class="time-label" id="time-cur">0:00</span>
+        <div class="progress-container" id="progress-container">
+          <div class="progress-track">
+            <div class="progress-bar" id="progress-bar"><div class="progress-knob"></div></div>
+          </div>
         </div>
-
-        <div class="volume-wrapper">
-            <span>🔊</span>
-            <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.01" value="1">
-        </div>
+        <span class="time-label right" id="time-dur">0:00</span>
+      </div>
     </div>
+
+    <div class="volume-wrapper">
+      <button class="vol-icon" id="mute-btn" title="Без звуку (M)">🔊</button>
+      <input type="range" id="volume-slider" class="volume-slider" min="0" max="1" step="0.01" value="1">
+    </div>
+  </div>
 </div>
 
-<audio id="player" preload="auto" playsinline></audio>
+<audio id="player" preload="metadata" playsinline></audio>
 
+<div class="modal-back" id="modal-back">
+  <div class="modal" id="modal"></div>
+</div>
+
+<div class="toast-wrap" id="toast-wrap"></div>
 <script>
-    const BIN_ID = '6a7c3536da38895dfed9948e'; 
-    const API_KEY = '$2a$10$RZSWlrF3nSMRAsv5Jlk1MOHs4qBWJ6ItuOqlU9rE1KSeii4Ck2XFu'; 
-    const urlAPI = `https://api.jsonbin.io/v3/b/${BIN_ID}`;
+"use strict";
 
-    let currentSongs = [];
-    let currentIndex = 0;
-    let searchQuery = '';
-    let isRepeat = false;
-    let isShuffle = false;
+/* =========================================================
+   1. CONFIG
+   ЗМІНИ ЦЕ: перевипусти ключ на jsonbin.io, старий скомпрометований.
+   Щоб вимкнути хмару взагалі -> enabled: false
+   ========================================================= */
+const CLOUD = {
+  enabled: true,
+  binId: "6a7c3536da38895dfed9948e",
+  key: "$2a$10$RZSWlrF3nSMRAsv5Jlk1MOHs4qBWJ6ItuOqlU9rE1KSeii4Ck2XFu",
+  get url() { return "https://api.jsonbin.io/v3/b/" + this.binId; }
+};
+// Якщо ключ не підставлений — не мучимо мережу, працюємо суто локально.
+if (!CLOUD.key || CLOUD.key.startsWith("PUT_YOUR")) CLOUD.enabled = false;
 
-    const player = document.getElementById('player');
-    const playPauseBtn = document.getElementById('play-pause-btn');
-    const progressBar = document.getElementById('progress-bar');
-    const progressContainer = document.getElementById('progress-container');
-    const currentSongTitle = document.getElementById('current-song-title');
-    const volumeSlider = document.getElementById('volume-slider');
-    const searchInput = document.getElementById('search-input');
-    const repeatBtn = document.getElementById('repeat-btn');
-    const shuffleBtn = document.getElementById('shuffle-btn');
+const LS_STATE  = "spotisanya_state_v2";
+const LS_VOLUME = "spotisanya_volume";
+const LS_MODES  = "spotisanya_modes";
 
-    volumeSlider.oninput = (e) => { 
-        player.volume = e.target.value; 
-        localStorage.setItem('spotisanya_volume', player.volume);
+/* =========================================================
+   2. STATE
+   ========================================================= */
+/** tracks:    {id, title, url|null, kind:'link'|'local', fileName?}
+ *  playlists: {id, name, trackIds:[]}                                */
+let state = { version: 2, tracks: [], playlists: [] };
+
+let view           = { type: "all", id: null };
+let queue          = [];   // масив id треків у порядку відтворення
+let queuePos       = -1;
+let currentTrackId = null;
+let searchQuery    = "";
+let isShuffle      = false;
+let repeatMode     = 0;    // 0 = off, 1 = all, 2 = one
+let isSeeking      = false;
+
+const blobUrls = new Map();   // trackId -> objectURL
+const missing  = new Set();   // trackId локальних файлів, яких немає в IndexedDB
+
+/* =========================================================
+   3. HELPERS
+   ========================================================= */
+const $ = (id) => document.getElementById(id);
+
+// ФІКС: XSS. Раніше song.title вставлявся в innerHTML як є.
+const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g,
+  (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 9);
+
+// ФІКС: додано відображення часу.
+function fmtTime(sec) {
+  if (!isFinite(sec) || sec < 0) return "0:00";
+  const m = Math.floor(sec / 60), s = Math.floor(sec % 60);
+  return m + ":" + String(s).padStart(2, "0");
+}
+
+function shuffled(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// ФІКС: alert() замінено на неблокуючі тости.
+function toast(msg, type) {
+  const wrap = $("toast-wrap");
+  const el = document.createElement("div");
+  el.className = "toast" + (type ? " " + type : "");
+  el.textContent = msg;
+  wrap.appendChild(el);
+  setTimeout(() => {
+    el.style.transition = "opacity .3s";
+    el.style.opacity = "0";
+    setTimeout(() => el.remove(), 300);
+  }, 2600);
+}
+
+const trackById   = (id) => state.tracks.find((t) => t.id === id) || null;
+const playlistById = (id) => state.playlists.find((p) => p.id === id) || null;
+
+/* =========================================================
+   4. INDEXEDDB — локальні файли живуть після перезавантаження
+   ФІКС головного бага: раніше blob:-URL зберігався в хмару
+   і після F5 трек не грав ніколи.
+   ========================================================= */
+const DB_NAME = "spotisanya", DB_STORE = "files";
+let dbPromise = null;
+let idbOK = true;   // Chrome блокує IndexedDB на file:// — тоді працюємо в пам'яті
+
+function db() {
+  if (dbPromise) return dbPromise;
+  dbPromise = new Promise((res, rej) => {
+    if (!window.indexedDB) { idbOK = false; return rej(new Error("no indexedDB")); }
+    let rq;
+    try { rq = indexedDB.open(DB_NAME, 1); }
+    catch (e) { idbOK = false; return rej(e); }
+    rq.onupgradeneeded = () => {
+      if (!rq.result.objectStoreNames.contains(DB_STORE)) rq.result.createObjectStore(DB_STORE);
     };
+    rq.onsuccess = () => res(rq.result);
+    rq.onerror   = () => { idbOK = false; rej(rq.error); };
+    rq.onblocked = () => { idbOK = false; rej(new Error("blocked")); };
+  });
+  return dbPromise;
+}
 
-    const savedVol = localStorage.getItem('spotisanya_volume');
-    if (savedVol !== null) {
-        player.volume = parseFloat(savedVol);
-        volumeSlider.value = savedVol;
+async function idbPut(key, blob) {
+  const d = await db();
+  return new Promise((res, rej) => {
+    const tx = d.transaction(DB_STORE, "readwrite");
+    tx.objectStore(DB_STORE).put(blob, key);
+    tx.oncomplete = () => res();
+    tx.onerror = () => rej(tx.error);
+  });
+}
+async function idbGet(key) {
+  let d; try { d = await db(); } catch (e) { return null; }
+  return new Promise((res, rej) => {
+    const tx = d.transaction(DB_STORE, "readonly");
+    const rq = tx.objectStore(DB_STORE).get(key);
+    rq.onsuccess = () => res(rq.result || null);
+    rq.onerror = () => rej(rq.error);
+  });
+}
+async function idbDel(key) {
+  let d; try { d = await db(); } catch (e) { return; }
+  return new Promise((res) => {
+    const tx = d.transaction(DB_STORE, "readwrite");
+    tx.objectStore(DB_STORE).delete(key);
+    tx.oncomplete = () => res();
+    tx.onerror = () => res();
+  });
+}
+async function idbKeys() {
+  let d; try { d = await db(); } catch (e) { return []; }
+  return new Promise((res) => {
+    const tx = d.transaction(DB_STORE, "readonly");
+    const rq = tx.objectStore(DB_STORE).getAllKeys();
+    rq.onsuccess = () => res(rq.result || []);
+    rq.onerror = () => res([]);
+  });
+}
+
+/** Повертає придатний для <audio> URL або null, якщо файл недоступний. */
+async function resolveUrl(track) {
+  if (!track) return null;
+  if (track.kind === "link") return track.url || null;
+  if (blobUrls.has(track.id)) return blobUrls.get(track.id);
+  const blob = await idbGet(track.id);
+  if (!blob) { missing.add(track.id); return null; }
+  const u = URL.createObjectURL(blob);
+  blobUrls.set(track.id, u);
+  missing.delete(track.id);
+  return u;
+}
+
+/* =========================================================
+   5. PERSISTENCE
+   ========================================================= */
+function saveLocal() {
+  try { localStorage.setItem(LS_STATE, JSON.stringify(state)); } catch (e) {}
+}
+
+function setDot(cls) {
+  const d = $("cloud-dot");
+  d.className = "cloud-dot" + (cls ? " " + cls : "");
+  d.title = { ok: "Синхронізовано", err: "Помилка синхронізації", sync: "Синхронізація..." }[cls] || "Локально";
+}
+
+let syncTimer = null;
+/** Дебаунс: 10 швидких змін = 1 запит, а не 10. */
+function persist() {
+  saveLocal();
+  renderAll();
+  if (!CLOUD.enabled) return;
+  setDot("sync");
+  clearTimeout(syncTimer);
+  syncTimer = setTimeout(pushCloud, 900);
+}
+
+async function pushCloud() {
+  if (!CLOUD.enabled) return;
+  try {
+    // Локальні файли їдуть у хмару лише як метадані (url: null) —
+    // сам blob лежить в IndexedDB цього браузера.
+    const payload = {
+      version: 2,
+      playlists: state.playlists,
+      tracks: state.tracks
+        .filter((t) => !t.session)
+        .map((t) => t.kind === "local" ? { ...t, url: null } : t)
+    };
+    const r = await fetch(CLOUD.url, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json", "X-Master-Key": CLOUD.key },
+      body: JSON.stringify(payload)
+    });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    setDot("ok");
+  } catch (err) {
+    console.error("Хмара недоступна:", err);
+    setDot("err");
+  }
+}
+
+/** Міграція старого формату {songs:[{title,url}]} у v2. */
+function migrate(raw) {
+  if (!raw || typeof raw !== "object") return null;
+  if (raw.version === 2 && Array.isArray(raw.tracks)) {
+    return {
+      version: 2,
+      tracks: raw.tracks.filter((t) => t && t.id && t.title),
+      playlists: (Array.isArray(raw.playlists) ? raw.playlists : [])
+        .filter((p) => p && p.id && p.name)
+        .map((p) => ({ id: p.id, name: p.name, trackIds: Array.isArray(p.trackIds) ? p.trackIds : [] }))
+    };
+  }
+  const old = Array.isArray(raw.songs) ? raw.songs : (Array.isArray(raw) ? raw : null);
+  if (!old) return null;
+  return {
+    version: 2,
+    playlists: [],
+    // мертві blob:-URL зі старої версії відкидаємо
+    tracks: old
+      .filter((s) => s && s.url && !String(s.url).startsWith("blob:"))
+      .map((s) => ({ id: uid(), title: s.title || "Трек", url: s.url, kind: "link" }))
+  };
+}
+
+async function boot() {
+  let loaded = false;
+
+  const cached = localStorage.getItem(LS_STATE);
+  if (cached) {
+    try {
+      const m = migrate(JSON.parse(cached));
+      if (m) { state = m; loaded = true; }
+    } catch (e) { console.warn("Кеш v2 битий:", e); }
+  }
+
+  // ЛЕГАСІ: перший запуск після апдейту — забираємо плейлист зі старої версії.
+  if (!loaded) {
+    const legacy = localStorage.getItem("spotisanya_cache");
+    if (legacy) {
+      try {
+        const m = migrate(JSON.parse(legacy));
+        if (m && m.tracks.length) {
+          state = m;
+          loaded = true;
+          saveLocal();
+          setTimeout(() => toast("Перенесено " + m.tracks.length + " трек(ів) зі старої версії", "ok"), 400);
+        }
+      } catch (e) { console.warn("Легасі-кеш битий:", e); }
     }
+  }
 
-    async function loadSongs() {
-        loadFromCache();
-        try {
-            const response = await fetch(urlAPI, { headers: { 'X-Master-Key': API_KEY }});
-            if (!response.ok) throw new Error('Помилка завантаження з хмари');
-            const result = await response.json();
-            const cloudSongs = result.record.songs;
+  renderAll();
 
-            if (Array.isArray(cloudSongs)) {
-                currentSongs = cloudSongs;
-                localStorage.setItem('spotisanya_cache', JSON.stringify(currentSongs));
-            }
-        } catch (err) {
-            console.warn('Використовуємо локальний кеш через помилку мережі:', err);
-        }
-        renderList();
+  if (CLOUD.enabled) {
+    setDot("sync");
+    try {
+      // /latest повертає останню версію біна
+      const r = await fetch(CLOUD.url + "/latest", { headers: { "X-Master-Key": CLOUD.key } });
+      if (!r.ok) throw new Error("HTTP " + r.status + " " + r.statusText);
+      const j = await r.json();
+      const m = migrate(j.record);
+      if (m && (m.tracks.length || m.playlists.length)) {
+        state = m;
+        saveLocal();
+        console.log("Завантажено з хмари:", m.tracks.length, "треків,", m.playlists.length, "плейлистів");
+      } else if (loaded) {
+        // У хмарі порожньо, а локально щось є -> заливаємо локальне в хмару
+        console.log("Хмара порожня, заливаємо локальний стан");
+        pushCloud();
+      }
+      setDot("ok");
+    } catch (err) {
+      console.error("Хмара недоступна, працюємо з локального кешу:", err);
+      setDot("err");
+      toast("Не вдалося прочитати хмару: " + err.message, "err");
     }
+  } else {
+    setDot("");
+  }
 
-    function loadFromCache() {
-        const cached = localStorage.getItem('spotisanya_cache');
-        if (cached) {
-            try { currentSongs = JSON.parse(cached); } catch(e) {}
-        }
+  // Позначаємо локальні треки, чиї файли відсутні в цьому браузері
+  const keys = new Set(await idbKeys());
+  state.tracks.forEach((t) => { if (t.kind === "local" && !keys.has(t.id)) missing.add(t.id); });
+
+  renderAll();
+}
+
+/* =========================================================
+   6. VIEWS & RENDER
+   ========================================================= */
+function viewTracks() {
+  if (view.type === "playlist") {
+    const p = playlistById(view.id);
+    if (!p) { view = { type: "all", id: null }; return state.tracks.slice(); }
+    // порядок = порядок у плейлисті, битих id відфільтровуємо
+    return p.trackIds.map(trackById).filter(Boolean);
+  }
+  return state.tracks.slice();
+}
+
+function visibleTracks() {
+  const q = searchQuery.trim().toLowerCase();
+  const list = viewTracks();
+  return q ? list.filter((t) => t.title.toLowerCase().includes(q)) : list;
+}
+
+function renderSidebar() {
+  $("count-all").textContent = state.tracks.length;
+
+  document.querySelectorAll('.nav-item[data-view="all"]').forEach((el) =>
+    el.classList.toggle("active", view.type === "all"));
+
+  const nav = $("playlist-nav");
+  nav.innerHTML = state.playlists.map((p) => `
+    <div class="nav-item${view.type === "playlist" && view.id === p.id ? " active" : ""}"
+         data-view="playlist" data-id="${esc(p.id)}" title="${esc(p.name)}">
+      <span>📁</span>
+      <span class="nav-name">${esc(p.name)}</span>
+      <span class="nav-count">${p.trackIds.length}</span>
+      <span class="nav-edit action-btn" data-act="pl-menu" data-id="${esc(p.id)}" title="Налаштування">⋯</span>
+    </div>`).join("") ||
+    `<div style="padding:8px 12px;font-size:12px;color:var(--text-muted);font-weight:600">Ще немає плейлистів</div>`;
+}
+
+function renderHeader() {
+  const inPl = view.type === "playlist";
+  const p = inPl ? playlistById(view.id) : null;
+  $("view-title").textContent = p ? p.name : "Усі треки";
+  const n = viewTracks().length;
+  const word = n % 10 === 1 && n % 100 !== 11 ? "трек" : (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20) ? "треки" : "треків");
+  $("view-sub").textContent = n + " " + word + (inPl ? " у цьому плейлисті" : " у бібліотеці");
+}
+
+function renderList() {
+  const ul = $("list");
+  const list = visibleTracks();
+  const inPl = view.type === "playlist";
+
+  if (!list.length) {
+    let msg;
+    if (searchQuery) msg = "Нічого не знайдено за запитом «" + esc(searchQuery) + "»";
+    else if (view.type === "playlist") msg = "Плейлист порожній.<br>Перетягніть тут треки з «Усі треки» або додайте посилання вище.";
+    else if (!CLOUD.enabled) msg = "Бібліотека порожня.<br><span style=\"font-size:12px;opacity:.8\">Хмара вимкнена (немає ключа jsonbin) — додайте треки кнопками вище.</span>";
+    else msg = "Бібліотека порожня — додайте трек або перетягніть файли";
+    ul.innerHTML = `<li class="empty"><div>${msg}</div></li>`;
+    return;
+  }
+
+  ul.innerHTML = list.map((t, i) => {
+    const isMissing = t.kind === "local" && missing.has(t.id);
+    return `
+    <li class="track${t.id === currentTrackId ? " active" : ""}${isMissing ? " missing" : ""}" data-id="${esc(t.id)}">
+      <span class="song-index">${i + 1}</span>
+      <div style="min-width:0">
+        <div class="song-name" title="${esc(t.title)}">${esc(t.title)}</div>
+        ${isMissing ? `<div class="song-meta">⚠ файл недоступний у цьому браузері</div>` : ""}
+      </div>
+      <span class="song-kind">${t.kind === "local" ? "💾 файл" : "🔗 лінк"}</span>
+      <div class="action-btns">
+        <button class="action-btn" data-act="addto" data-id="${esc(t.id)}" title="Додати в плейлист">➕</button>
+        <button class="action-btn" data-act="rename" data-id="${esc(t.id)}" title="Перейменувати">✏️</button>
+        ${inPl ? `<button class="action-btn del-btn" data-act="unlink" data-id="${esc(t.id)}" title="Прибрати з плейлиста">➖</button>`
+                : `<button class="action-btn del-btn" data-act="delete" data-id="${esc(t.id)}" title="Видалити з бібліотеки">✕</button>`}
+      </div>
+    </li>`;
+  }).join("");
+}
+
+function renderAll() { renderSidebar(); renderHeader(); renderList(); }
+
+/* =========================================================
+   7. QUEUE & PLAYBACK
+   ФІКС: черга тримає ID, а не індекси, тому видалення/сортування
+   вже не ламає "поточний трек".
+   ========================================================= */
+function buildQueue(startId) {
+  const ids = visibleTracks().map((t) => t.id);
+  if (isShuffle) {
+    const rest = shuffled(ids.filter((id) => id !== startId));
+    queue = startId && ids.includes(startId) ? [startId, ...rest] : rest;
+  } else {
+    queue = ids;
+  }
+  queuePos = startId ? queue.indexOf(startId) : -1;
+}
+
+async function playTrack(id, rebuild) {
+  const t = trackById(id);
+  if (!t) return;
+
+  if (rebuild !== false) buildQueue(id);
+  else queuePos = queue.indexOf(id);
+
+  currentTrackId = id;
+  $("current-song-title").textContent = t.title;
+  $("current-song-sub").textContent = (view.type === "playlist" ? (playlistById(view.id) || {}).name : "Усі треки") || "";
+  renderList();
+
+  const src = await resolveUrl(t);
+  if (!src) {
+    // ФІКС: раніше битий трек = тиша без пояснень.
+    toast("Файл «" + t.title + "» недоступний у цьому браузері", "err");
+    renderList();
+    return;
+  }
+
+  player.src = src;   // ФІКС: player.load() прибрано, він тут зайвий
+  try {
+    await player.play();
+  } catch (err) {
+    console.warn("Відтворення заблоковано:", err);
+  }
+  updateMediaSession(t);
+}
+
+function nextId(auto) {
+  if (!queue.length) return null;
+  if (queuePos < queue.length - 1) return queue[queuePos + 1];
+  if (repeatMode === 1) {                       // повтор усього
+    if (isShuffle) queue = shuffled(queue);
+    return queue[0];
+  }
+  return auto ? null : queue[0];                // вручну ⏭ — по колу
+}
+
+function prevId() {
+  if (!queue.length) return null;
+  if (player.currentTime > 3) { player.currentTime = 0; return null; }
+  if (queuePos > 0) return queue[queuePos - 1];
+  return queue[queue.length - 1];
+}
+
+/* =========================================================
+   8. PLAYER EVENTS
+   ФІКС: іконка ▶/❚❚ більше не оновлюється вручну в 6 місцях —
+   вона реагує на реальні події <audio>.
+   ========================================================= */
+const player = $("player");
+
+player.addEventListener("play",  () => { $("play-pause-btn").textContent = "❚❚"; });
+player.addEventListener("pause", () => { $("play-pause-btn").textContent = "▶"; });
+
+player.addEventListener("loadedmetadata", () => {
+  $("time-dur").textContent = fmtTime(player.duration);
+});
+
+player.addEventListener("timeupdate", () => {
+  if (isSeeking) return;
+  $("time-cur").textContent = fmtTime(player.currentTime);
+  if (player.duration) {
+    $("progress-bar").style.width = (player.currentTime / player.duration * 100) + "%";
+  }
+});
+
+player.addEventListener("ended", () => {
+  if (repeatMode === 2) { player.currentTime = 0; player.play().catch(() => {}); return; }
+  const id = nextId(true);
+  if (id) playTrack(id, false);
+  else { $("progress-bar").style.width = "0%"; $("time-cur").textContent = "0:00"; }
+});
+
+player.addEventListener("error", () => {
+  const t = trackById(currentTrackId);
+  toast("Не вдалося відтворити" + (t ? " «" + t.title + "»" : "") + " — перевірте посилання", "err");
+});
+
+/* --- Progress: клік + перетягування --------------------- */
+const pc = $("progress-container");
+function seekFromEvent(e) {
+  // ФІКС: e.offsetX брався від дочірнього .progress-bar → стрибки.
+  const r = pc.getBoundingClientRect();
+  const ratio = Math.min(1, Math.max(0, (e.clientX - r.left) / r.width));
+  if (player.duration) {
+    $("progress-bar").style.width = ratio * 100 + "%";
+    $("time-cur").textContent = fmtTime(ratio * player.duration);
+  }
+  return ratio;
+}
+pc.addEventListener("pointerdown", (e) => {
+  if (!player.duration) return;
+  isSeeking = true;
+  pc.setPointerCapture(e.pointerId);
+  seekFromEvent(e);
+});
+pc.addEventListener("pointermove", (e) => { if (isSeeking) seekFromEvent(e); });
+pc.addEventListener("pointerup", (e) => {
+  if (!isSeeking) return;
+  isSeeking = false;
+  player.currentTime = seekFromEvent(e) * player.duration;
+});
+
+/* --- Volume --------------------------------------------- */
+const volSlider = $("volume-slider");
+function paintVolIcon() {
+  $("mute-btn").textContent = player.muted || player.volume === 0 ? "🔇" : (player.volume < .5 ? "🔉" : "🔊");
+}
+volSlider.addEventListener("input", (e) => {
+  player.volume = parseFloat(e.target.value);
+  player.muted = false;
+  localStorage.setItem(LS_VOLUME, player.volume);
+  paintVolIcon();
+});
+$("mute-btn").onclick = () => { player.muted = !player.muted; paintVolIcon(); };
+
+(function restorePrefs() {
+  const v = localStorage.getItem(LS_VOLUME);
+  if (v !== null) { player.volume = parseFloat(v); volSlider.value = v; }
+  paintVolIcon();
+  try {
+    const m = JSON.parse(localStorage.getItem(LS_MODES) || "{}");
+    isShuffle = !!m.shuffle;
+    repeatMode = [0, 1, 2].includes(m.repeat) ? m.repeat : 0;
+  } catch (e) {}
+  paintModes();
+})();
+
+function paintModes() {
+  $("shuffle-btn").classList.toggle("active-mode", isShuffle);
+  const rb = $("repeat-btn");
+  rb.classList.toggle("active-mode", repeatMode > 0);
+  rb.innerHTML = "🔁" + (repeatMode === 2 ? '<span class="badge">1</span>' : "");
+  rb.title = ["Повтор: вимкнено", "Повтор: усього списку", "Повтор: одного треку"][repeatMode];
+  localStorage.setItem(LS_MODES, JSON.stringify({ shuffle: isShuffle, repeat: repeatMode }));
+}
+
+/* --- Controls ------------------------------------------- */
+$("play-pause-btn").onclick = () => {
+  if (player.paused) {
+    if (!currentTrackId) {
+      const first = visibleTracks()[0];
+      if (!first) return toast("Плейлист порожній");
+      playTrack(first.id);
+    } else player.play().catch(() => {});
+  } else player.pause();
+};
+
+$("next-btn").onclick = () => { const id = nextId(false); if (id) playTrack(id, false); };
+$("prev-btn").onclick = () => { const id = prevId();      if (id) playTrack(id, false); };
+
+// ФІКС: shuffle тепер справжня перемішана черга, а не чистий Math.random,
+// який повторював треки і деякі не грав ніколи.
+$("shuffle-btn").onclick = () => {
+  isShuffle = !isShuffle;
+  paintModes();
+  buildQueue(currentTrackId);
+  toast(isShuffle ? "Випадковий порядок увімкнено" : "Порядок за списком");
+};
+
+// ФІКС: 3 режими повтору замість одного.
+$("repeat-btn").onclick = () => {
+  repeatMode = (repeatMode + 1) % 3;
+  paintModes();
+  toast(["Повтор вимкнено", "Повтор списку", "Повтор треку"][repeatMode]);
+};
+
+$("play-view-btn").onclick = () => {
+  const list = visibleTracks();
+  if (!list.length) return toast("Немає чого грати");
+  buildQueue(null);
+  if (isShuffle) queue = shuffled(list.map((t) => t.id));
+  playTrack(queue[0], false);
+};
+
+/* --- Media Session -------------------------------------- */
+function updateMediaSession(t) {
+  if (!("mediaSession" in navigator)) return;
+  navigator.mediaSession.metadata = new MediaMetadata({
+    title: t.title,
+    artist: "SpotiSanya",
+    album: view.type === "playlist" ? ((playlistById(view.id) || {}).name || "") : "Бібліотека"
+  });
+  navigator.mediaSession.setActionHandler("play",          () => player.play().catch(() => {}));
+  navigator.mediaSession.setActionHandler("pause",         () => player.pause());
+  navigator.mediaSession.setActionHandler("previoustrack", () => $("prev-btn").click());
+  navigator.mediaSession.setActionHandler("nexttrack",     () => $("next-btn").click());
+}
+
+/* =========================================================
+   9. KEYBOARD (нове)
+   ========================================================= */
+document.addEventListener("keydown", (e) => {
+  const tag = (e.target.tagName || "").toLowerCase();
+  if (tag === "input" || tag === "textarea" || $("modal-back").classList.contains("open")) {
+    if (e.key === "Escape") closeModal();
+    return;
+  }
+  switch (e.key) {
+    case " ":          e.preventDefault(); $("play-pause-btn").click(); break;
+    case "ArrowRight": e.preventDefault(); if (e.shiftKey) $("next-btn").click(); else player.currentTime += 5; break;
+    case "ArrowLeft":  e.preventDefault(); if (e.shiftKey) $("prev-btn").click(); else player.currentTime -= 5; break;
+    case "ArrowUp":    e.preventDefault(); volSlider.value = Math.min(1, player.volume + .05); volSlider.dispatchEvent(new Event("input")); break;
+    case "ArrowDown":  e.preventDefault(); volSlider.value = Math.max(0, player.volume - .05); volSlider.dispatchEvent(new Event("input")); break;
+    case "m": case "M": case "ь": $("mute-btn").click(); break;
+    case "s": case "S": case "і": $("shuffle-btn").click(); break;
+    case "r": case "R": case "к": $("repeat-btn").click(); break;
+  }
+});
+
+/* =========================================================
+   10. MODAL
+   ========================================================= */
+const modalBack = $("modal-back"), modalEl = $("modal");
+function openModal(html) { modalEl.innerHTML = html; modalBack.classList.add("open"); }
+function closeModal() { modalBack.classList.remove("open"); modalEl.innerHTML = ""; }
+modalBack.addEventListener("click", (e) => { if (e.target === modalBack) closeModal(); });
+
+/* =========================================================
+   11. PLAYLISTS (нова функціональність)
+   ========================================================= */
+function createPlaylist(name, trackIds) {
+  const p = { id: uid(), name: name.trim() || "Новий плейлист", trackIds: trackIds || [] };
+  state.playlists.push(p);
+  persist();
+  return p;
+}
+
+function addToPlaylist(playlistId, trackIds) {
+  const p = playlistById(playlistId);
+  if (!p) return 0;
+  let added = 0;
+  trackIds.forEach((id) => {
+    if (!p.trackIds.includes(id)) { p.trackIds.push(id); added++; }
+  });
+  if (added) persist();
+  return added;
+}
+
+function removeFromPlaylist(playlistId, trackId) {
+  const p = playlistById(playlistId);
+  if (!p) return;
+  p.trackIds = p.trackIds.filter((x) => x !== trackId);
+  persist();
+}
+
+function promptNewPlaylist(prefillTrackIds) {
+  openModal(`
+    <h3>Новий плейлист</h3>
+    <input type="text" id="m-name" placeholder="Назва плейлиста" maxlength="60">
+    <div class="modal-actions">
+      <button class="secondary-btn" data-m="cancel">Скасувати</button>
+      <button data-m="create">Створити</button>
+    </div>`);
+  const inp = $("m-name");
+  inp.focus();
+  const go = () => {
+    const name = inp.value.trim();
+    if (!name) return inp.focus();
+    const p = createPlaylist(name, prefillTrackIds || []);
+    closeModal();
+    toast("Плейлист «" + p.name + "» створено", "ok");
+    if (!prefillTrackIds) switchView({ type: "playlist", id: p.id });
+  };
+  inp.addEventListener("keydown", (e) => { if (e.key === "Enter") go(); });
+  modalEl.querySelector('[data-m="create"]').onclick = go;
+  modalEl.querySelector('[data-m="cancel"]').onclick = closeModal;
+}
+
+function openAddToPlaylist(trackId) {
+  const t = trackById(trackId);
+  if (!t) return;
+  const rows = state.playlists.map((p) => {
+    const inside = p.trackIds.includes(trackId);
+    return `<div class="modal-row${inside ? " in" : ""}" data-pl="${esc(p.id)}">
+      <span>${inside ? "✓" : "📁"}</span>
+      <span class="rname">${esc(p.name)}</span>
+      <span style="font-size:11px;opacity:.6;font-weight:700">${p.trackIds.length}</span>
+    </div>`;
+  }).join("") || `<div style="font-size:13px;color:var(--text-muted);font-weight:600;padding:6px 2px">Плейлистів ще немає</div>`;
+
+  openModal(`
+    <h3>Додати в плейлист</h3>
+    <div class="sub">${esc(t.title)}</div>
+    <div class="modal-list">${rows}</div>
+    <button class="secondary-btn" data-m="new" style="width:100%">＋ Створити новий плейлист</button>
+    <div class="modal-actions"><button data-m="close">Готово</button></div>`);
+
+  modalEl.querySelectorAll("[data-pl]").forEach((row) => {
+    row.onclick = () => {
+      const pid = row.dataset.pl;
+      const p = playlistById(pid);
+      if (p.trackIds.includes(trackId)) { removeFromPlaylist(pid, trackId); toast("Прибрано з «" + p.name + "»"); }
+      else { addToPlaylist(pid, [trackId]); toast("Додано в «" + p.name + "»", "ok"); }
+      openAddToPlaylist(trackId);
+    };
+  });
+  modalEl.querySelector('[data-m="new"]').onclick = () => {
+    closeModal();
+    promptNewPlaylist([trackId]);
+  };
+  modalEl.querySelector('[data-m="close"]').onclick = closeModal;
+}
+
+function openPlaylistMenu(playlistId) {
+  const p = playlistById(playlistId);
+  if (!p) return;
+  openModal(`
+    <h3>${esc(p.name)}</h3>
+    <div class="sub">${p.trackIds.length} треків</div>
+    <input type="text" id="m-rename" value="${esc(p.name)}" maxlength="60">
+    <div class="modal-actions" style="justify-content:space-between">
+      <button class="danger-btn" data-m="del">🗑 Видалити плейлист</button>
+      <div style="display:flex;gap:10px">
+        <button class="secondary-btn" data-m="cancel">Скасувати</button>
+        <button data-m="save">Зберегти</button>
+      </div>
+    </div>`);
+  modalEl.querySelector('[data-m="save"]').onclick = () => {
+    const n = $("m-rename").value.trim();
+    if (n) { p.name = n; persist(); toast("Перейменовано", "ok"); }
+    closeModal();
+  };
+  modalEl.querySelector('[data-m="del"]').onclick = () => {
+    state.playlists = state.playlists.filter((x) => x.id !== playlistId);
+    if (view.type === "playlist" && view.id === playlistId) view = { type: "all", id: null };
+    persist();
+    closeModal();
+    toast("Плейлист видалено (треки залишились у бібліотеці)");
+  };
+  modalEl.querySelector('[data-m="cancel"]').onclick = closeModal;
+}
+
+function switchView(v) {
+  view = v;
+  searchQuery = "";
+  $("search-input").value = "";
+  renderAll();
+  buildQueue(currentTrackId);
+  $("sidebar").classList.remove("open");
+  document.querySelector(".main-content").scrollTop = 0;
+}
+
+/* =========================================================
+   12. TRACK CRUD
+   ========================================================= */
+function renameTrack(id) {
+  const t = trackById(id);
+  if (!t) return;
+  openModal(`
+    <h3>Перейменувати трек</h3>
+    <input type="text" id="m-t" value="${esc(t.title)}" maxlength="200">
+    <div class="modal-actions">
+      <button class="secondary-btn" data-m="cancel">Скасувати</button>
+      <button data-m="save">Зберегти</button>
+    </div>`);
+  const inp = $("m-t");
+  inp.focus(); inp.select();
+  const go = () => {
+    const v = inp.value.trim();
+    if (v) {
+      t.title = v;
+      if (id === currentTrackId) $("current-song-title").textContent = v;
+      persist();
     }
-    loadSongs();
+    closeModal();
+  };
+  inp.addEventListener("keydown", (e) => { if (e.key === "Enter") go(); });
+  modalEl.querySelector('[data-m="save"]').onclick = go;
+  modalEl.querySelector('[data-m="cancel"]').onclick = closeModal;
+}
 
-    async function syncCloud() {
-        localStorage.setItem('spotisanya_cache', JSON.stringify(currentSongs));
-        try {
-            await fetch(urlAPI, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json', 'X-Master-Key': API_KEY },
-                body: JSON.stringify({ songs: currentSongs })
-            });
-        } catch(err) {
-            console.error('Не вдалося синхронізувати з хмарою:', err);
-        }
+// ФІКС: видалення більше не «зсуває» поточний трек — усе по id.
+async function deleteTrack(id) {
+  const t = trackById(id);
+  if (!t) return;
+  openModal(`
+    <h3>Видалити трек?</h3>
+    <div class="sub">${esc(t.title)}</div>
+    <div style="font-size:13px;color:var(--text-muted);font-weight:600">Трек буде прибрано з бібліотеки та з усіх плейлистів.</div>
+    <div class="modal-actions">
+      <button class="secondary-btn" data-m="cancel">Скасувати</button>
+      <button class="danger-btn" data-m="ok">Видалити</button>
+    </div>`);
+  modalEl.querySelector('[data-m="ok"]').onclick = async () => {
+    closeModal();
+    const wasPlaying = id === currentTrackId && !player.paused;
+    const upcoming = wasPlaying ? nextId(true) : null;
+
+    state.tracks = state.tracks.filter((x) => x.id !== id);
+    state.playlists.forEach((p) => { p.trackIds = p.trackIds.filter((x) => x !== id); });
+
+    if (blobUrls.has(id)) { URL.revokeObjectURL(blobUrls.get(id)); blobUrls.delete(id); }
+    if (t.kind === "local") await idbDel(id);
+    missing.delete(id);
+
+    if (id === currentTrackId) {
+      currentTrackId = null;
+      player.pause();
+      player.removeAttribute("src");
+      $("current-song-title").textContent = "Нічого не грає";
+      $("current-song-sub").textContent = "Оберіть трек зі списку";
+      $("progress-bar").style.width = "0%";
+      $("time-cur").textContent = "0:00";
+      $("time-dur").textContent = "0:00";
     }
+    persist();
+    if (upcoming && upcoming !== id) playTrack(upcoming);
+    toast("Трек видалено");
+  };
+  modalEl.querySelector('[data-m="cancel"]').onclick = closeModal;
+}
 
-    function renderList() {
-        const list = document.getElementById('list');
-        list.innerHTML = '';
-        
-        const filteredSongs = currentSongs.map((song, originalIndex) => ({ ...song, originalIndex }))
-            .filter(song => song.title.toLowerCase().includes(searchQuery.toLowerCase()));
+/* --- Add by link ---------------------------------------- */
+$("add-btn").onclick = () => {
+  const ti = $("title"), ui = $("url");
+  const url = ui.value.trim();
+  if (!url) { toast("Введіть посилання", "err"); return ui.focus(); }
+  if (!/^https?:\/\//i.test(url)) return toast("Потрібне пряме http(s)-посилання на аудіофайл", "err");
+  if (/youtube\.com|youtu\.be|soundcloud\.com|spotify\.com/i.test(url)) {
+    return toast("YouTube / SoundCloud / Spotify не грають через <audio>. Потрібне пряме посилання на файл.", "err");
+  }
 
-        if (filteredSongs.length === 0) {
-            list.innerHTML = '<li style="color: var(--text-muted); justify-content: center; display: flex; text-align: center; padding: 24px; background: transparent; border: none;">Список порожній або нічого не знайдено</li>';
-            return;
-        }
+  const title = ti.value.trim() || decodeURIComponent(url.split("/").pop().split("?")[0]) || "Трек";
+  const t = { id: uid(), title, url, kind: "link" };
+  state.tracks.push(t);
+  if (view.type === "playlist") addToPlaylist(view.id, [t.id]);
 
-        filteredSongs.forEach((song) => {
-            const li = document.createElement('li');
-            if (song.originalIndex === currentIndex) li.classList.add('active');
+  ti.value = ""; ui.value = "";
+  persist();
+  toast("Додано: " + title, "ok");
+};
+$("url").addEventListener("keydown", (e) => { if (e.key === "Enter") $("add-btn").click(); });
+$("title").addEventListener("keydown", (e) => { if (e.key === "Enter") $("url").focus(); });
 
-            li.innerHTML = `
-                <span class="song-index">${song.originalIndex + 1}</span>
-                <span class="song-name" title="${song.title}">${song.title}</span>
-                <div class="action-btns">
-                    <button class="action-btn" onclick="renameSong(event, ${song.originalIndex})" title="Редагувати">✏️</button>
-                    <button class="action-btn del-btn" onclick="deleteSong(event, ${song.originalIndex})" title="Видалити">✕</button>
-                </div>
-            `;
-            li.onclick = () => playSong(song.originalIndex);
-            list.appendChild(li);
-        });
+/* --- Add local files (IndexedDB) ------------------------ */
+let warnedNoIDB = false;
+const AUDIO_RE = /\.(mp3|wav|ogg|oga|m4a|aac|flac|opus|weba|webm)$/i;
+
+async function addFiles(fileList, targetPlaylistId) {
+  const files = Array.from(fileList).filter((f) => f.type.startsWith("audio/") || AUDIO_RE.test(f.name));
+  if (!files.length) return toast("Аудіофайлів не знайдено", "err");
+
+  const newIds = [];
+  for (const f of files) {
+    const id = uid();
+    let persisted = true;
+    try {
+      await idbPut(id, f);   // зберігаємо самі байти, а не тимчасовий blob:-URL
+    } catch (err) {
+      // Найчастіше причина — сторінку відкрито як file:// або приватний режим.
+      persisted = false;
+      blobUrls.set(id, URL.createObjectURL(f));   // грає, але тільки до перезавантаження
+      if (!warnedNoIDB) {
+        warnedNoIDB = true;
+        toast("Браузер не дає зберігати файли (file:// або приватний режим). Треки грають лише в цій сесії.", "err");
+      }
     }
+    state.tracks.push({
+      id,
+      title: f.name.replace(/\.[^/.]+$/, ""),
+      url: null,
+      kind: "local",
+      session: !persisted,
+      fileName: f.name
+    });
+    newIds.push(id);
+  }
+  if (!newIds.length) return;
 
-    searchInput.oninput = (e) => {
-        searchQuery = e.target.value;
-        renderList();
-    };
+  const pid = targetPlaylistId || (view.type === "playlist" ? view.id : null);
+  if (pid) addToPlaylist(pid, newIds);
 
-    function updateMediaSession() {
-        if ('mediaSession' in navigator && currentSongs.length > 0) {
-            const song = currentSongs[currentIndex];
-            
-            navigator.mediaSession.metadata = new MediaMetadata({
-                title: song.title,
-                artist: 'SpotiSanya',
-                album: 'My Playlist',
-                artwork: [
-                    { src: 'https://images.unsplash.com/photo-1614680376593-902f749f7ffc?w=512&h=512&fit=crop', sizes: '512x512', type: 'image/png' }
-                ]
-            });
+  persist();
+  toast("Додано " + newIds.length + " трек(ів)", "ok");
+  if (!currentTrackId) playTrack(newIds[0]);
+}
 
-            navigator.mediaSession.setActionHandler('play', () => { 
-                player.play(); 
-                playPauseBtn.textContent = '❚❚'; 
-            });
-            navigator.mediaSession.setActionHandler('pause', () => { 
-                player.pause(); 
-                playPauseBtn.textContent = '▶'; 
-            });
-            navigator.mediaSession.setActionHandler('previoustrack', () => { 
-                document.getElementById('prev-btn').click(); 
-            });
-            navigator.mediaSession.setActionHandler('nexttrack', () => { 
-                document.getElementById('next-btn').click(); 
-            });
-        }
+$("file-btn").onclick   = () => $("file-input").click();
+$("folder-btn").onclick = () => $("folder-input").click();
+$("file-input").onchange   = async (e) => { await addFiles(e.target.files); e.target.value = ""; };
+$("folder-input").onchange = async (e) => { await addFiles(e.target.files); e.target.value = ""; };
+
+/* --- Drag & drop ---------------------------------------- */
+const dz = $("drop-zone");
+["dragenter", "dragover"].forEach((ev) =>
+  dz.addEventListener(ev, (e) => { e.preventDefault(); dz.classList.add("hot"); }));
+["dragleave", "drop"].forEach((ev) =>
+  dz.addEventListener(ev, () => dz.classList.remove("hot")));
+// ФІКС: раніше брався тільки files[0] — тепер усі файли
+dz.addEventListener("drop", async (e) => { e.preventDefault(); await addFiles(e.dataTransfer.files); });
+dz.onclick = () => $("file-input").click();
+document.addEventListener("dragover", (e) => e.preventDefault());
+document.addEventListener("drop", (e) => e.preventDefault());
+
+/* =========================================================
+   13. EVENT DELEGATION
+   ФІКС: inline onclick="renameSong(...)" в innerHTML прибрано —
+   це і був вектор XSS.
+   ========================================================= */
+$("list").addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-act]");
+  if (btn) {
+    e.stopPropagation();
+    const id = btn.dataset.id;
+    switch (btn.dataset.act) {
+      case "addto":  openAddToPlaylist(id); break;
+      case "rename": renameTrack(id); break;
+      case "delete": deleteTrack(id); break;
+      case "unlink":
+        removeFromPlaylist(view.id, id);
+        toast("Прибрано з плейлиста");
+        break;
     }
+    return;
+  }
+  const li = e.target.closest("li.track");
+  if (li) playTrack(li.dataset.id);
+});
 
-    function playSong(index) {
-        if (index < 0 || index >= currentSongs.length) return;
+$("sidebar").addEventListener("click", (e) => {
+  const menu = e.target.closest('[data-act="pl-menu"]');
+  if (menu) { e.stopPropagation(); return openPlaylistMenu(menu.dataset.id); }
 
-        currentIndex = index;
-        const song = currentSongs[currentIndex];
-        
-        player.pause();
-        player.src = song.url;
-        player.load(); 
-        
-        player.play().then(() => {
-            playPauseBtn.textContent = '❚❚';
-        }).catch((err) => {
-            console.warn("Автоматичне відтворення заблоковано:", err);
-            playPauseBtn.textContent = '▶';
-        });
-        
-        currentSongTitle.textContent = song.title;
-        updateMediaSession();
-        renderList();
-    }
+  const item = e.target.closest(".nav-item[data-view]");
+  if (item) {
+    switchView(item.dataset.view === "all" ? { type: "all", id: null } : { type: "playlist", id: item.dataset.id });
+  }
+});
 
-    playPauseBtn.onclick = () => {
-        if (currentSongs.length === 0) return;
+$("new-playlist-btn").onclick = () => promptNewPlaylist(null);
 
-        if (player.paused) {
-            if (!player.src) playSong(0);
-            else {
-                player.play().then(() => { playPauseBtn.textContent = '❚❚'; }).catch(() => {});
-            }
-        } else {
-            player.pause();
-            playPauseBtn.textContent = '▶';
-        }
-    };
+$("search-input").addEventListener("input", (e) => {
+  searchQuery = e.target.value;
+  renderList();
+});
 
-    function getNextIndex() {
-        if (currentSongs.length === 0) return 0;
-        if (isShuffle) {
-            let randomIndex;
-            do {
-                randomIndex = Math.floor(Math.random() * currentSongs.length);
-            } while (randomIndex === currentIndex && currentSongs.length > 1);
-            return randomIndex;
-        } else {
-            return (currentIndex + 1) % currentSongs.length;
-        }
-    }
+$("menu-toggle").onclick = () => $("sidebar").classList.toggle("open");
 
-    document.getElementById('next-btn').onclick = () => {
-        if (currentSongs.length > 0) playSong(getNextIndex());
-    };
+/* --- Drag треків на плейлист у сайдбарі ------------------ */
+$("list").addEventListener("dragstart", (e) => {
+  const li = e.target.closest("li.track");
+  if (!li) return;
+  e.dataTransfer.setData("text/spotisanya-track", li.dataset.id);
+  e.dataTransfer.effectAllowed = "copy";
+});
+new MutationObserver(() => {
+  document.querySelectorAll("li.track").forEach((li) => (li.draggable = true));
+}).observe($("list"), { childList: true });
 
-    document.getElementById('prev-btn').onclick = () => {
-        if (currentSongs.length > 0) {
-            playSong((currentIndex - 1 + currentSongs.length) % currentSongs.length);
-        }
-    };
+$("sidebar").addEventListener("dragover", (e) => {
+  const item = e.target.closest('.nav-item[data-view="playlist"]');
+  if (!item) return;
+  e.preventDefault();
+  item.classList.add("drag-over");
+});
+$("sidebar").addEventListener("dragleave", (e) => {
+  const item = e.target.closest(".nav-item");
+  if (item) item.classList.remove("drag-over");
+});
+$("sidebar").addEventListener("drop", (e) => {
+  const item = e.target.closest('.nav-item[data-view="playlist"]');
+  if (!item) return;
+  e.preventDefault();
+  item.classList.remove("drag-over");
+  const trackId = e.dataTransfer.getData("text/spotisanya-track");
+  if (!trackId) return;
+  const p = playlistById(item.dataset.id);
+  const n = addToPlaylist(item.dataset.id, [trackId]);
+  toast(n ? "Додано в «" + p.name + "»" : "Трек уже в цьому плейлисті", n ? "ok" : null);
+});
 
-    repeatBtn.onclick = () => {
-        isRepeat = !isRepeat;
-        repeatBtn.classList.toggle('active-mode', isRepeat);
-    };
+/* =========================================================
+   14. GO
+   ========================================================= */
+window.addEventListener("beforeunload", () => {
+  blobUrls.forEach((u) => URL.revokeObjectURL(u));
+});
 
-    shuffleBtn.onclick = () => {
-        isShuffle = !isShuffle;
-        shuffleBtn.classList.toggle('active-mode', isShuffle);
-    };
-
-    player.ontimeupdate = () => {
-        if (player.duration) {
-            progressBar.style.width = ((player.currentTime / player.duration) * 100) + '%';
-        }
-    };
-
-    progressContainer.onclick = (e) => {
-        if (player.duration) {
-            player.currentTime = (e.offsetX / progressContainer.clientWidth) * player.duration;
-        }
-    };
-
-    player.onended = () => {
-        if (currentSongs.length === 0) return;
-        if (isRepeat) {
-            playSong(currentIndex);
-        } else {
-            playSong(getNextIndex());
-        }
-    };
-
-    document.getElementById('add-btn').onclick = async () => {
-        const titleInput = document.getElementById('title');
-        const urlInput = document.getElementById('url');
-        const title = titleInput.value.trim();
-        const url = urlInput.value.trim();
-
-        if (!url) return alert('Введіть посилання!');
-
-        if (!title) {
-            currentSongs.push({ title: url.split('/').pop() || 'Трек', url });
-        } else {
-            currentSongs.push({ title, url });
-        }
-
-        titleInput.value = ''; 
-        urlInput.value = '';
-        renderList();
-        await syncCloud();
-    };
-
-    const dropZoneEl = document.getElementById('drop-zone');
-    dropZoneEl.ondragover = (e) => { e.preventDefault(); };
-    dropZoneEl.ondrop = async (e) => {
-        e.preventDefault();
-        if (e.dataTransfer.files.length > 0) {
-            const file = e.dataTransfer.files[0];
-            if (file.type.includes('audio') || file.name.endsWith('.mp3')) {
-                currentSongs.push({ title: file.name.replace(/\.[^/.]+$/, ""), url: URL.createObjectURL(file) });
-                renderList();
-                playSong(currentSongs.length - 1);
-                await syncCloud();
-            }
-        }
-    };
-
-    const folderBtn = document.getElementById('folder-btn');
-    const folderInput = document.getElementById('folder-input');
-    folderBtn.onclick = () => folderInput.click();
-    folderInput.onchange = async (e) => {
-        let added = 0;
-        for (let file of e.target.files) {
-            if (file.name.endsWith('.mp3') || file.name.endsWith('.wav')) {
-                currentSongs.push({ title: file.name.replace(/\.[^/.]+$/, ""), url: URL.createObjectURL(file) });
-                added++;
-            }
-        }
-        if (added > 0) {
-            renderList();
-            if (!player.src) playSong(currentSongs.length - added);
-            await syncCloud();
-        }
-        folderInput.value = '';
-    };
-
-    async function renameSong(event, index) {
-        event.stopPropagation();
-        const newTitle = prompt("Нова назва:", currentSongs[index].title);
-        if (!newTitle || !newTitle.trim()) return;
-        currentSongs[index].title = newTitle.trim();
-        renderList();
-        if (index === currentIndex) currentSongTitle.textContent = newTitle.trim();
-        await syncCloud();
-    }
-
-    async function deleteSong(event, index) {
-        event.stopPropagation();
-        if (!confirm("Видалити трек?")) return;
-        currentSongs.splice(index, 1);
-        renderList();
-        await syncCloud();
-    }
+boot();
 </script>
 </body>
 </html>
