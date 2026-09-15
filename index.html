@@ -27,7 +27,6 @@
   --tx:#f3eff8;
   --tx-mid:#9a90a8;
   --tx-dim:#655d73;
-  --star:#ffc93c;
 
   --nav-w:260px;
   --bar-h:90px;
@@ -53,13 +52,11 @@ body::before{
 
 button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
 input{font-family:inherit}
-ul{list-style:none}
 
 .sb{scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.13) transparent}
 .sb::-webkit-scrollbar{width:6px;height:6px}
 .sb::-webkit-scrollbar-thumb{background:rgba(255,255,255,.11);border-radius:99px}
 
-/* SHELL & LAYOUT */
 .shell{
   position:relative;z-index:1;
   height:100vh;height:100dvh;
@@ -92,7 +89,6 @@ ul{list-style:none}
 }
 .search input::placeholder{color:var(--tx-dim)}
 
-/* SIDEBAR / DRAWER */
 .nav{
   position:fixed;top:0;left:0;bottom:0;width:var(--nav-w);
   background:var(--bg-nav);border-right:1px solid var(--line);
@@ -121,7 +117,6 @@ ul{list-style:none}
 .nav-h{
   font-size:9px;font-weight:800;color:var(--tx-dim);letter-spacing:1.5px;
   padding:0 8px;margin:14px 0 6px;
-  display:flex;align-items:center;justify-content:space-between;
 }
 .nav-list{display:flex;flex-direction:column;gap:2px}
 .nav-i{
@@ -136,7 +131,6 @@ ul{list-style:none}
 .nav-i .n{font-size:11px;font-weight:700;color:var(--tx-dim)}
 .dot{width:8px;height:8px;border-radius:50%;background:#22c55e;box-shadow:0 0 8px rgba(34,197,94,.6)}
 
-/* MAIN CONTENT */
 .mid{
   flex:1;overflow-y:auto;
   padding:14px;
@@ -155,7 +149,6 @@ ul{list-style:none}
 .stat .sl{font-size:10px;color:var(--tx-mid)}
 .stat .sv{font-size:15px;font-weight:800;margin-top:1px}
 
-/* ADD BLOCK */
 .add-wrap{padding:14px}
 .blk-h{font-size:10px;font-weight:800;letter-spacing:1.5px;color:var(--tx-mid);margin-bottom:10px}
 .add-row{display:flex;flex-direction:column;gap:8px}
@@ -171,10 +164,13 @@ ul{list-style:none}
   background:var(--grad);color:#fff;
   box-shadow:0 4px 15px var(--ac-glow);width:100%;
 }
+.btn-sec{
+  background:var(--card-2);border:1px solid var(--line-2);color:var(--tx);
+  box-shadow:none;margin-top:6px;
+}
 
-/* TABLE / LIST OF TRACKS */
 .tbl-wrap{padding:14px}
-.tbl-top{display:flex;align-items:center;justify-content:between;margin-bottom:12px}
+.tbl-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
 .tbl-title{font-size:13px;font-weight:800;letter-spacing:.5px;text-transform:uppercase}
 .tbody{display:flex;flex-direction:column;gap:6px}
 .trow{
@@ -188,8 +184,8 @@ ul{list-style:none}
 .tt{font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ts{font-size:11px;color:var(--tx-dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tplay-btn{width:32px;height:32px;border-radius:8px;background:rgba(255,255,255,.08);display:grid;place-items:center;font-size:12px}
+.tdel{background:none;border:none;color:var(--tx-dim);font-size:14px;padding:4px}
 
-/* BOTTOM FIXED PLAYER BAR */
 .bar-bottom{
   position:fixed;left:0;right:0;bottom:0;height:var(--bar-h);z-index:90;
   background:rgba(14,10,20,.95);backdrop-filter:blur(20px);
@@ -210,14 +206,12 @@ ul{list-style:none}
   display:grid;place-items:center;font-size:14px;box-shadow:0 4px 12px var(--ac-glow);
 }
 
-/* PROGRESS BAR */
 .seek{display:flex;align-items:center;gap:8px;width:100%}
 .tm{font-size:9.5px;color:var(--tx-dim);min-width:28px}
 .bar{flex:1;height:12px;display:flex;align-items:center;cursor:pointer}
 .bar-t{width:100%;height:3px;background:rgba(255,255,255,.15);border-radius:99px;position:relative}
 .bar-f{height:100%;background:var(--grad);border-radius:99px;width:0}
 
-/* TOAST NOTIFICATIONS */
 .toasts{
   position:fixed;left:50%;bottom:calc(var(--bar-h) + 10px);transform:translateX(-50%);
   z-index:200;display:flex;flex-direction:column;gap:6px;align-items:center;pointer-events:none;width:90%;max-width:320px;
@@ -233,7 +227,6 @@ ul{list-style:none}
 
 <div class="nav-overlay" id="nav-overlay"></div>
 
-<!-- SIDEBAR -->
 <aside class="nav sb" id="nav">
   <div class="brand">
     <div class="brand-mark">⚡</div>
@@ -245,13 +238,18 @@ ul{list-style:none}
 
   <div class="nav-h">МЕНЮ</div>
   <div class="nav-list">
-    <div class="nav-i on" data-v="all"><span class="ic">🎵</span><span class="lbl">Всі треки</span><span class="n" id="n-all">0</span></div>
-    <div class="nav-i" data-v="fav"><span class="ic">⭐</span><span class="lbl">Улюблені</span><span class="n" id="n-fav">0</span></div>
+    <div class="nav-i on"><span class="ic">🎵</span><span class="lbl">Всі треки</span><span class="n" id="n-all">0</span></div>
+  </div>
+  
+  <div class="nav-h" style="margin-top:24px">РЕЗЕРВНА КОПІЯ</div>
+  <div class="nav-list">
+    <button class="btn btn-sec" id="export-btn" style="font-size:12px;height:36px">📥 Зберегти бекап</button>
+    <button class="btn btn-sec" id="import-btn" style="font-size:12px;height:36px">📤 Відновити з файлу</button>
+    <input type="file" id="file-picker" style="display:none" accept=".json">
   </div>
 </aside>
 
 <div class="shell">
-  <!-- TOPBAR -->
   <header class="top">
     <button class="burger" id="burger">☰</button>
     <div class="search">
@@ -260,11 +258,10 @@ ul{list-style:none}
     </div>
   </header>
 
-  <!-- CENTER CONTENT -->
   <main class="mid sb" id="mid">
     <div class="card hi">
       <h1>Привіт, Sanya 👋</h1>
-      <p>Твоя музика завжди з тобою.</p>
+      <p>Твоя музика знову з тобою.</p>
       <div class="stats">
         <div class="stat">
           <div class="si" style="background:rgba(255,45,117,.15);color:var(--ac)">🎵</div>
@@ -300,7 +297,6 @@ ul{list-style:none}
     </div>
   </main>
 
-  <!-- BOTTOM PLAYER -->
   <div class="bar-bottom">
     <div class="seek">
       <span class="tm" id="cur-time">0:00</span>
@@ -325,14 +321,11 @@ ul{list-style:none}
 </div>
 
 <div class="toasts" id="toasts"></div>
-
-<!-- АУДІО ЕЛЕМЕНТ З playsinline ТА preload -->
 <audio id="audio" preload="auto" playsinline></audio>
 
 <script>
-let tracks = JSON.parse(localStorage.getItem('spoti_tracks')) || [
-  {title: "Приклад треку", artist: "SpotiSanya", url: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"}
-];
+// ЗАВАНТАЖУЄМО ТРЕКИ ПРЯМО З ПАМ'ЯТІ БРАУЗЕРА (без дефолтних заглушок)
+let tracks = JSON.parse(localStorage.getItem('spoti_tracks')) || [];
 
 let currentIndex = 0;
 let isPlaying = false;
@@ -363,6 +356,10 @@ function showToast(msg) {
   setTimeout(() => t.remove(), 2500);
 }
 
+function saveTracks() {
+  localStorage.setItem('spoti_tracks', JSON.stringify(tracks));
+}
+
 function renderTracks(filter = '') {
   trackList.innerHTML = '';
   const filtered = tracks.filter(t => t.title.toLowerCase().includes(filter.toLowerCase()));
@@ -371,11 +368,11 @@ function renderTracks(filter = '') {
   document.getElementById('s-count').textContent = tracks.length;
 
   if(filtered.length === 0) {
-    trackList.innerHTML = '<div style="text-align:center;color:var(--tx-dim);padding:20px;font-size:12px">Треків немає</div>';
+    trackList.innerHTML = '<div style="text-align:center;color:var(--tx-dim);padding:20px;font-size:12px">Тут поки пусто або треків не знайдено</div>';
     return;
   }
 
-  filtered.forEach((t, index) => {
+  filtered.forEach((t) => {
     const realIndex = tracks.indexOf(t);
     const row = document.createElement('div');
     row.className = `trow ${realIndex === currentIndex ? 'on' : ''}`;
@@ -386,11 +383,34 @@ function renderTracks(filter = '') {
         <div class="ts">${t.artist || 'SpotiSanya'}</div>
       </div>
       <button class="tplay-btn">${realIndex === currentIndex && isPlaying ? '⏸' : '▶'}</button>
+      <button class="tdel" title="Видалити">✕</button>
     `;
-    row.onclick = () => {
+    
+    // Клік на рядок — грати
+    row.querySelector('.tinfo').onclick = () => {
       currentIndex = realIndex;
       playTrack();
     };
+    row.querySelector('.tart').onclick = () => {
+      currentIndex = realIndex;
+      playTrack();
+    };
+    row.querySelector('.tplay-btn').onclick = (e) => {
+      e.stopPropagation();
+      currentIndex = realIndex;
+      if(isPlaying && audio.src === t.url) pauseTrack();
+      else playTrack();
+    };
+
+    // Кнопка видалення треку
+    row.querySelector('.tdel').onclick = (e) => {
+      e.stopPropagation();
+      tracks.splice(realIndex, 1);
+      saveTracks();
+      renderTracks(document.getElementById('q').value);
+      showToast('Трек видалено');
+    };
+
     trackList.appendChild(row);
   });
 }
@@ -416,7 +436,7 @@ function playTrack() {
     playBtn.textContent = '⏸';
     renderTracks(document.getElementById('q').value);
   }).catch(e => {
-    showToast('Помилка відтворення аудіо');
+    showToast('Помилка відтворення (перевір посилання)');
   });
 }
 
@@ -468,7 +488,6 @@ function formatTime(sec) {
   return `${m}:${s < 10 ? '0' : ''}${s}`;
 }
 
-// Керування на заблокованому екрані (Media Session API)
 function updateMediaSession() {
   if ('mediaSession' in navigator && tracks[currentIndex]) {
     const current = tracks[currentIndex];
@@ -499,18 +518,54 @@ document.getElementById('add-btn').onclick = () => {
   }
 
   tracks.push({title, artist: 'SpotiSanya', url});
-  localStorage.setItem('spoti_tracks', JSON.stringify(tracks));
+  saveTracks();
   titleInput.value = '';
   urlInput.value = '';
   renderTracks();
   showToast('Трек успішно додано!');
 };
 
+// Експорт бекапу у файл
+document.getElementById('export-btn').onclick = () => {
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(tracks));
+  const dlAnchorElem = document.createElement('a');
+  dlAnchorElem.setAttribute("href", dataStr);
+  dlAnchorElem.setAttribute("download", "spotisanya_backup.json");
+  dlAnchorElem.click();
+  showToast('Бекап завантажено!');
+};
+
+// Імпорт бекапу з файлу
+document.getElementById('import-btn').onclick = () => {
+  document.getElementById('file-picker').click();
+};
+
+document.getElementById('file-picker').onchange = (e) => {
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (event) => {
+    try {
+      const imported = JSON.parse(event.target.result);
+      if(Array.isArray(imported)) {
+        tracks = imported;
+        saveTracks();
+        renderTracks();
+        showToast(`Відновлено треків: ${tracks.length}`);
+      } else {
+        showToast('Помилка: невірний формат файлу');
+      }
+    } catch(err) {
+      showToast('Помилка читання файлу');
+    }
+  };
+  reader.readAsText(file);
+};
+
 document.getElementById('q').oninput = (e) => {
   renderTracks(e.target.value);
 };
 
-// Відкриття/закриття мобільного меню
 burger.onclick = () => {
   nav.classList.add('open');
   navOverlay.classList.add('open');
