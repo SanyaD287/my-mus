@@ -1524,11 +1524,42 @@ function makeArtwork(t){
 }
 function setMediaAction(name,fn){try{navigator.mediaSession.setActionHandler(name,fn)}catch(e){}}
 function updateMediaPosition(){if(!("mediaSession"in navigator))return;try{if(isFinite(audio.duration)&&audio.duration>0)navigator.mediaSession.setPositionState({duration:audio.duration,playbackRate:audio.playbackRate||1,position:Math.min(audio.currentTime,audio.duration)})}catch(e){}}
+
+/* iPhone Lock Screen / Control Center transport.
+   These are real functions (not inline closures) so iOS can call them
+   reliably after the page has gone into the background. */
+async function mediaPlay(){
+  try{
+    if(!curId){ doPP(); return; }
+    if(!audio.src){
+      await play(curId,true);
+      return;
+    }
+    await audio.play();
+  }catch(e){ console.warn("MediaSession play failed:",e); }
+}
+function mediaPause(){ try{ audio.pause(); }catch(e){} }
+async function mediaNext(){
+  try{ const n=nextId(false); if(n) await play(n,true); }catch(e){ console.warn("MediaSession next failed:",e); }
+}
+async function mediaPrev(){
+  try{ const p=prevId(); if(p) await play(p,true); }catch(e){ console.warn("MediaSession previous failed:",e); }
+}
+function installMediaActions(){
+  if(!("mediaSession"in navigator))return;
+  setMediaAction("play",mediaPlay);
+  setMediaAction("pause",mediaPause);
+  setMediaAction("previoustrack",mediaPrev);
+  setMediaAction("nexttrack",mediaNext);
+  setMediaAction("seekbackward",d=>{audio.currentTime=Math.max(0,audio.currentTime-(d.seekOffset||10));updateMediaPosition()});
+  setMediaAction("seekforward",d=>{audio.currentTime=Math.min(audio.duration||Infinity,audio.currentTime+(d.seekOffset||10));updateMediaPosition()});
+  setMediaAction("seekto",d=>{if(isFinite(d.seekTime)){audio.currentTime=d.seekTime;updateMediaPosition()}});
+}
 function media(t){
  if(!("mediaSession"in navigator))return;
  try{navigator.mediaSession.metadata=new MediaMetadata({title:t.title,artist:t.artist||"Невідомий виконавець",album:t.album||"SpotiSanya",artwork:[{src:makeArtwork(t),sizes:"600x600",type:"image/svg+xml"}]});navigator.mediaSession.playbackState=audio.paused?"paused":"playing"}catch(e){}
- setMediaAction("play",()=>audio.play().catch(()=>{}));setMediaAction("pause",()=>audio.pause());setMediaAction("previoustrack",()=>doPrev());setMediaAction("nexttrack",()=>doNext());
- setMediaAction("seekbackward",d=>{audio.currentTime=Math.max(0,audio.currentTime-(d.seekOffset||10))});setMediaAction("seekforward",d=>{audio.currentTime=Math.min(audio.duration||Infinity,audio.currentTime+(d.seekOffset||10))});setMediaAction("seekto",d=>{if(isFinite(d.seekTime))audio.currentTime=d.seekTime});updateMediaPosition();
+ installMediaActions();
+ updateMediaPosition();
 }
 
 /* ---- seek: клік + drag, від контейнера (не від дочірнього елемента) ---- */
